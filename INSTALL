@@ -1,0 +1,23 @@
+
+- Requirements:
+
+  - A C++ compiler with C++11 support.
+    The following compilers have been tested:
+    - GCC 4.8.2 (GNU/Linux x86_64).
+
+  - Qt (tested with version 4.8.5).
+
+  - Gnuspeech-SA.
+
+  - Currently the sound is played using the program "aplay" from ALSA.
+
+- Build Gnuspeech-SA, with source directory at ../gnuspeech_sa and
+  build directory at ../gnuspeech_sa-build.
+
+- Generate the Makefile (GNU/Linux):
+
+  qmake "MOC_DIR=tmp" "OBJECTS_DIR=tmp"
+
+- Build (GNU/Linux):
+
+  make

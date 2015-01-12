@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1000</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>GS Editor</string>
+  </property>
+  <widget class="QWidget" name="centralWidget">
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QPlainTextEdit" name="logTextEdit">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+      <property name="plainText">
+       <string notr="true"/>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1000</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="openAction"/>
+    <addaction name="saveAction"/>
+    <addaction name="saveAsAction"/>
+    <addaction name="revertAction"/>
+    <addaction name="separator"/>
+    <addaction name="quitAction"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+    <addaction name="dataEntryAction"/>
+    <addaction name="postureEditorAction"/>
+    <addaction name="prototypeManagerAction"/>
+    <addaction name="transitionEditorAction"/>
+    <addaction name="specialTransitionEditorAction"/>
+    <addaction name="ruleManagerAction"/>
+    <addaction name="ruleEditorAction"/>
+    <addaction name="ruleTesterAction"/>
+    <addaction name="synthesisWindowAction"/>
+    <addaction name="synthesizerControlPanelAction"/>
+    <addaction name="intonationWindowAction"/>
+    <addaction name="intonationParametersAction"/>
+   </widget>
+   <widget class="QMenu" name="menuInfo">
+    <property name="title">
+     <string>Info</string>
+    </property>
+    <addaction name="aboutAction"/>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuTools"/>
+   <addaction name="menuInfo"/>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <action name="quitAction">
+   <property name="text">
+    <string>Quit</string>
+   </property>
+  </action>
+  <action name="openAction">
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="saveAction">
+   <property name="text">
+    <string>Save</string>
+   </property>
+  </action>
+  <action name="saveAsAction">
+   <property name="text">
+    <string>Save as</string>
+   </property>
+  </action>
+  <action name="revertAction">
+   <property name="text">
+    <string>Revert</string>
+   </property>
+  </action>
+  <action name="aboutAction">
+   <property name="text">
+    <string>About</string>
+   </property>
+  </action>
+  <action name="dataEntryAction">
+   <property name="text">
+    <string>Data entry</string>
+   </property>
+  </action>
+  <action name="postureEditorAction">
+   <property name="text">
+    <string>Posture editor</string>
+   </property>
+  </action>
+  <action name="postureCategoriesAction">
+   <property name="text">
+    <string>Posture categories</string>
+   </property>
+  </action>
+  <action name="prototypeManagerAction">
+   <property name="text">
+    <string>Prototype manager</string>
+   </property>
+  </action>
+  <action name="transitionEditorAction">
+   <property name="text">
+    <string>Transition editor</string>
+   </property>
+  </action>
+  <action name="specialTransitionEditorAction">
+   <property name="text">
+    <string>Special transition editor</string>
+   </property>
+  </action>
+  <action name="ruleManagerAction">
+   <property name="text">
+    <string>Rule manager</string>
+   </property>
+  </action>
+  <action name="ruleTesterAction">
+   <property name="text">
+    <string>Rule tester</string>
+   </property>
+  </action>
+  <action name="synthesisWindowAction">
+   <property name="text">
+    <string>Synthesis window</string>
+   </property>
+  </action>
+  <action name="synthesizerControlPanelAction">
+   <property name="text">
+    <string>Synthesizer control panel</string>
+   </property>
+  </action>
+  <action name="intonationWindowAction">
+   <property name="text">
+    <string>Intonation window</string>
+   </property>
+  </action>
+  <action name="intonationParametersAction">
+   <property name="text">
+    <string>Intonation parameters</string>
+   </property>
+  </action>
+  <action name="ruleEditorAction">
+   <property name="text">
+    <string>Rule editor</string>
+   </property>
+  </action>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>
