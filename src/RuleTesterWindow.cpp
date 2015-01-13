@@ -65,17 +65,9 @@ RuleTesterWindow::on_testButton_clicked()
 
 	std::vector<const TRMControlModel::Posture*> postureSequence;
 
-	try {
-		model_->preparePostures(); // needed by Model::findPosture
-	} catch (const Exception& exc) {
-		clearResults();
-		QMessageBox::critical(this, tr("Error"), exc.what());
-		return;
-	}
-
 	QString posture1Text = ui_->posture1LineEdit->text().trimmed();
 	if (!posture1Text.isEmpty()) {
-		const TRMControlModel::Posture* posture = model_->findPosture(posture1Text.toStdString());
+		const TRMControlModel::Posture* posture = model_->postureList().find(posture1Text.toStdString());
 		if (posture == nullptr) {
 			clearResults();
 			QMessageBox::warning(this, tr("Warning"), "Posture 1 not found.");
@@ -89,7 +81,7 @@ RuleTesterWindow::on_testButton_clicked()
 
 	QString posture2Text = ui_->posture2LineEdit->text().trimmed();
 	if (!posture2Text.isEmpty()) {
-		const TRMControlModel::Posture* posture = model_->findPosture(posture2Text.toStdString());
+		const TRMControlModel::Posture* posture = model_->postureList().find(posture2Text.toStdString());
 		if (posture == nullptr) {
 			clearResults();
 			QMessageBox::warning(this, tr("Warning"), "Posture 2 not found.");
@@ -103,7 +95,7 @@ RuleTesterWindow::on_testButton_clicked()
 
 	QString posture3Text = ui_->posture3LineEdit->text().trimmed();
 	if (!posture3Text.isEmpty()) {
-		const TRMControlModel::Posture* posture = model_->findPosture(posture3Text.toStdString());
+		const TRMControlModel::Posture* posture = model_->postureList().find(posture3Text.toStdString());
 		if (posture == nullptr) {
 			clearResults();
 			QMessageBox::warning(this, tr("Warning"), "Posture 3 not found.");
@@ -114,7 +106,7 @@ RuleTesterWindow::on_testButton_clicked()
 
 		QString posture4Text = ui_->posture4LineEdit->text().trimmed();
 		if (!posture4Text.isEmpty()) {
-			const TRMControlModel::Posture* posture4 = model_->findPosture(posture4Text.toStdString());
+			const TRMControlModel::Posture* posture4 = model_->postureList().find(posture4Text.toStdString());
 			if (posture4 == nullptr) {
 				clearResults();
 				QMessageBox::warning(this, tr("Warning"), "Posture 4 not found.");

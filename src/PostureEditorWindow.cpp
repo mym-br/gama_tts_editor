@@ -89,7 +89,6 @@ PostureEditorWindow::resetModel(TRMControlModel::Model* model)
 		clearPostureData();
 		ui_->posturesTable->setRowCount(0);
 	} else {
-		model_->sortPostures();
 		setupPosturesTable();
 	}
 }
@@ -99,13 +98,16 @@ PostureEditorWindow::on_addPostureButton_clicked()
 {
 	if (model_ == nullptr) return;
 
-	if (model_->findPostureName(NEW_ITEM_NAME)) {
+	if (model_->postureList().find(NEW_ITEM_NAME)) {
 		qWarning("Duplicate posture name.");
 		return;
 	}
 
-	std::unique_ptr<TRMControlModel::Posture> newPosture(new TRMControlModel::Posture(model_->parameterList().size(), model_->symbolList().size()));
-	newPosture->setName(NEW_ITEM_NAME);
+	std::unique_ptr<TRMControlModel::Posture> newPosture(
+				new TRMControlModel::Posture(
+					NEW_ITEM_NAME,
+					model_->parameterList().size(),
+					model_->symbolList().size()));
 	std::shared_ptr<TRMControlModel::Category> cat = model_->findCategory("phone"); // hardcoded
 	if (!cat) {
 		QMessageBox::critical(this, tr("Error"), "Category not found: phone.");
@@ -120,9 +122,8 @@ PostureEditorWindow::on_addPostureButton_clicked()
 		const auto& symbol = model_->symbolList()[i];
 		newPosture->setSymbolTarget(i, symbol.defaultValue());
 	}
-	model_->postureList().push_back(std::move(newPosture));
+	model_->postureList().add(std::move(newPosture));
 
-	model_->sortPostures();
 	setupPosturesTable();
 }
 
@@ -135,7 +136,7 @@ PostureEditorWindow::on_removePostureButton_clicked()
 	if (currPostureItem == nullptr) return;
 
 	int currPostureRow = currPostureItem->row();
-	model_->postureList().erase(model_->postureList().begin() + currPostureRow);
+	model_->postureList().remove(currPostureRow);
 
 	setupPosturesTable();
 }
@@ -149,7 +150,7 @@ PostureEditorWindow::on_updatePostureCommentButton_clicked()
 	if (currPostureItem == nullptr) return;
 
 	int currPostureRow = currPostureItem->row();
-	TRMControlModel::Posture& posture = *model_->postureList()[currPostureRow];
+	TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
 	posture.setComment(ui_->postureCommentTextEdit->toPlainText().toStdString());
 }
 
@@ -163,7 +164,7 @@ PostureEditorWindow::on_posturesTable_currentItemChanged(QTableWidgetItem* curre
 	}
 
 	unsigned int row = current->row();
-	const TRMControlModel::Posture& posture = *model_->postureList()[row];
+	const TRMControlModel::Posture& posture = model_->postureList()[row];
 	ui_->postureCommentTextEdit->setPlainText(posture.comment().c_str());
 	setupCategoriesTable(posture);
 	setupParametersTable(posture);
@@ -179,33 +180,24 @@ PostureEditorWindow::on_posturesTable_itemChanged(QTableWidgetItem* item)
 
 	int row = item->row();
 	const std::string newName = item->text().toStdString();
-	if (model_->findPostureName(newName)) {
+	if (model_->postureList().find(newName)) {
 		qWarning("Duplicate posture name.");
 		{
 			SignalBlocker blocker(ui_->posturesTable);
-			item->setText(model_->postureList()[row]->name().c_str());
+			item->setText(model_->postureList()[row].name().c_str());
 		}
 	} else if (model_->findCategoryName(newName)) {
 		qWarning("Posture can not have the same name as a category.");
 		{
 			SignalBlocker blocker(ui_->posturesTable);
-			item->setText(model_->postureList()[row]->name().c_str());
+			item->setText(model_->postureList()[row].name().c_str());
 		}
 	} else {
-		auto& posture = *model_->postureList()[row];
-		std::string oldName = posture.name();
-		auto iter = std::find_if(
-				posture.categoryList().begin(), posture.categoryList().end(),
-				[&oldName](const std::shared_ptr<TRMControlModel::Category>& c) -> bool {
-					return c->native() && c->name() == oldName;
-				});
-		if (iter != posture.categoryList().end()) {
-			posture.setName(newName);
-			(*iter)->setName(newName);
-		} else {
-			qCritical("[PostureEditorWindow::on_posturesTable_itemChanged] Posture does not have category with the same name as the posture.");
-		}
-		model_->sortPostures();
+		const auto& posture = model_->postureList()[row];
+		std::unique_ptr<TRMControlModel::Posture> newPosture = posture.copy(newName);
+		model_->postureList().remove(row);
+		model_->postureList().add(std::move(newPosture));
+
 		setupPosturesTable();
 	}
 }
@@ -224,7 +216,7 @@ PostureEditorWindow::on_categoriesTable_itemChanged(QTableWidgetItem* item)
 	int row = item->row();
 	int col = item->column();
 	if (col == 1) {
-		TRMControlModel::Posture& posture = *model_->postureList()[currPostureRow];
+		TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
 		std::shared_ptr<TRMControlModel::Category> category = model_->categoryList()[row];
 		if (item->checkState() == Qt::Checked) {
 			posture.categoryList().push_back(category);
@@ -255,7 +247,7 @@ PostureEditorWindow::on_parametersTable_itemChanged(QTableWidgetItem* item)
 	int row = item->row();
 	int col = item->column();
 	if (col == 1) {
-		TRMControlModel::Posture& posture = *model_->postureList()[currPostureRow];
+		TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
 		const TRMControlModel::Parameter& parameter = model_->parameterList()[row];
 
 		bool ok;
@@ -290,7 +282,7 @@ PostureEditorWindow::on_useDefaultParameterValueButton_clicked()
 	QTableWidgetItem* currPostureItem = ui_->posturesTable->currentItem();
 	if (currPostureItem == nullptr) return;
 	int currPostureRow = currPostureItem->row();
-	TRMControlModel::Posture& posture = *model_->postureList()[currPostureRow];
+	TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
 
 	QTableWidgetItem* item = ui_->parametersTable->currentItem();
 	if (item == nullptr) return;
@@ -315,7 +307,7 @@ PostureEditorWindow::on_symbolsTable_itemChanged(QTableWidgetItem* item)
 	int row = item->row();
 	int col = item->column();
 	if (col == 1) {
-		TRMControlModel::Posture& posture = *model_->postureList()[currPostureRow];
+		TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
 		const TRMControlModel::Symbol& symbol = model_->symbolList()[row];
 
 		bool ok;
@@ -350,7 +342,7 @@ PostureEditorWindow::on_useDefaultSymbolValueButton_clicked()
 	QTableWidgetItem* currPostureItem = ui_->posturesTable->currentItem();
 	if (currPostureItem == nullptr) return;
 	int currPostureRow = currPostureItem->row();
-	TRMControlModel::Posture& posture = *model_->postureList()[currPostureRow];
+	TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
 
 	QTableWidgetItem* item = ui_->symbolsTable->currentItem();
 	if (item == nullptr) return;
@@ -374,7 +366,7 @@ PostureEditorWindow::setupPosturesTable()
 		for (unsigned int i = 0, size = model_->postureList().size(); i < size; ++i) {
 			const auto& posture = model_->postureList()[i];
 
-			std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(posture->name().c_str()));
+			std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(posture.name().c_str()));
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 			table->setItem(i, 0, item.release());
 		}

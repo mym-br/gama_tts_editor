@@ -296,35 +296,29 @@ RuleManagerWindow::setupRulesList()
 void
 RuleManagerWindow::showRuleStatistics(const TRMControlModel::Rule& rule)
 {
-	try {
-		model_->preparePostures();   // needed by Rule::evalBooleanExpression
-	} catch (const Exception& exc) {
-		clearRuleData();
-		QMessageBox::critical(this, tr("Error"), exc.what());
-		return;
-	}
-
 	unsigned int count1 = 0;
 	unsigned int count2 = 0;
 	unsigned int count3 = 0;
 	unsigned int count4 = 0;
 
-	for (const auto& posture : model_->postureList()) {
-		if (rule.evalBooleanExpression(*posture, 0)) {
+	for (unsigned int i = 0, size = model_->postureList().size(); i < size; ++i) {
+		const auto& posture = model_->postureList()[i];
+
+		if (rule.evalBooleanExpression(posture, 0)) {
 			++count1;
-			ui_->matches1ListWidget->addItem(posture->name().c_str());
+			ui_->matches1ListWidget->addItem(posture.name().c_str());
 		}
-		if (rule.evalBooleanExpression(*posture, 1)) {
+		if (rule.evalBooleanExpression(posture, 1)) {
 			++count2;
-			ui_->matches2ListWidget->addItem(posture->name().c_str());
+			ui_->matches2ListWidget->addItem(posture.name().c_str());
 		}
-		if (rule.evalBooleanExpression(*posture, 2)) {
+		if (rule.evalBooleanExpression(posture, 2)) {
 			++count3;
-			ui_->matches3ListWidget->addItem(posture->name().c_str());
+			ui_->matches3ListWidget->addItem(posture.name().c_str());
 		}
-		if (rule.evalBooleanExpression(*posture, 3)) {
+		if (rule.evalBooleanExpression(posture, 3)) {
 			++count4;
-			ui_->matches4ListWidget->addItem(posture->name().c_str());
+			ui_->matches4ListWidget->addItem(posture.name().c_str());
 		}
 	}
 
