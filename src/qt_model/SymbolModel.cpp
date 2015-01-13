@@ -119,19 +119,23 @@ SymbolModel::setData(const QModelIndex& index, const QVariant& value, int role)
 			}
 			model_->symbolList()[row].setName(name);
 			emit dataChanged(index, index);
+			emit symbolChanged();
 			return true;
 		}
 	case 1:
 		model_->symbolList()[row].setMinimum(value.toFloat());
 		emit dataChanged(index, index);
+		emit symbolChanged();
 		return true;
 	case 2:
 		model_->symbolList()[row].setMaximum(value.toFloat());
 		emit dataChanged(index, index);
+		emit symbolChanged();
 		return true;
 	case 3:
 		model_->symbolList()[row].setDefaultValue(value.toFloat());
 		emit dataChanged(index, index);
+		emit symbolChanged();
 		return true;
 	default:
 		return false;
@@ -172,6 +176,10 @@ SymbolModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	if (row < 0 || static_cast<std::size_t>(row) > model_->symbolList().size()) {
 		return false;
 	}
+	if (model_->postureList().size() > 0 || !model_->ruleList().empty()) {
+		emit errorOccurred(tr("Operation not permitted. There are postures or rules in the database."));
+		return false;
+	}
 
 	if (model_->findSymbolName(NEW_ITEM_NAME)) {
 		qWarning("Duplicate symbol: %s", NEW_ITEM_NAME);
@@ -194,6 +202,10 @@ SymbolModel::removeRows(int row, int count, const QModelIndex& /*parent*/)
 		return false;
 	}
 	if (row < 0 || static_cast<std::size_t>(row) >= model_->symbolList().size()) {
+		return false;
+	}
+	if (model_->postureList().size() > 0 || !model_->ruleList().empty()) {
+		emit errorOccurred(tr("Operation not permitted. There are postures or rules in the database."));
 		return false;
 	}
 
@@ -219,6 +231,10 @@ SymbolModel::incrementSymbolRow(const QModelIndex& index)
 	if (model_ == nullptr || !index.isValid()) {
 		return index;
 	}
+	if (model_->postureList().size() > 0 || !model_->ruleList().empty()) {
+		emit errorOccurred(tr("Operation not permitted. There are postures or rules in the database."));
+		return index;
+	}
 
 	unsigned int row = index.row();
 	if (row < model_->symbolList().size() - 1U) {
@@ -234,6 +250,10 @@ QModelIndex
 SymbolModel::decrementSymbolRow(const QModelIndex& index)
 {
 	if (model_ == nullptr || !index.isValid()) {
+		return index;
+	}
+	if (model_->postureList().size() > 0 || !model_->ruleList().empty()) {
+		emit errorOccurred(tr("Operation not permitted. There are postures or rules in the database."));
 		return index;
 	}
 

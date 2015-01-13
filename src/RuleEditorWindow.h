@@ -50,6 +50,7 @@ public:
 	void resetModel(TRMControlModel::Model* model);
 public slots:
 	void handleEditRuleButtonClicked(unsigned int ruleIndex);
+	void clearRuleData();
 private slots:
 	void on_clearSpecialTransitionButton_clicked();
 	void on_clearEquationButton_clicked();

@@ -47,6 +47,13 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="removeButton">
+        <property name="text">
+         <string>Remove</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="moveUpButton">
         <property name="text">
          <string>Move up</string>
@@ -57,13 +64,6 @@
        <widget class="QPushButton" name="moveDownButton">
         <property name="text">
          <string>Move down</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="removeButton">
-        <property name="text">
-         <string>Remove</string>
         </property>
        </widget>
       </item>

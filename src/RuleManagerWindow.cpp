@@ -167,7 +167,11 @@ RuleManagerWindow::on_updateButton_clicked()
 	if (numExpr == 4) {
 		exprList.push_back(exp4.toStdString());
 	}
-	rule.setBooleanExpressionList(exprList, *model_);
+	try {
+		rule.setBooleanExpressionList(exprList, *model_);
+	} catch (const Exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
+	}
 
 	setupRulesList();
 

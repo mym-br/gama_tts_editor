@@ -55,6 +55,9 @@ public:
 	void setCategoryComment(const QModelIndex& index, const QString& comment) const;
 	QModelIndex incrementCategoryRow(const QModelIndex& index);
 	QModelIndex decrementCategoryRow(const QModelIndex& index);
+signals:
+	void categoryChanged();
+	void errorOccurred(QString msg);
 private:
 	CategoryModel(const CategoryModel&);
 	CategoryModel& operator=(const CategoryModel&);

@@ -48,6 +48,8 @@ public:
 	~PostureEditorWindow();
 
 	void resetModel(TRMControlModel::Model* model);
+public slots:
+	void unselectPosture();
 private slots:
 	void on_addPostureButton_clicked();
 	void on_removePostureButton_clicked();
@@ -59,7 +61,6 @@ private slots:
 	void on_useDefaultParameterValueButton_clicked();
 	void on_symbolsTable_itemChanged(QTableWidgetItem* item);
 	void on_useDefaultSymbolValueButton_clicked();
-
 private:
 	void setupPosturesTable();
 	void clearPostureData();
@@ -68,7 +69,6 @@ private:
 	void setupSymbolsTable(const TRMControlModel::Posture& posture);
 
 	std::unique_ptr<Ui::PostureEditorWindow> ui_;
-
 	TRMControlModel::Model* model_;
 };
 

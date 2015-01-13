@@ -119,19 +119,23 @@ ParameterModel::setData(const QModelIndex& index, const QVariant& value, int rol
 			}
 			model_->parameterList()[row].setName(name);
 			emit dataChanged(index, index);
+			emit parameterChanged();
 			return true;
 		}
 	case 1:
 		model_->parameterList()[row].setMinimum(value.toFloat());
 		emit dataChanged(index, index);
+		emit parameterChanged();
 		return true;
 	case 2:
 		model_->parameterList()[row].setMaximum(value.toFloat());
 		emit dataChanged(index, index);
+		emit parameterChanged();
 		return true;
 	case 3:
 		model_->parameterList()[row].setDefaultValue(value.toFloat());
 		emit dataChanged(index, index);
+		emit parameterChanged();
 		return true;
 	default:
 		return false;
@@ -172,6 +176,10 @@ ParameterModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	if (row < 0 || static_cast<std::size_t>(row) > model_->parameterList().size()) {
 		return false;
 	}
+	if (model_->postureList().size() > 0 || !model_->ruleList().empty()) {
+		emit errorOccurred(tr("Operation not permitted. There are postures or rules in the database."));
+		return false;
+	}
 
 	if (model_->findParameterName(NEW_ITEM_NAME)) {
 		qWarning("Duplicate parameter: %s", NEW_ITEM_NAME);
@@ -194,6 +202,10 @@ ParameterModel::removeRows(int row, int count, const QModelIndex& /*parent*/)
 		return false;
 	}
 	if (row < 0 || static_cast<std::size_t>(row) >= model_->parameterList().size()) {
+		return false;
+	}
+	if (model_->postureList().size() > 0 || !model_->ruleList().empty()) {
+		emit errorOccurred(tr("Operation not permitted. There are postures or rules in the database."));
 		return false;
 	}
 
@@ -219,6 +231,10 @@ ParameterModel::incrementParameterRow(const QModelIndex& index)
 	if (model_ == nullptr || !index.isValid()) {
 		return index;
 	}
+	if (model_->postureList().size() > 0 || !model_->ruleList().empty()) {
+		emit errorOccurred(tr("Operation not permitted. There are postures or rules in the database."));
+		return index;
+	}
 
 	unsigned int row = index.row();
 	if (row < model_->parameterList().size() - 1U) {
@@ -234,6 +250,10 @@ QModelIndex
 ParameterModel::decrementParameterRow(const QModelIndex& index)
 {
 	if (model_ == nullptr || !index.isValid()) {
+		return index;
+	}
+	if (model_->postureList().size() > 0 || !model_->ruleList().empty()) {
+		emit errorOccurred(tr("Operation not permitted. There are postures or rules in the database."));
 		return index;
 	}
 

@@ -83,11 +83,7 @@ RuleEditorWindow::~RuleEditorWindow()
 void
 RuleEditorWindow::clear()
 {
-	ui_->ruleTransitionsTable->setRowCount(0);
-	ui_->ruleSpecialTransitionsTable->setRowCount(0);
-	ui_->ruleSymbolEquationsTable->setRowCount(0);
-
-	ui_->ruleNumberLabel->setText(QString("<b>%1</b>").arg(0));
+	clearRuleData();
 }
 
 void
@@ -136,6 +132,17 @@ RuleEditorWindow::handleEditRuleButtonClicked(unsigned int ruleIndex)
 
 	show();
 	raise();
+}
+
+// Slot.
+void
+RuleEditorWindow::clearRuleData()
+{
+	ui_->ruleTransitionsTable->setRowCount(0);
+	ui_->ruleSpecialTransitionsTable->setRowCount(0);
+	ui_->ruleSymbolEquationsTable->setRowCount(0);
+
+	ui_->ruleNumberLabel->setText(QString("<b>%1</b>").arg(0));
 }
 
 void

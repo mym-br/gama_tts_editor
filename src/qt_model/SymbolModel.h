@@ -53,6 +53,9 @@ public:
 	void resetModel(TRMControlModel::Model* model);
 	QModelIndex incrementSymbolRow(const QModelIndex& index);
 	QModelIndex decrementSymbolRow(const QModelIndex& index);
+signals:
+	void symbolChanged();
+	void errorOccurred(QString msg);
 private:
 	SymbolModel(const SymbolModel&);
 	SymbolModel& operator=(const SymbolModel&);

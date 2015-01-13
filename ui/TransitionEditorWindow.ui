@@ -285,6 +285,13 @@
        </spacer>
       </item>
       <item>
+       <widget class="QPushButton" name="removePointButton">
+        <property name="text">
+         <string>Remove</string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QPushButton" name="movePointUpButton">
         <property name="text">
          <string>Move up</string>
@@ -295,13 +302,6 @@
        <widget class="QPushButton" name="movePointDownButton">
         <property name="text">
          <string>Move down</string>
-        </property>
-       </widget>
-      </item>
-      <item>
-       <widget class="QPushButton" name="removePointButton">
-        <property name="text">
-         <string>Remove</string>
         </property>
        </widget>
       </item>

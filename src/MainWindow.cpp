@@ -78,6 +78,17 @@ MainWindow::MainWindow(QWidget* parent)
 
 	connect(ruleManagerWindow_.get(), SIGNAL(editRuleButtonClicked(unsigned int)),
 		ruleEditorWindow_.get(), SLOT(handleEditRuleButtonClicked(unsigned int)));
+
+
+
+
+	connect(dataEntryWindow_.get(), SIGNAL(categoryChanged()) , postureEditorWindow_.get(), SLOT(unselectPosture()));
+	connect(dataEntryWindow_.get(), SIGNAL(parameterChanged()), postureEditorWindow_.get(), SLOT(unselectPosture()));
+	connect(dataEntryWindow_.get(), SIGNAL(symbolChanged())   , postureEditorWindow_.get(), SLOT(unselectPosture()));
+
+	connect(dataEntryWindow_.get(), SIGNAL(parameterChanged()), ruleEditorWindow_.get(), SLOT(clearRuleData()));
+
+
 }
 
 MainWindow::~MainWindow()

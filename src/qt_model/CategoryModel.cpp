@@ -119,6 +119,7 @@ CategoryModel::setData(const QModelIndex& index, const QVariant& value, int role
 		}
 		model_->categoryList()[row]->setName(name);
 		emit dataChanged(index, index);
+		emit categoryChanged();
 		return true;
 	}
 	return false;
@@ -167,6 +168,8 @@ CategoryModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 				newCategory);
 	endInsertRows();
 
+	emit categoryChanged();
+
 	return true;
 }
 
@@ -179,10 +182,16 @@ CategoryModel::removeRows(int row, int count, const QModelIndex& /*parent*/)
 	if (row < 0 || static_cast<std::size_t>(row) >= model_->categoryList().size()) {
 		return false;
 	}
+	if (model_->categoryList()[row].use_count() > 1) {
+		emit errorOccurred(tr("Can't remove category in use."));
+		return false;
+	}
 
 	beginRemoveRows(QModelIndex(), row, row);
 	model_->categoryList().erase(model_->categoryList().begin() + row);
 	endRemoveRows();
+
+	emit categoryChanged();
 
 	return true;
 }

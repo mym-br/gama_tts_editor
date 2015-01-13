@@ -45,6 +45,10 @@ public:
 	~DataEntryWindow();
 
 	void resetModel(TRMControlModel::Model* model);
+signals:
+	void categoryChanged();
+	void parameterChanged();
+	void symbolChanged();
 private slots:
 	void on_moveCategoryDownButton_clicked();
 	void on_moveCategoryUpButton_clicked();
@@ -62,6 +66,8 @@ private slots:
 	void on_moveSymbolUpButton_clicked();
 	void on_addSymbolButton_clicked();
 	void on_removeSymbolButton_clicked();
+
+	void showError(QString msg);
 private:
 	std::unique_ptr<Ui::DataEntryWindow> ui_;
 	CategoryModel* categoryModel_;

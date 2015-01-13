@@ -93,6 +93,13 @@ PostureEditorWindow::resetModel(TRMControlModel::Model* model)
 	}
 }
 
+// Slot.
+void
+PostureEditorWindow::unselectPosture()
+{
+	ui_->posturesTable->setCurrentItem(nullptr);
+}
+
 void
 PostureEditorWindow::on_addPostureButton_clicked()
 {

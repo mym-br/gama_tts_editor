@@ -17,6 +17,8 @@
 
 #include "DataEntryWindow.h"
 
+#include <QMessageBox>
+
 #include "CategoryModel.h"
 #include "Model.h"
 #include "ParameterModel.h"
@@ -61,6 +63,15 @@ DataEntryWindow::DataEntryWindow(QWidget* parent)
 	// QItemSelectionModel
 	connect(ui_->categoriesTableView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)),
 		this, SLOT(showCategoryData(const QModelIndex&, const QModelIndex&)));
+
+	connect(categoryModel_, SIGNAL(categoryChanged()), this, SIGNAL(categoryChanged()));
+	connect(categoryModel_, SIGNAL(errorOccurred(QString)), this, SLOT(showError(QString)));
+
+	connect(parameterModel_, SIGNAL(parameterChanged()), this, SIGNAL(parameterChanged()));
+	connect(parameterModel_, SIGNAL(errorOccurred(QString)), this, SLOT(showError(QString)));
+
+	connect(symbolModel_, SIGNAL(symbolChanged()), this, SIGNAL(symbolChanged()));
+	connect(symbolModel_, SIGNAL(errorOccurred(QString)), this, SLOT(showError(QString)));
 }
 
 DataEntryWindow::~DataEntryWindow()
@@ -95,6 +106,8 @@ DataEntryWindow::on_moveCategoryDownButton_clicked()
 {
 	QModelIndex index = categoryModel_->incrementCategoryRow(ui_->categoriesTableView->currentIndex());
 	ui_->categoriesTableView->setCurrentIndex(index);
+
+	emit categoryChanged();
 }
 
 void
@@ -102,6 +115,8 @@ DataEntryWindow::on_moveCategoryUpButton_clicked()
 {
 	QModelIndex index = categoryModel_->decrementCategoryRow(ui_->categoriesTableView->currentIndex());
 	ui_->categoriesTableView->setCurrentIndex(index);
+
+	emit categoryChanged();
 }
 
 void
@@ -117,6 +132,8 @@ DataEntryWindow::on_addCategoryButton_clicked()
 	if (categoryModel_->insertRows(insertPos, 1)) {
 		ui_->categoriesTableView->setCurrentIndex(categoryModel_->index(insertPos, CategoryModel::NUM_COLUMNS - 1));
 	}
+
+	emit categoryChanged();
 }
 
 void
@@ -124,7 +141,9 @@ DataEntryWindow::on_removeCategoryButton_clicked()
 {
 	QModelIndex curIndex = ui_->categoriesTableView->currentIndex();
 	if (curIndex.isValid()) {
-		categoryModel_->removeRows(curIndex.row(), 1);
+		if (categoryModel_->removeRows(curIndex.row(), 1)) {
+			emit categoryChanged();
+		}
 	}
 }
 
@@ -223,6 +242,13 @@ DataEntryWindow::on_removeSymbolButton_clicked()
 	if (curIndex.isValid()) {
 		symbolModel_->removeRows(curIndex.row(), 1);
 	}
+}
+
+// Slot.
+void
+DataEntryWindow::showError(QString msg)
+{
+	QMessageBox::critical(this, tr("Error"), msg);
 }
 
 } // namespace GS

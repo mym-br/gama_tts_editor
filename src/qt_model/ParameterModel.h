@@ -53,6 +53,9 @@ public:
 	void resetModel(TRMControlModel::Model* model);
 	QModelIndex incrementParameterRow(const QModelIndex& index);
 	QModelIndex decrementParameterRow(const QModelIndex& index);
+signals:
+	void parameterChanged();
+	void errorOccurred(QString msg);
 private:
 	ParameterModel(const ParameterModel&);
 	ParameterModel& operator=(const ParameterModel&);

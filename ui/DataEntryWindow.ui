@@ -60,20 +60,6 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="moveCategoryUpButton">
-            <property name="text">
-             <string>Move up</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="moveCategoryDownButton">
-            <property name="text">
-             <string>Move down</string>
-            </property>
-           </widget>
-          </item>
-          <item>
            <widget class="QPushButton" name="addCategoryButton">
             <property name="text">
              <string>Add</string>
@@ -84,6 +70,20 @@
            <widget class="QPushButton" name="removeCategoryButton">
             <property name="text">
              <string>Remove</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="moveCategoryUpButton">
+            <property name="text">
+             <string>Move up</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="moveCategoryDownButton">
+            <property name="text">
+             <string>Move down</string>
             </property>
            </widget>
           </item>
@@ -185,9 +185,16 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="moveParameterDownButton">
+           <widget class="QPushButton" name="addParameterButton">
             <property name="text">
-             <string>Move down</string>
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="removeParameterButton">
+            <property name="text">
+             <string>Remove</string>
             </property>
            </widget>
           </item>
@@ -199,16 +206,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="addParameterButton">
+           <widget class="QPushButton" name="moveParameterDownButton">
             <property name="text">
-             <string>Add</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="removeParameterButton">
-            <property name="text">
-             <string>Remove</string>
+             <string>Move down</string>
             </property>
            </widget>
           </item>
@@ -258,9 +258,16 @@
            </spacer>
           </item>
           <item>
-           <widget class="QPushButton" name="moveSymbolDownButton">
+           <widget class="QPushButton" name="addSymbolButton">
             <property name="text">
-             <string>Move Down</string>
+             <string>Add</string>
+            </property>
+           </widget>
+          </item>
+          <item>
+           <widget class="QPushButton" name="removeSymbolButton">
+            <property name="text">
+             <string>Remove</string>
             </property>
            </widget>
           </item>
@@ -272,16 +279,9 @@
            </widget>
           </item>
           <item>
-           <widget class="QPushButton" name="addSymbolButton">
+           <widget class="QPushButton" name="moveSymbolDownButton">
             <property name="text">
-             <string>Add</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QPushButton" name="removeSymbolButton">
-            <property name="text">
-             <string>Remove</string>
+             <string>Move down</string>
             </property>
            </widget>
           </item>
