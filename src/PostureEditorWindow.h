@@ -48,6 +48,9 @@ public:
 	~PostureEditorWindow();
 
 	void resetModel(TRMControlModel::Model* model);
+signals:
+	void postureChanged();
+	void postureCategoryChanged();
 public slots:
 	void unselectPosture();
 private slots:

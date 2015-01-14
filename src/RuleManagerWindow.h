@@ -49,6 +49,8 @@ public:
 	void resetModel(TRMControlModel::Model* model);
 signals:
 	void editRuleButtonClicked(unsigned int ruleIndex);
+public slots:
+	void unselectRule();
 private slots:
 	void on_removeButton_clicked();
 	void on_addButton_clicked();
@@ -58,8 +60,8 @@ private slots:
 	void on_editButton_clicked();
 	void on_rulesTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
 private:
-	void clearRuleData();
 	void setupRulesList();
+	void clearRuleData();
 	void showRuleStatistics(const TRMControlModel::Rule& rule);
 	unsigned int numInputExpressions(const QString& exp1, const QString& exp2, const QString& exp3, const QString& exp4);
 

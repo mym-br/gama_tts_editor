@@ -58,6 +58,8 @@ public:
 signals:
 	void categoryChanged();
 	void errorOccurred(QString msg);
+public slots:
+	void updateView();
 private:
 	CategoryModel(const CategoryModel&);
 	CategoryModel& operator=(const CategoryModel&);

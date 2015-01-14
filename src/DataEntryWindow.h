@@ -49,6 +49,8 @@ signals:
 	void categoryChanged();
 	void parameterChanged();
 	void symbolChanged();
+public slots:
+	void updateCategoriesTable();
 private slots:
 	void on_moveCategoryDownButton_clicked();
 	void on_moveCategoryUpButton_clicked();

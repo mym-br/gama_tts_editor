@@ -61,7 +61,9 @@ CategoryModel::data(const QModelIndex& index, int role) const
 	switch (role) {
 	case Qt::DisplayRole: // falls through
 	case Qt::EditRole:
-		if (index.column() == 1) {
+		if (index.column() == 0) {
+			return static_cast<int>(model_->categoryList()[row].use_count()) - 1;
+		} else if (index.column() == 1) {
 			return model_->categoryList()[row]->name().c_str();
 		}
 		break;
@@ -265,6 +267,13 @@ CategoryModel::decrementCategoryRow(const QModelIndex& index)
 		return createIndex(row - 1, NUM_COLUMNS - 1 /* last column */);
 	}
 	return index;
+}
+
+void
+CategoryModel::updateView()
+{
+	beginResetModel();
+	endResetModel();
 }
 
 } // namespace GS

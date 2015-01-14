@@ -89,6 +89,24 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(dataEntryWindow_.get(), SIGNAL(parameterChanged()), ruleEditorWindow_.get(), SLOT(clearRuleData()));
 	connect(dataEntryWindow_.get(), SIGNAL(parameterChanged()), synthesisWindow_.get(), SLOT(setupParameterTable()));
 
+	connect(postureEditorWindow_.get(), SIGNAL(postureChanged()), ruleManagerWindow_.get(), SLOT(unselectRule()));
+	connect(postureEditorWindow_.get(), SIGNAL(postureCategoryChanged()), dataEntryWindow_.get(), SLOT(updateCategoriesTable()));
+
+	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), transitionEditorWindow_.get(), SLOT(updateEquationsTree()));
+	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), transitionEditorWindow_.get(), SLOT(updateTransition()));
+	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), specialTransitionEditorWindow_.get(), SLOT(updateEquationsTree()));
+	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), specialTransitionEditorWindow_.get(), SLOT(updateTransition()));
+	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), ruleEditorWindow_.get(), SLOT(setupRuleSymbolEquationsTable()));
+	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), ruleEditorWindow_.get(), SLOT(setupEquationsTree()));
+
+	connect(prototypeManagerWindow_.get(), SIGNAL(transitionChanged()), transitionEditorWindow_.get(), SLOT(clear()));
+	connect(prototypeManagerWindow_.get(), SIGNAL(transitionChanged()), ruleEditorWindow_.get(), SLOT(setupRuleTransitionsTable()));
+	connect(prototypeManagerWindow_.get(), SIGNAL(transitionChanged()), ruleEditorWindow_.get(), SLOT(setupTransitionsTree()));
+
+	connect(prototypeManagerWindow_.get(), SIGNAL(specialTransitionChanged()), specialTransitionEditorWindow_.get(), SLOT(clear()));
+	connect(prototypeManagerWindow_.get(), SIGNAL(specialTransitionChanged()), ruleEditorWindow_.get(), SLOT(setupRuleSpecialTransitionsTable()));
+	connect(prototypeManagerWindow_.get(), SIGNAL(specialTransitionChanged()), ruleEditorWindow_.get(), SLOT(setupSpecialTransitionsTree()));
+
 }
 
 MainWindow::~MainWindow()

@@ -127,6 +127,7 @@ TransitionEditorWindow::setSpecial()
 	ui_->pointsTable->setHorizontalHeaderLabels(QStringList() << tr("Type") << tr("Value") << tr("Is phantom?") << tr("Time"));
 }
 
+// Slot.
 void
 TransitionEditorWindow::clear()
 {
@@ -221,6 +222,29 @@ TransitionEditorWindow::handleEditTransitionButtonClicked(unsigned int transitio
 	raise();
 }
 
+// Slot.
+void
+TransitionEditorWindow::updateTransition()
+{
+	if (model_ == nullptr) return;
+	if (transition_ == nullptr) return;
+
+	try {
+		updatePointTimes();
+	} catch (const Exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
+		//TODO: clear?
+		return;
+	}
+
+	if (!special_) {
+		TransitionPoint::adjustValuesInSlopeRatios(pointList_);
+	}
+
+	updatePointsTable();
+	updateTransitionWidget();
+}
+
 void
 TransitionEditorWindow::on_equationsTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* /*previous*/)
 {
@@ -272,20 +296,7 @@ TransitionEditorWindow::on_equationsTree_itemClicked(QTreeWidgetItem* item, int 
 	if (pointList_[row].timeExpression != equation) {
 		pointList_[row].timeExpression = equation;
 
-		try {
-			updatePointTimes();
-		} catch (const Exception& exc) {
-			QMessageBox::critical(this, tr("Error"), exc.what());
-			//TODO: clear?
-			return;
-		}
-
-		if (!special_) {
-			TransitionPoint::adjustValuesInSlopeRatios(pointList_);
-		}
-
-		updatePointsTable();
-		updateTransitionWidget();
+		updateTransition();
 	}
 }
 
@@ -358,20 +369,7 @@ TransitionEditorWindow::on_pointsTable_itemChanged(QTableWidgetItem* item)
 	}
 
 	if (updateWidgets) {
-		try {
-			updatePointTimes();
-		} catch (const Exception& exc) {
-			QMessageBox::critical(this, tr("Error"), exc.what());
-			//TODO: clear?
-			return;
-		}
-
-		if (!special_) {
-			TransitionPoint::adjustValuesInSlopeRatios(pointList_);
-		}
-
-		updatePointsTable();
-		updateTransitionWidget();
+		updateTransition();
 	}
 }
 
@@ -381,19 +379,7 @@ TransitionEditorWindow::on_updateParametersButton_clicked()
 	if (model_ == nullptr) return;
 	if (transition_ == nullptr) return;
 
-	try {
-		updatePointTimes();
-	} catch (const Exception& exc) {
-		QMessageBox::critical(this, tr("Error"), exc.what());
-		return;
-	}
-
-	if (!special_) {
-		TransitionPoint::adjustValuesInSlopeRatios(pointList_);
-	}
-
-	updatePointsTable();
-	updateTransitionWidget();
+	updateTransition();
 }
 
 void
@@ -505,20 +491,7 @@ TransitionEditorWindow::on_transitionTypeComboBox_currentIndexChanged(int index)
 
 		fillDefaultParameters();
 
-		try {
-			updatePointTimes();
-		} catch (const Exception& exc) {
-			QMessageBox::critical(this, tr("Error"), exc.what());
-			//TODO: clear?
-			return;
-		}
-
-		if (!special_) {
-			TransitionPoint::adjustValuesInSlopeRatios(pointList_);
-		}
-
-		updatePointsTable();
-		updateTransitionWidget();
+		updateTransition();
 	}
 }
 
@@ -551,19 +524,13 @@ TransitionEditorWindow::createPoint(unsigned int pointType, float time, float va
 		pointList_.insert(iter, std::move(newPoint));
 	}
 
-	updatePointTimes();
-
-	if (!special_) {
-		TransitionPoint::adjustValuesInSlopeRatios(pointList_);
-	}
-
-	updatePointsTable();
-	updateTransitionWidget();
+	updateTransition();
 
 	ui_->pointsTable->setCurrentItem(nullptr);
 	ui_->equationsTree->setCurrentItem(nullptr);
 }
 
+// Slot.
 void
 TransitionEditorWindow::updateEquationsTree()
 {

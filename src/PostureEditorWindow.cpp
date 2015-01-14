@@ -132,6 +132,8 @@ PostureEditorWindow::on_addPostureButton_clicked()
 	model_->postureList().add(std::move(newPosture));
 
 	setupPosturesTable();
+
+	emit postureChanged();
 }
 
 void
@@ -146,6 +148,8 @@ PostureEditorWindow::on_removePostureButton_clicked()
 	model_->postureList().remove(currPostureRow);
 
 	setupPosturesTable();
+
+	emit postureChanged();
 }
 
 void
@@ -206,6 +210,8 @@ PostureEditorWindow::on_posturesTable_itemChanged(QTableWidgetItem* item)
 		model_->postureList().add(std::move(newPosture));
 
 		setupPosturesTable();
+
+		emit postureChanged();
 	}
 }
 
@@ -237,6 +243,7 @@ PostureEditorWindow::on_categoriesTable_itemChanged(QTableWidgetItem* item)
 				posture.categoryList().erase(iter);
 			}
 		}
+		emit postureCategoryChanged();
 	}
 }
 

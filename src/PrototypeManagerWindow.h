@@ -53,6 +53,9 @@ public:
 signals:
 	void editTransitionButtonClicked(unsigned int transitionGroupIndex, unsigned int transitionIndex);
 	void editSpecialTransitionButtonClicked(unsigned int transitionGroupIndex, unsigned int transitionIndex);
+	void equationChanged();
+	void transitionChanged();
+	void specialTransitionChanged();
 private slots:
 	void on_addEquationButton_clicked();
 	void on_removeEquationButton_clicked();

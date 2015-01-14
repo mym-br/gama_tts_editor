@@ -251,6 +251,7 @@ RuleManagerWindow::on_rulesTable_currentItemChanged(QTableWidgetItem* current, Q
 	showRuleStatistics(rule);
 }
 
+// Slot.
 void
 RuleManagerWindow::clearRuleData()
 {
@@ -267,6 +268,13 @@ RuleManagerWindow::clearRuleData()
 	ui_->matches3ListWidget->clear();
 	ui_->matches4ListWidget->clear();
 	ui_->combinationsLineEdit->clear();
+}
+
+// Slot.
+void
+RuleManagerWindow::unselectRule()
+{
+	ui_->rulesTable->setCurrentItem(nullptr);
 }
 
 void

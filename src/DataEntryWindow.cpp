@@ -97,6 +97,12 @@ DataEntryWindow::resetModel(TRMControlModel::Model* model)
 	}
 }
 
+void
+DataEntryWindow::updateCategoriesTable()
+{
+	categoryModel_->updateView();
+}
+
 //=============================================================================
 // Categories.
 //

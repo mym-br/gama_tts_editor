@@ -31,6 +31,7 @@
 #define NUM_EQUATIONS_TREE_COLUMNS 2
 #define NUM_TRANSITIONS_TREE_COLUMNS 2
 #define NEW_ITEM_NAME "___new___"
+#define NEW_EQUATION_FORMULA "0.0"
 
 
 
@@ -101,7 +102,7 @@ PrototypeManagerWindow::on_addEquationButton_clicked()
 		}
 		std::shared_ptr<TRMControlModel::Equation> equation(new TRMControlModel::Equation(NEW_ITEM_NAME));
 		try {
-			equation->setFormula(NEW_ITEM_NAME);
+			equation->setFormula(NEW_EQUATION_FORMULA);
 		} catch (const Exception& exc) {
 			QMessageBox::critical(this, tr("Error"), exc.what());
 			return;
@@ -117,6 +118,7 @@ PrototypeManagerWindow::on_addEquationButton_clicked()
 		model_->equationGroupList().push_back(std::move(equationGroup));
 	}
 	setupEquationsTree();
+	emit equationChanged();
 }
 
 void
@@ -132,12 +134,22 @@ PrototypeManagerWindow::on_removeEquationButton_clicked()
 		unsigned int groupIndex = currentIndex.parent().row();
 		unsigned int index = currentIndex.row();
 		auto& equationList = model_->equationGroupList()[groupIndex].equationList;
-		equationList.erase(equationList.begin() + index);
+		auto iter = equationList.begin() + index;
+		if (iter->use_count() > 1) {
+			QMessageBox::critical(this, tr("Error"), tr("Can't remove the equation: it is being used."));
+			return;
+		}
+		equationList.erase(iter);
 	} else { // root item
 		unsigned int groupIndex = currentIndex.row();
+		if (!model_->equationGroupList()[groupIndex].equationList.empty()) {
+			QMessageBox::critical(this, tr("Error"), tr("Can't remove the group: the group is not empty."));
+			return;
+		}
 		model_->equationGroupList().erase(model_->equationGroupList().begin() + groupIndex);
 	}
 	setupEquationsTree();
+	emit equationChanged();
 }
 
 void
@@ -177,6 +189,7 @@ PrototypeManagerWindow::on_moveEquationUpButton_clicked()
 		setupEquationsTree();
 		ui_->equationsTree->setCurrentIndex(ui_->equationsTree->model()->index(groupRow - 1, 0));
 	}
+	emit equationChanged();
 }
 
 void
@@ -216,6 +229,7 @@ PrototypeManagerWindow::on_moveEquationDownButton_clicked()
 		setupEquationsTree();
 		ui_->equationsTree->setCurrentIndex(ui_->equationsTree->model()->index(groupRow + 1, 0));
 	}
+	emit equationChanged();
 }
 
 void
@@ -239,8 +253,7 @@ PrototypeManagerWindow::on_updateEquationButton_clicked()
 	out << "\nFormula tree:\n" << *currentEquation_;
 	ui_->eqParserMessagesTextEdit->appendPlainText(out.str().c_str());
 	ui_->eqParserMessagesTextEdit->moveCursor(QTextCursor::Start);
-
-	//TODO: emit model changed
+	emit equationChanged();
 }
 
 void
@@ -268,8 +281,7 @@ PrototypeManagerWindow::on_equationsTree_itemChanged(QTreeWidgetItem* item, int 
 		}
 		model_->equationGroupList()[parentIndex].equationList[index]->setName(newText);
 	}
-
-	//TODO: emit model changed
+	emit equationChanged();
 }
 
 void
@@ -360,6 +372,7 @@ PrototypeManagerWindow::on_addTransitionButton_clicked()
 		model_->transitionGroupList().push_back(std::move(transitionGroup));
 	}
 	setupTransitionsTree();
+	emit transitionChanged();
 }
 
 void
@@ -375,12 +388,22 @@ PrototypeManagerWindow::on_removeTransitionButton_clicked()
 		unsigned int groupIndex = currentIndex.parent().row();
 		unsigned int index = currentIndex.row();
 		auto& transitionList = model_->transitionGroupList()[groupIndex].transitionList;
-		transitionList.erase(transitionList.begin() + index);
+		auto iter = transitionList.begin() + index;
+		if (iter->use_count() > 1) {
+			QMessageBox::critical(this, tr("Error"), tr("Can't remove the transition: it is being used."));
+			return;
+		}
+		transitionList.erase(iter);
 	} else { // root item
 		unsigned int groupIndex = currentIndex.row();
+		if (!model_->transitionGroupList()[groupIndex].transitionList.empty()) {
+			QMessageBox::critical(this, tr("Error"), tr("Can't remove the group: the group is not empty."));
+			return;
+		}
 		model_->transitionGroupList().erase(model_->transitionGroupList().begin() + groupIndex);
 	}
 	setupTransitionsTree();
+	emit transitionChanged();
 }
 
 void
@@ -420,6 +443,7 @@ PrototypeManagerWindow::on_moveTransitionUpButton_clicked()
 		setupTransitionsTree();
 		ui_->transitionsTree->setCurrentIndex(ui_->transitionsTree->model()->index(groupRow - 1, 0));
 	}
+	emit transitionChanged();
 }
 
 void
@@ -459,6 +483,7 @@ PrototypeManagerWindow::on_moveTransitionDownButton_clicked()
 		setupTransitionsTree();
 		ui_->transitionsTree->setCurrentIndex(ui_->transitionsTree->model()->index(groupRow + 1, 0));
 	}
+	emit transitionChanged();
 }
 
 void
@@ -470,8 +495,6 @@ PrototypeManagerWindow::on_updateTransitionButton_clicked()
 	}
 
 	currentTransition_->setComment(ui_->transitionCommentTextEdit->toPlainText().toStdString());
-
-	//TODO: emit model changed
 }
 
 void
@@ -516,8 +539,7 @@ PrototypeManagerWindow::on_transitionsTree_itemChanged(QTreeWidgetItem* item, in
 		}
 		model_->transitionGroupList()[parentIndex].transitionList[index]->setName(newText);
 	}
-
-	//TODO: emit model changed
+	emit transitionChanged();
 }
 
 void
@@ -622,6 +644,7 @@ PrototypeManagerWindow::on_addSpecialTransitionButton_clicked()
 		model_->specialTransitionGroupList().push_back(std::move(specialTransitionGroup));
 	}
 	setupSpecialTransitionsTree();
+	emit specialTransitionChanged();
 }
 
 void
@@ -637,12 +660,22 @@ PrototypeManagerWindow::on_removeSpecialTransitionButton_clicked()
 		unsigned int groupIndex = currentIndex.parent().row();
 		unsigned int index = currentIndex.row();
 		auto& specialTransitionList = model_->specialTransitionGroupList()[groupIndex].transitionList;
-		specialTransitionList.erase(specialTransitionList.begin() + index);
+		auto iter = specialTransitionList.begin() + index;
+		if (iter->use_count() > 1) {
+			QMessageBox::critical(this, tr("Error"), tr("Can't remove the special transition: it is being used."));
+			return;
+		}
+		specialTransitionList.erase(iter);
 	} else { // root item
 		unsigned int groupIndex = currentIndex.row();
+		if (!model_->specialTransitionGroupList()[groupIndex].transitionList.empty()) {
+			QMessageBox::critical(this, tr("Error"), tr("Can't remove the group: the group is not empty."));
+			return;
+		}
 		model_->specialTransitionGroupList().erase(model_->specialTransitionGroupList().begin() + groupIndex);
 	}
 	setupSpecialTransitionsTree();
+	emit specialTransitionChanged();
 }
 
 void
@@ -682,6 +715,7 @@ PrototypeManagerWindow::on_moveSpecialTransitionUpButton_clicked()
 		setupSpecialTransitionsTree();
 		ui_->specialTransitionsTree->setCurrentIndex(ui_->specialTransitionsTree->model()->index(groupRow - 1, 0));
 	}
+	emit specialTransitionChanged();
 }
 
 void
@@ -721,6 +755,7 @@ PrototypeManagerWindow::on_moveSpecialTransitionDownButton_clicked()
 		setupSpecialTransitionsTree();
 		ui_->specialTransitionsTree->setCurrentIndex(ui_->specialTransitionsTree->model()->index(groupRow + 1, 0));
 	}
+	emit specialTransitionChanged();
 }
 
 void
@@ -732,8 +767,6 @@ PrototypeManagerWindow::on_updateSpecialTransitionButton_clicked()
 	}
 
 	currentSpecialTransition_->setComment(ui_->specialTransitionCommentTextEdit->toPlainText().toStdString());
-
-	//TODO: emit model changed
 }
 
 void
@@ -777,8 +810,7 @@ PrototypeManagerWindow::on_specialTransitionsTree_itemChanged(QTreeWidgetItem* i
 		}
 		model_->specialTransitionGroupList()[parentIndex].transitionList[index]->setName(newText);
 	}
-
-	//TODO: emit model changed
+	emit specialTransitionChanged();
 }
 
 void

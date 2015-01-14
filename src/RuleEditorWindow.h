@@ -51,6 +51,12 @@ public:
 public slots:
 	void handleEditRuleButtonClicked(unsigned int ruleIndex);
 	void clearRuleData();
+	void setupRuleTransitionsTable();
+	void setupTransitionsTree();
+	void setupRuleSpecialTransitionsTable();
+	void setupSpecialTransitionsTree();
+	void setupRuleSymbolEquationsTable();
+	void setupEquationsTree();
 private slots:
 	void on_clearSpecialTransitionButton_clicked();
 	void on_clearEquationButton_clicked();
@@ -62,13 +68,6 @@ private slots:
 	void on_specialTransitionsTree_itemClicked(QTreeWidgetItem* item, int column);
 	void on_equationsTree_itemClicked(QTreeWidgetItem* item, int column);
 private:
-	void setupRuleTransitionsTable();
-	void setupTransitionsTree();
-	void setupRuleSpecialTransitionsTable();
-	void setupSpecialTransitionsTree();
-	void setupRuleSymbolEquationsTable();
-	void setupEquationsTree();
-
 	std::unique_ptr<Ui::RuleEditorWindow> ui_;
 	TRMControlModel::Model* model_;
 	TRMControlModel::Rule* rule_;

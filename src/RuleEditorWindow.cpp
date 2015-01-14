@@ -428,6 +428,7 @@ RuleEditorWindow::on_equationsTree_itemClicked(QTreeWidgetItem* item, int /*colu
 	}
 }
 
+// Slot.
 void
 RuleEditorWindow::setupRuleTransitionsTable()
 {
@@ -453,6 +454,7 @@ RuleEditorWindow::setupRuleTransitionsTable()
 	}
 }
 
+// Slot.
 void
 RuleEditorWindow::setupTransitionsTree()
 {
@@ -477,6 +479,7 @@ RuleEditorWindow::setupTransitionsTree()
 	tree->expandAll();
 }
 
+// Slot.
 void
 RuleEditorWindow::setupRuleSpecialTransitionsTable()
 {
@@ -502,6 +505,7 @@ RuleEditorWindow::setupRuleSpecialTransitionsTable()
 	}
 }
 
+// Slot.
 void
 RuleEditorWindow::setupSpecialTransitionsTree()
 {
@@ -526,6 +530,7 @@ RuleEditorWindow::setupSpecialTransitionsTree()
 	tree->expandAll();
 }
 
+// Slot.
 void
 RuleEditorWindow::setupRuleSymbolEquationsTable()
 {
@@ -589,6 +594,7 @@ RuleEditorWindow::setupRuleSymbolEquationsTable()
 	}
 }
 
+// Slot.
 void
 RuleEditorWindow::setupEquationsTree()
 {

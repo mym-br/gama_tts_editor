@@ -49,10 +49,12 @@ public:
 	~TransitionEditorWindow();
 
 	void setSpecial();
-	void clear();
 	void resetModel(TRMControlModel::Model* model);
 public slots:
+	void clear();
+	void updateEquationsTree();
 	void handleEditTransitionButtonClicked(unsigned int transitionGroupIndex, unsigned int transitionIndex);
+	void updateTransition();
 private slots:
 	void on_equationsTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 	void on_equationsTree_itemClicked(QTreeWidgetItem* item, int column);
@@ -66,11 +68,10 @@ private slots:
 	void on_transitionTypeComboBox_currentIndexChanged(int index);
 	void createPoint(unsigned int pointType, float time, float value);
 private:
-	void updateEquationsTree();
 	void fillDefaultParameters();
 	void updatePointTimes();
-	void updatePointsTable();
 	void updateTransitionWidget();
+	void updatePointsTable();
 
 	std::unique_ptr<Ui::TransitionEditorWindow> ui_;
 	bool special_;
