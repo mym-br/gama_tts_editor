@@ -50,6 +50,9 @@ public:
 
 	void setSpecial();
 	void resetModel(TRMControlModel::Model* model);
+signals:
+	void equationReferenceChanged();
+	void transitionChanged();
 public slots:
 	void clear();
 	void updateEquationsTree();
@@ -67,6 +70,8 @@ private slots:
 	void on_updateTransitionButton_clicked();
 	void on_transitionTypeComboBox_currentIndexChanged(int index);
 	void createPoint(unsigned int pointType, float time, float value);
+protected:
+	virtual void closeEvent(QCloseEvent* event);
 private:
 	void fillDefaultParameters();
 	void updatePointTimes();

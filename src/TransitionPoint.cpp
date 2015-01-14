@@ -86,10 +86,11 @@ void
 TransitionPoint::calculateTimes(const TRMControlModel::Model& model, std::vector<TransitionPoint>& pointList)
 {
 	for (auto& point : pointList) {
-		if (!point.timeExpression) {
+		const std::shared_ptr<TRMControlModel::Equation> timeExpression(point.timeExpression.lock());
+		if (!timeExpression) {
 			point.time = point.freeTime;
 		} else {
-			point.time = model.evalEquationFormula(*point.timeExpression);
+			point.time = model.evalEquationFormula(*timeExpression);
 		}
 	}
 }
@@ -208,8 +209,10 @@ TransitionPoint::makeNewPoint(const TransitionPoint& sourcePoint)
 	newPoint->type = sourcePoint.type;
 	newPoint->value = sourcePoint.value;
 	newPoint->isPhantom = sourcePoint.isPhantom;
-	if (sourcePoint.timeExpression) {
-		newPoint->timeExpression = sourcePoint.timeExpression;
+
+	const std::shared_ptr<TRMControlModel::Equation> timeExpression(sourcePoint.timeExpression.lock());
+	if (timeExpression) {
+		newPoint->timeExpression = timeExpression;
 	} else {
 		newPoint->freeTime = sourcePoint.freeTime;
 	}

@@ -37,7 +37,7 @@ struct TransitionPoint {
 	float value;
 
 	// If timeExpression is not empty, time = timeExpression, otherwise time = freeTime.
-	std::shared_ptr<TRMControlModel::Equation> timeExpression;
+	std::weak_ptr<TRMControlModel::Equation> timeExpression;
 	float freeTime; // milliseconds
 	float time;
 

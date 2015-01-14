@@ -263,7 +263,7 @@ TransitionEditorWindow::on_equationsTree_currentItemChanged(QTreeWidgetItem* cur
 	}
 	int parentIndex = ui_->equationsTree->indexOfTopLevelItem(parent);
 	int index = parent->indexOfChild(current);
-	auto& equation = model_->equationGroupList()[parentIndex].equationList[index];
+	const auto& equation = model_->equationGroupList()[parentIndex].equationList[index];
 
 	ui_->formulaTextEdit->setPlainText(equation->formula().c_str());
 }
@@ -284,7 +284,7 @@ TransitionEditorWindow::on_equationsTree_itemClicked(QTreeWidgetItem* item, int 
 	}
 	int parentIndex = ui_->equationsTree->indexOfTopLevelItem(parent);
 	int index = parent->indexOfChild(item);
-	auto equation = model_->equationGroupList()[parentIndex].equationList[index];
+	const auto& equation = model_->equationGroupList()[parentIndex].equationList[index];
 
 	// Set timeExpression for the current point.
 
@@ -293,9 +293,8 @@ TransitionEditorWindow::on_equationsTree_itemClicked(QTreeWidgetItem* item, int 
 
 	int row = currentItem->row();
 
-	if (pointList_[row].timeExpression != equation) {
+	if (pointList_[row].timeExpression.lock() != equation) {
 		pointList_[row].timeExpression = equation;
-
 		updateTransition();
 	}
 }
@@ -313,10 +312,11 @@ TransitionEditorWindow::on_pointsTable_currentItemChanged(QTableWidgetItem* curr
 
 	ui_->transitionWidget->setSelectedPointIndex(row);
 
-	if (pointList_[row].timeExpression) {
+	const std::shared_ptr<TRMControlModel::Equation> timeExpression(pointList_[row].timeExpression.lock());
+	if (timeExpression) {
 		unsigned int groupIndex;
 		unsigned int equationIndex;
-		if (model_->findEquationIndex(pointList_[row].timeExpression->name(), groupIndex, equationIndex)) {
+		if (model_->findEquationIndex(timeExpression->name(), groupIndex, equationIndex)) {
 			QTreeWidgetItem* topLevelItem = ui_->equationsTree->topLevelItem(groupIndex);
 			if (topLevelItem == nullptr) {
 				qCritical("[TransitionEditorWindow::on_pointsTable_currentItemChanged]: Invalid group index: %u.", groupIndex);
@@ -474,8 +474,11 @@ TransitionEditorWindow::on_updateTransitionButton_clicked()
 		return;
 	}
 
-	clear();
-	hide();
+	emit transitionChanged();
+	emit equationReferenceChanged();
+
+	//clear();
+	//hide();
 }
 
 void
@@ -528,6 +531,13 @@ TransitionEditorWindow::createPoint(unsigned int pointType, float time, float va
 
 	ui_->pointsTable->setCurrentItem(nullptr);
 	ui_->equationsTree->setCurrentItem(nullptr);
+}
+
+void
+TransitionEditorWindow::closeEvent(QCloseEvent* event)
+{
+	clear();
+	event->accept();
 }
 
 // Slot.
@@ -627,7 +637,8 @@ TransitionEditorWindow::updatePointsTable()
 			table->setItem(i, column++, item.release());
 		}
 
-		item.reset(new QTableWidgetItem(point.timeExpression ? point.timeExpression->name().c_str() : ""));
+		const std::shared_ptr<TRMControlModel::Equation> timeExpression(point.timeExpression.lock());
+		item.reset(new QTableWidgetItem(timeExpression ? timeExpression->name().c_str() : ""));
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(i, column, item.release());
 	}

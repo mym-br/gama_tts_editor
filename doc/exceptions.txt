@@ -1,0 +1,14 @@
+
+- Exceptions:
+
+	- Widgets:
+		- Slots don't throw.
+			- try/catch -> QMessageBox::critical
+	- Qt models:
+		- Member functions don't throw.
+			qWarning()
+		- Member functions must validate inputs.
+	- TRMControlModel::Model:
+		- All functions may throw.
+			- Except:
+				- Getters.

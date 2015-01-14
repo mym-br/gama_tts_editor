@@ -178,6 +178,8 @@ RuleManagerWindow::on_updateButton_clicked()
 	// Force the emission of signal currentItemChanged.
 	ui_->rulesTable->setCurrentItem(nullptr);
 	ui_->rulesTable->setCurrentCell(currRow, 0);
+
+	emit categoryReferenceChanged();
 }
 
 void

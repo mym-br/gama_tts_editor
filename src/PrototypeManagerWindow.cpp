@@ -306,36 +306,47 @@ PrototypeManagerWindow::on_equationsTree_currentItemChanged(QTreeWidgetItem* cur
 	currentEquation_ = equation.get();
 }
 
+// Slot.
 void
 PrototypeManagerWindow::setupEquationsTree()
 {
+	qDebug("PrototypeManagerWindow::setupEquationsTree");
+
 	if (model_ == nullptr) return;
 
-	ui_->equationsTree->clear();
+	QTreeWidget* tree = ui_->equationsTree;
+	{
+		SignalBlocker blocker(tree);
 
-	for (const auto& group : model_->equationGroupList()) {
-		std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
-		item->setText(0, group.name.c_str());
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+		tree->clear();
 
-		for (const auto& equation : group.equationList) {
-			std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
-			childItem->setText(0, equation->name().c_str());
-			childItem->setData(1, Qt::CheckStateRole, equation.use_count() > 1 ? Qt::Checked : Qt::Unchecked);
-			//childItem->setData(1, Qt::DisplayRole, static_cast<int>(equation.use_count()));
-			childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
-			item->addChild(childItem.release());
+		for (const auto& group : model_->equationGroupList()) {
+			std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+			item->setText(0, group.name.c_str());
+			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+
+			for (const auto& equation : group.equationList) {
+				std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+				childItem->setText(0, equation->name().c_str());
+				childItem->setData(1, Qt::CheckStateRole, equation.use_count() > 1 ? Qt::Checked : Qt::Unchecked);
+				childItem->setData(1, Qt::DisplayRole, static_cast<int>(equation.use_count()) - 1);
+				childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+				item->addChild(childItem.release());
+			}
+
+			tree->addTopLevelItem(item.release());
 		}
-
-		ui_->equationsTree->addTopLevelItem(item.release());
 	}
-	ui_->equationsTree->expandAll();
-	ui_->equationsTree->resizeColumnToContents(0);
+	tree->expandAll();
+	tree->resizeColumnToContents(0);
+	clearEquationData();
 }
 
 void
 PrototypeManagerWindow::clearEquationData()
 {
+	qDebug("PrototypeManagerWindow::clearEquationData");
+
 	ui_->equationCommentTextEdit->document()->clear();
 	ui_->equationFormulaTextEdit->document()->clear();
 	ui_->eqParserMessagesTextEdit->document()->clear();
@@ -510,6 +521,8 @@ PrototypeManagerWindow::on_editTransitionButton_clicked()
 		unsigned int groupRow = currentIndex.parent().row();
 		unsigned int row = currentIndex.row();
 		emit editTransitionButtonClicked(groupRow, row);
+
+		setupEquationsTree();
 	}
 }
 
@@ -579,30 +592,38 @@ PrototypeManagerWindow::on_transitionsTree_currentItemChanged(QTreeWidgetItem* c
 	currentTransition_ = transition.get();
 }
 
+// Slot.
 void
 PrototypeManagerWindow::setupTransitionsTree()
 {
 	if (model_ == nullptr) return;
 
-	ui_->transitionsTree->clear();
+	QTreeWidget* tree = ui_->transitionsTree;
+	{
+		SignalBlocker blocker(tree);
 
-	for (const auto& group : model_->transitionGroupList()) {
-		std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
-		item->setText(0, group.name.c_str());
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+		tree->clear();
 
-		for (const auto& transition : group.transitionList) {
-			std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
-			childItem->setText(0, transition->name().c_str());
-			childItem->setData(1, Qt::CheckStateRole, transition.use_count() > 1 ? Qt::Checked : Qt::Unchecked);
-			childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
-			item->addChild(childItem.release());
+		for (const auto& group : model_->transitionGroupList()) {
+			std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+			item->setText(0, group.name.c_str());
+			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+
+			for (const auto& transition : group.transitionList) {
+				std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+				childItem->setText(0, transition->name().c_str());
+				childItem->setData(1, Qt::CheckStateRole, transition.use_count() > 1 ? Qt::Checked : Qt::Unchecked);
+				childItem->setData(1, Qt::DisplayRole, static_cast<int>(transition.use_count()) - 1);
+				childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+				item->addChild(childItem.release());
+			}
+
+			tree->addTopLevelItem(item.release());
 		}
-
-		ui_->transitionsTree->addTopLevelItem(item.release());
 	}
-	ui_->transitionsTree->expandAll();
-	ui_->transitionsTree->resizeColumnToContents(0);
+	tree->expandAll();
+	tree->resizeColumnToContents(0);
+	clearTransitionData();
 }
 
 void
@@ -782,6 +803,8 @@ PrototypeManagerWindow::on_editSpecialTransitionButton_clicked()
 		unsigned int groupRow = currentIndex.parent().row();
 		unsigned int row = currentIndex.row();
 		emit editSpecialTransitionButtonClicked(groupRow, row);
+
+		setupEquationsTree();
 	}
 }
 
@@ -850,29 +873,52 @@ PrototypeManagerWindow::on_specialTransitionsTree_currentItemChanged(QTreeWidget
 	currentSpecialTransition_ = specialTransition.get();
 }
 
+// Slot.
 void
 PrototypeManagerWindow::setupSpecialTransitionsTree()
 {
 	if (model_ == nullptr) return;
 
-	ui_->specialTransitionsTree->clear();
-	for (const auto& group : model_->specialTransitionGroupList()) {
-		std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
-		item->setText(0, group.name.c_str());
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+	QTreeWidget* tree = ui_->specialTransitionsTree;
+	{
+		SignalBlocker blocker(tree);
 
-		for (const auto& specialTransition : group.transitionList) {
-			std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
-			childItem->setText(0, specialTransition->name().c_str());
-			childItem->setData(1, Qt::CheckStateRole, specialTransition.use_count() > 1 ? Qt::Checked : Qt::Unchecked);
-			childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
-			item->addChild(childItem.release());
+		tree->clear();
+
+		for (const auto& group : model_->specialTransitionGroupList()) {
+			std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+			item->setText(0, group.name.c_str());
+			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+
+			for (const auto& specialTransition : group.transitionList) {
+				std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+				childItem->setText(0, specialTransition->name().c_str());
+				childItem->setData(1, Qt::CheckStateRole, specialTransition.use_count() > 1 ? Qt::Checked : Qt::Unchecked);
+				childItem->setData(1, Qt::DisplayRole, static_cast<int>(specialTransition.use_count()) - 1);
+				childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
+				item->addChild(childItem.release());
+			}
+
+			tree->addTopLevelItem(item.release());
 		}
-
-		ui_->specialTransitionsTree->addTopLevelItem(item.release());
 	}
-	ui_->specialTransitionsTree->expandAll();
-	ui_->specialTransitionsTree->resizeColumnToContents(0);
+	tree->expandAll();
+	tree->resizeColumnToContents(0);
+	clearSpecialTransitionData();
+}
+
+// Slot.
+void
+PrototypeManagerWindow::unselectTransition()
+{
+	ui_->transitionsTree->setCurrentItem(nullptr);
+}
+
+// Slot.
+void
+PrototypeManagerWindow::unselectSpecialTransition()
+{
+	ui_->specialTransitionsTree->setCurrentItem(nullptr);
 }
 
 void

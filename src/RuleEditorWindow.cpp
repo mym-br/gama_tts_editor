@@ -163,6 +163,8 @@ RuleEditorWindow::on_clearSpecialTransitionButton_clicked()
 
 	setupRuleSpecialTransitionsTable();
 	ui_->specialTransitionsTree->setCurrentItem(nullptr);
+
+	emit specialTransitionReferenceChanged();
 }
 
 void
@@ -202,6 +204,8 @@ RuleEditorWindow::on_clearEquationButton_clicked()
 
 	setupRuleSymbolEquationsTable();
 	ui_->equationsTree->setCurrentItem(nullptr);
+
+	emit equationReferenceChanged();
 }
 
 void
@@ -339,7 +343,7 @@ RuleEditorWindow::on_transitionsTree_itemClicked(QTreeWidgetItem* item, int /*co
 	}
 	int parentIndex = ui_->transitionsTree->indexOfTopLevelItem(parent);
 	int index = parent->indexOfChild(item);
-	auto transition = model_->transitionGroupList()[parentIndex].transitionList[index];
+	const auto& transition = model_->transitionGroupList()[parentIndex].transitionList[index];
 
 	QTableWidgetItem* currentItem = ui_->ruleTransitionsTable->currentItem();
 	if (currentItem == nullptr) return;
@@ -349,6 +353,8 @@ RuleEditorWindow::on_transitionsTree_itemClicked(QTreeWidgetItem* item, int /*co
 	if (ruleTransition != transition) {
 		rule_->setParamProfileTransition(row, transition);
 		setupRuleTransitionsTable();
+
+		emit transitionReferenceChanged();
 	}
 }
 
@@ -367,7 +373,7 @@ RuleEditorWindow::on_specialTransitionsTree_itemClicked(QTreeWidgetItem* item, i
 	}
 	int parentIndex = ui_->specialTransitionsTree->indexOfTopLevelItem(parent);
 	int index = parent->indexOfChild(item);
-	auto transition = model_->specialTransitionGroupList()[parentIndex].transitionList[index];
+	const auto& transition = model_->specialTransitionGroupList()[parentIndex].transitionList[index];
 
 	QTableWidgetItem* currentItem = ui_->ruleSpecialTransitionsTable->currentItem();
 	if (currentItem == nullptr) return;
@@ -377,6 +383,8 @@ RuleEditorWindow::on_specialTransitionsTree_itemClicked(QTreeWidgetItem* item, i
 	if (ruleTransition != transition) {
 		rule_->setSpecialProfileTransition(row, transition);
 		setupRuleSpecialTransitionsTable();
+
+		emit specialTransitionReferenceChanged();
 	}
 }
 
@@ -395,7 +403,7 @@ RuleEditorWindow::on_equationsTree_itemClicked(QTreeWidgetItem* item, int /*colu
 	}
 	int parentIndex = ui_->equationsTree->indexOfTopLevelItem(parent);
 	int index = parent->indexOfChild(item);
-	auto equation = model_->equationGroupList()[parentIndex].equationList[index];
+	const auto& equation = model_->equationGroupList()[parentIndex].equationList[index];
 
 	QTableWidgetItem* currentItem = ui_->ruleSymbolEquationsTable->currentItem();
 	if (currentItem == nullptr) return;
@@ -425,6 +433,8 @@ RuleEditorWindow::on_equationsTree_itemClicked(QTreeWidgetItem* item, int /*colu
 	if (*ruleEquation != equation) {
 		*ruleEquation = equation;
 		setupRuleSymbolEquationsTable();
+
+		emit equationReferenceChanged();
 	}
 }
 

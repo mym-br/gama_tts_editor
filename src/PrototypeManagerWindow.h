@@ -56,6 +56,12 @@ signals:
 	void equationChanged();
 	void transitionChanged();
 	void specialTransitionChanged();
+public slots:
+	void setupEquationsTree();
+	void setupTransitionsTree();
+	void setupSpecialTransitionsTree();
+	void unselectTransition();
+	void unselectSpecialTransition();
 private slots:
 	void on_addEquationButton_clicked();
 	void on_removeEquationButton_clicked();
@@ -83,13 +89,8 @@ private slots:
 	void on_specialTransitionsTree_itemChanged(QTreeWidgetItem* item, int column);
 	void on_specialTransitionsTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 private:
-	void setupEquationsTree();
 	void clearEquationData();
-
-	void setupTransitionsTree();
 	void clearTransitionData();
-
-	void setupSpecialTransitionsTree();
 	void clearSpecialTransitionData();
 
 	std::unique_ptr<Ui::PrototypeManagerWindow> ui_;

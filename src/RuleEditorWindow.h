@@ -48,6 +48,10 @@ public:
 
 	void clear();
 	void resetModel(TRMControlModel::Model* model);
+signals:
+	void transitionReferenceChanged();
+	void specialTransitionReferenceChanged();
+	void equationReferenceChanged();
 public slots:
 	void handleEditRuleButtonClicked(unsigned int ruleIndex);
 	void clearRuleData();

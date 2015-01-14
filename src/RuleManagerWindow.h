@@ -49,6 +49,7 @@ public:
 	void resetModel(TRMControlModel::Model* model);
 signals:
 	void editRuleButtonClicked(unsigned int ruleIndex);
+	void categoryReferenceChanged();
 public slots:
 	void unselectRule();
 private slots:

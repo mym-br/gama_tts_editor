@@ -81,7 +81,6 @@ MainWindow::MainWindow(QWidget* parent)
 
 
 
-
 	connect(dataEntryWindow_.get(), SIGNAL(categoryChanged()) , postureEditorWindow_.get(), SLOT(unselectPosture()));
 	connect(dataEntryWindow_.get(), SIGNAL(parameterChanged()), postureEditorWindow_.get(), SLOT(unselectPosture()));
 	connect(dataEntryWindow_.get(), SIGNAL(symbolChanged())   , postureEditorWindow_.get(), SLOT(unselectPosture()));
@@ -107,6 +106,17 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(prototypeManagerWindow_.get(), SIGNAL(specialTransitionChanged()), ruleEditorWindow_.get(), SLOT(setupRuleSpecialTransitionsTable()));
 	connect(prototypeManagerWindow_.get(), SIGNAL(specialTransitionChanged()), ruleEditorWindow_.get(), SLOT(setupSpecialTransitionsTree()));
 
+	connect(transitionEditorWindow_.get(), SIGNAL(equationReferenceChanged()), prototypeManagerWindow_.get(), SLOT(setupEquationsTree()));
+	connect(transitionEditorWindow_.get(), SIGNAL(transitionChanged()),        prototypeManagerWindow_.get(), SLOT(unselectTransition()));
+
+	connect(specialTransitionEditorWindow_.get(), SIGNAL(equationReferenceChanged()), prototypeManagerWindow_.get(), SLOT(setupEquationsTree()));
+	connect(specialTransitionEditorWindow_.get(), SIGNAL(transitionChanged()),        prototypeManagerWindow_.get(), SLOT(unselectSpecialTransition()));
+
+	connect(ruleManagerWindow_.get(), SIGNAL(categoryReferenceChanged()), dataEntryWindow_.get(), SLOT(updateCategoriesTable()));
+
+	connect(ruleEditorWindow_.get(), SIGNAL(transitionReferenceChanged())       , prototypeManagerWindow_.get(), SLOT(setupTransitionsTree()));
+	connect(ruleEditorWindow_.get(), SIGNAL(specialTransitionReferenceChanged()), prototypeManagerWindow_.get(), SLOT(setupSpecialTransitionsTree()));
+	connect(ruleEditorWindow_.get(), SIGNAL(equationReferenceChanged())         , prototypeManagerWindow_.get(), SLOT(setupEquationsTree()));
 }
 
 MainWindow::~MainWindow()

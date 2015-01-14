@@ -1,0 +1,79 @@
+
+[condition] -> action
+
+-------------------------------------------------------------------------------
+Data entry
+	Categories
+		Add         -> Posture editor : unselect posture
+		Remove      [not used] -> Posture editor : unselect posture
+		Move up     -> Posture editor : unselect posture
+		Move down   -> Posture editor : unselect posture
+		Change name -> Posture editor : unselect posture
+	Parameters
+		Add       [no posture && no rule]
+		Remove    [no posture && no rule]
+		Move up   [no posture && no rule]
+		Move down [no posture && no rule]
+		Change name        -> Posture editor : unselect posture / Rule editor : clear rule data / Synthesis window : reload parameters
+		Change min/max/def -> Posture editor : unselect posture / Rule editor : clear rule data
+	Symbols
+		Add       [no posture && no rule]
+		Remove    [no posture && no rule]
+		Move up   [no posture && no rule]
+		Move down [no posture && no rule]
+		Change name        -> Posture editor : unselect posture / Rule editor : clear rule data
+		Change min/max/def -> Posture editor : unselect posture / Rule editor : clear rule data
+
+Posture editor
+	Add             -> Rule manager : unselect rule
+	Remove          -> Rule manager : unselect rule
+	Change name     -> Rule manager : unselect rule
+	Select category -> Data entry : reload categories
+	Change parameter value
+	Change symbol value
+
+Prototype manager
+	Equations
+		Add                          -> Transition editor : reload equations, point list / Rule editor : reload equations, reload rule symbols
+		Remove            [not used] -> "
+		Move up                      -> "
+		Move down                    -> "
+		Change group name            -> "
+		Change name                  -> "
+		Update formula               -> "
+	Transitions
+		Add                          -> Transition editor : clear / Rule editor : reload transitions, reload rule transitions
+		Remove            [not used] -> "
+		Move up                      -> "
+		Move down                    -> "
+		Change group name            -> "
+		Change name                  -> "
+	Special transitions
+		Add                          -> Special transition editor : clear / Rule editor : reload special transitions, reload rule special transitions
+		Remove            [not used] -> "
+		Move up                      -> "
+		Move down                    -> "
+		Change group name            -> "
+		Change name                  -> "
+
+Transition editor
+	Select equation
+	Close window    -> clear
+	Update          -> Prototype manager : reload equations, clear transition data
+
+Special transition editor
+	Select equation
+	Close window    -> clear
+	Update          -> Prototype manager : reload equations, clear special transition data
+
+Rule manager
+	Update -> Data entry : reload categories
+
+Rule editor
+	Select transition         -> Prototype manager : reload transitions
+	Select special transition -> Prototype manager : reload special transitions
+	Select equation           -> Prototype manager : reload equations
+
+Rule tester
+
+Synthesis window
