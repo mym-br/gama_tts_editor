@@ -192,6 +192,8 @@ ParameterModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 				TRMControlModel::Parameter(NEW_ITEM_NAME, 0.0, 0.0, 0.0));
 	endInsertRows();
 
+	emit parameterChanged();
+
 	return true;
 }
 
@@ -212,6 +214,8 @@ ParameterModel::removeRows(int row, int count, const QModelIndex& /*parent*/)
 	beginRemoveRows(QModelIndex(), row, row);
 	model_->parameterList().erase(model_->parameterList().begin() + row);
 	endRemoveRows();
+
+	emit parameterChanged();
 
 	return true;
 }
@@ -240,6 +244,7 @@ ParameterModel::incrementParameterRow(const QModelIndex& index)
 	if (row < model_->parameterList().size() - 1U) {
 		std::swap(model_->parameterList()[row], model_->parameterList()[row + 1]);
 		emit dataChanged(createIndex(row, 0 /* first column */), createIndex(row + 1, NUM_COLUMNS - 1 /* last column */));
+		emit parameterChanged();
 		return createIndex(row + 1, NUM_COLUMNS - 1 /* last column */);
 	}
 	return index;
@@ -258,9 +263,13 @@ ParameterModel::decrementParameterRow(const QModelIndex& index)
 	}
 
 	unsigned int row = index.row();
-	std::swap(model_->parameterList()[row - 1], model_->parameterList()[row]);
-	emit dataChanged(createIndex(row - 1, 0 /* first column */), createIndex(row, NUM_COLUMNS - 1 /* last column */));
-	return createIndex(row - 1, NUM_COLUMNS - 1 /* last column */);
+	if (row > 0) {
+		std::swap(model_->parameterList()[row - 1], model_->parameterList()[row]);
+		emit dataChanged(createIndex(row - 1, 0 /* first column */), createIndex(row, NUM_COLUMNS - 1 /* last column */));
+		emit parameterChanged();
+		return createIndex(row - 1, NUM_COLUMNS - 1 /* last column */);
+	}
+	return index;
 }
 
 } // namespace GS

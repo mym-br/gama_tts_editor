@@ -192,6 +192,8 @@ SymbolModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 				TRMControlModel::Symbol(NEW_ITEM_NAME, 0.0, 0.0, 0.0));
 	endInsertRows();
 
+	emit symbolChanged();
+
 	return true;
 }
 
@@ -212,6 +214,8 @@ SymbolModel::removeRows(int row, int count, const QModelIndex& /*parent*/)
 	beginRemoveRows(QModelIndex(), row, row);
 	model_->symbolList().erase(model_->symbolList().begin() + row);
 	endRemoveRows();
+
+	emit symbolChanged();
 
 	return true;
 }
@@ -240,6 +244,7 @@ SymbolModel::incrementSymbolRow(const QModelIndex& index)
 	if (row < model_->symbolList().size() - 1U) {
 		std::swap(model_->symbolList()[row], model_->symbolList()[row + 1]);
 		emit dataChanged(createIndex(row, 0 /* first column */), createIndex(row + 1, NUM_COLUMNS - 1 /* last column */));
+		emit symbolChanged();
 		return createIndex(row + 1, NUM_COLUMNS - 1 /* last column */);
 	}
 	return index;
@@ -258,9 +263,13 @@ SymbolModel::decrementSymbolRow(const QModelIndex& index)
 	}
 
 	unsigned int row = index.row();
-	std::swap(model_->symbolList()[row - 1], model_->symbolList()[row]);
-	emit dataChanged(createIndex(row - 1, 0 /* first column */), createIndex(row, NUM_COLUMNS - 1 /* last column */));
-	return createIndex(row - 1, NUM_COLUMNS - 1 /* last column */);
+	if (row > 0) {
+		std::swap(model_->symbolList()[row - 1], model_->symbolList()[row]);
+		emit dataChanged(createIndex(row - 1, 0 /* first column */), createIndex(row, NUM_COLUMNS - 1 /* last column */));
+		emit symbolChanged();
+		return createIndex(row - 1, NUM_COLUMNS - 1 /* last column */);
+	}
+	return index;
 }
 
 } // namespace GS

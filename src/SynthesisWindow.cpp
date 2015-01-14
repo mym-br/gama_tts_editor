@@ -91,21 +91,7 @@ SynthesisWindow::setup(const QString& projectDir, TRMControlModel::Model* model)
 		ui_->eventWidget->updateData(&trmController_->eventList(), model_);
 		ui_->eventWidget->clearParameterSelection();
 
-		// Fill the parameter table.
-		auto* table = ui_->parameterTableWidget;
-		table->setRowCount(model_->parameterList().size());
-		for (unsigned int i = 0; i < model_->parameterList().size(); ++i) {
-			std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(model_->parameterList()[i].name().c_str()));
-			item->setFlags(/*Qt::ItemIsSelectable | Qt::ItemIsEditable |*/ Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-			item->setCheckState(Qt::Unchecked);
-			table->setItem(i, 0, item.release());
-
-			item.reset(new QTableWidgetItem);
-			item->setFlags(/*Qt::ItemIsSelectable | Qt::ItemIsEditable |*/ Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-			item->setCheckState(Qt::Unchecked);
-			table->setItem(i, 1, item.release());
-		}
-		table->resizeColumnsToContents();
+		setupParameterTable();
 	} catch (...) {
 		clear();
 		throw;
@@ -173,6 +159,28 @@ SynthesisWindow::on_parameterTableWidget_cellChanged(int row, int column)
 {
 	bool selected = ui_->parameterTableWidget->item(row, column)->checkState() == Qt::Checked;
 	ui_->eventWidget->changeParameterSelection(row, column == 1, selected);
+}
+
+// Slot.
+void
+SynthesisWindow::setupParameterTable()
+{
+	if (model_ == nullptr) return;
+
+	auto* table = ui_->parameterTableWidget;
+	table->setRowCount(model_->parameterList().size());
+	for (unsigned int i = 0; i < model_->parameterList().size(); ++i) {
+		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(model_->parameterList()[i].name().c_str()));
+		item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+		item->setCheckState(Qt::Unchecked);
+		table->setItem(i, 0, item.release());
+
+		item.reset(new QTableWidgetItem);
+		item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
+		item->setCheckState(Qt::Unchecked);
+		table->setItem(i, 1, item.release());
+	}
+	table->resizeColumnsToContents();
 }
 
 } // namespace GS

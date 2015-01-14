@@ -53,6 +53,7 @@ private slots:
 	void on_parseButton_clicked();
 	void on_synthesizeButton_clicked();
 	void on_parameterTableWidget_cellChanged(int row, int column);
+	void setupParameterTable();
 private:
 	enum {
 		NUM_PARAM = 16

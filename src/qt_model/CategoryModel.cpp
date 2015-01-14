@@ -243,6 +243,7 @@ CategoryModel::incrementCategoryRow(const QModelIndex& index)
 	if (row < model_->categoryList().size() - 1U) {
 		std::swap(model_->categoryList()[row], model_->categoryList()[row + 1]);
 		emit dataChanged(createIndex(row, 0 /* first column */), createIndex(row + 1, NUM_COLUMNS - 1 /* last column */));
+		emit categoryChanged();
 		return createIndex(row + 1, NUM_COLUMNS - 1 /* last column */);
 	}
 	return index;
@@ -257,9 +258,13 @@ CategoryModel::decrementCategoryRow(const QModelIndex& index)
 	}
 
 	unsigned int row = index.row();
-	std::swap(model_->categoryList()[row - 1], model_->categoryList()[row]);
-	emit dataChanged(createIndex(row - 1, 0 /* first column */), createIndex(row, NUM_COLUMNS - 1 /* last column */));
-	return createIndex(row - 1, NUM_COLUMNS - 1 /* last column */);
+	if (row > 0) {
+		std::swap(model_->categoryList()[row - 1], model_->categoryList()[row]);
+		emit dataChanged(createIndex(row - 1, 0 /* first column */), createIndex(row, NUM_COLUMNS - 1 /* last column */));
+		emit categoryChanged();
+		return createIndex(row - 1, NUM_COLUMNS - 1 /* last column */);
+	}
+	return index;
 }
 
 } // namespace GS

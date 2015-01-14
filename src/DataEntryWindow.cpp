@@ -106,8 +106,6 @@ DataEntryWindow::on_moveCategoryDownButton_clicked()
 {
 	QModelIndex index = categoryModel_->incrementCategoryRow(ui_->categoriesTableView->currentIndex());
 	ui_->categoriesTableView->setCurrentIndex(index);
-
-	emit categoryChanged();
 }
 
 void
@@ -115,8 +113,6 @@ DataEntryWindow::on_moveCategoryUpButton_clicked()
 {
 	QModelIndex index = categoryModel_->decrementCategoryRow(ui_->categoriesTableView->currentIndex());
 	ui_->categoriesTableView->setCurrentIndex(index);
-
-	emit categoryChanged();
 }
 
 void
@@ -132,8 +128,6 @@ DataEntryWindow::on_addCategoryButton_clicked()
 	if (categoryModel_->insertRows(insertPos, 1)) {
 		ui_->categoriesTableView->setCurrentIndex(categoryModel_->index(insertPos, CategoryModel::NUM_COLUMNS - 1));
 	}
-
-	emit categoryChanged();
 }
 
 void
@@ -141,9 +135,7 @@ DataEntryWindow::on_removeCategoryButton_clicked()
 {
 	QModelIndex curIndex = ui_->categoriesTableView->currentIndex();
 	if (curIndex.isValid()) {
-		if (categoryModel_->removeRows(curIndex.row(), 1)) {
-			emit categoryChanged();
-		}
+		categoryModel_->removeRows(curIndex.row(), 1);
 	}
 }
 
