@@ -78,6 +78,8 @@ SynthesisWindow::setup(const QString& projectDir, TRMControlModel::Model* model)
 	}
 	if (model->parameterList().size() != NUM_PARAM) {
 		qWarning("[SynthesisWindow::setup] Wrong number of parameters: %lu (should be %d).", model->parameterList().size(), NUM_PARAM);
+		clear();
+		return;
 	}
 
 	try {
