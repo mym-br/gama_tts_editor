@@ -48,7 +48,7 @@ EventWidget::EventWidget(QWidget* parent)
 		: QWidget(parent)
 		, eventList_(nullptr)
 		, model_(nullptr)
-		, timeScale_(0.7)
+		, timeScale_(1.0)
 		, modelUpdated_(false)
 		, textAscent_(0.0)
 		, textYOffset_(0.0)
@@ -149,15 +149,6 @@ EventWidget::paintEvent(QPaintEvent*)
 		for (int i = 0; i < eventList_->numberOfRules(); ++i) {
 			auto* ruleData = eventList_->getRuleAtIndex(i);
 			if (ruleData) {
-#if 0
-				double ruleDur = ruleData->duration * timeScale_;
-				// Rule frame.
-				p.drawRect(QRectF(QPointF(xRule, MARGIN), QPointF(xRule + ruleDur, MARGIN + TRACK_HEIGHT)));
-				// Rule number.
-				p.drawText(QPointF(xRule + TEXT_MARGIN, yRuleText), QString("%1").arg(ruleData->number));
-
-				xRule += ruleDur;
-#else
 				unsigned int firstPosture = ruleData->firstPosture;
 				unsigned int lastPosture = ruleData->lastPosture;
 
@@ -179,7 +170,6 @@ EventWidget::paintEvent(QPaintEvent*)
 						QPointF(xRule + postureTime2 * timeScale_, MARGIN + TRACK_HEIGHT)));
 				// Rule number.
 				p.drawText(QPointF(xRule + postureTime1 * timeScale_ + TEXT_MARGIN, yRuleText), QString("%1").arg(ruleData->number));
-#endif
 			}
 		}
 	}
