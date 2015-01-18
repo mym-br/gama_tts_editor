@@ -39,6 +39,7 @@
 #define MININUM_WIDTH 1024
 #define MININUM_HEIGHT 768
 #define TEXT_MARGIN 5.0
+#define DEFAULT_TIME_SCALE 0.7
 
 
 
@@ -48,7 +49,7 @@ EventWidget::EventWidget(QWidget* parent)
 		: QWidget(parent)
 		, eventList_(nullptr)
 		, model_(nullptr)
-		, timeScale_(1.0)
+		, timeScale_(DEFAULT_TIME_SCALE)
 		, modelUpdated_(false)
 		, textAscent_(0.0)
 		, textYOffset_(0.0)
@@ -169,7 +170,7 @@ EventWidget::paintEvent(QPaintEvent*)
 						QPointF(xRule + postureTime1 * timeScale_, MARGIN),
 						QPointF(xRule + postureTime2 * timeScale_, MARGIN + TRACK_HEIGHT)));
 				// Rule number.
-				p.drawText(QPointF(xRule + postureTime1 * timeScale_ + TEXT_MARGIN, yRuleText), QString("%1").arg(ruleData->number));
+				p.drawText(QPointF(xRule + postureTime1 * timeScale_ + TEXT_MARGIN, yRuleText), QString::number(ruleData->number));
 			}
 		}
 	}
@@ -197,8 +198,8 @@ EventWidget::paintEvent(QPaintEvent*)
 			p.drawText(QPointF(MARGIN, yBase - 0.5 * GRAPH_HEIGHT + textYOffset_ + TRACK_HEIGHT), tr(SPECIAL_STRING));
 		}
 		// Limits.
-		p.drawText(QPointF(MARGIN, yBase), QString("%1").arg(currentMin));
-		p.drawText(QPointF(MARGIN, yBase - GRAPH_HEIGHT + textAscent_), QString("%1").arg(currentMax));
+		p.drawText(QPointF(MARGIN, yBase), QString::number(currentMin));
+		p.drawText(QPointF(MARGIN, yBase - GRAPH_HEIGHT + textAscent_), QString::number(currentMax));
 
 		// Graph frame.
 		p.drawLine(QPointF(2.0 * MARGIN + labelWidth_, yBase - GRAPH_HEIGHT), QPointF(xEnd, yBase - GRAPH_HEIGHT));
