@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2015 Marcelo Y. Matuda                                       *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -15,52 +15,50 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef SYNTHESIS_WINDOW_H
-#define SYNTHESIS_WINDOW_H
+#include "Synthesis.h"
 
-#include <memory>
-
-#include <QString>
-#include <QWidget>
+#include "Controller.h"
+#include "en/phonetic_string_parser/PhoneticStringParser.h"
+#include "en/text_parser/TextParser.h"
 
 
-
-namespace Ui {
-class SynthesisWindow;
-}
 
 namespace GS {
 
-class Synthesis;
-namespace TRMControlModel {
-class Model;
+Synthesis::Synthesis()
+{
 }
 
-class SynthesisWindow : public QWidget {
-	Q_OBJECT
-public:
-	explicit SynthesisWindow(QWidget* parent=0);
-	~SynthesisWindow();
+Synthesis::~Synthesis()
+{
+}
 
-	void clear();
-	void setup(TRMControlModel::Model* model, Synthesis* synthesis);
-signals:
-	void textSynthesized();
-private slots:
-	void on_parseButton_clicked();
-	void on_synthesizeButton_clicked();
-	void on_parameterTableWidget_cellChanged(int row, int column);
-	void setupParameterTable();
-private:
-	enum {
-		NUM_PARAM = 16
-	};
+void
+Synthesis::clear()
+{
+	phoneticStringParser.reset(0);
+	textParser.reset(0);
+	trmController.reset(0);
+	projectDir.clear();
+}
 
-	std::unique_ptr<Ui::SynthesisWindow> ui_;
-	TRMControlModel::Model* model_;
-	Synthesis* synthesis_;
-};
+void
+Synthesis::setup(const QString& newProjectDir, TRMControlModel::Model* model)
+{
+	if (model == nullptr) {
+		clear();
+		return;
+	}
+	try {
+		projectDir = newProjectDir;
+		const std::string configDirPath = projectDir.toStdString();
+		trmController.reset(new TRMControlModel::Controller(configDirPath.c_str(), *model));
+		textParser.reset(new En::TextParser(configDirPath.c_str()));
+		phoneticStringParser.reset(new En::PhoneticStringParser(configDirPath.c_str(), *trmController));
+	} catch (...) {
+		clear();
+		throw;
+	}
+}
 
 } // namespace GS
-
-#endif // SYNTHESIS_WINDOW_H

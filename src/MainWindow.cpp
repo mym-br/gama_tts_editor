@@ -27,6 +27,7 @@
 #include <QMessageBox>
 
 #include "DataEntryWindow.h"
+#include "IntonationWindow.h"
 #include "LogStreamBuffer.h"
 #include "Model.h"
 #include "PostureEditorWindow.h"
@@ -34,6 +35,7 @@
 #include "RuleEditorWindow.h"
 #include "RuleManagerWindow.h"
 #include "RuleTesterWindow.h"
+#include "Synthesis.h"
 #include "SynthesisWindow.h"
 #include "TransitionEditorWindow.h"
 #include "ui_MainWindow.h"
@@ -48,8 +50,10 @@ MainWindow::MainWindow(QWidget* parent)
 		: QMainWindow(parent)
 		, config_()
 		, model_()
+		, synthesis_(new Synthesis)
 		, ui_(new Ui::MainWindow)
 		, dataEntryWindow_(new DataEntryWindow)
+		, intonationWindow_(new IntonationWindow)
 		, postureEditorWindow_(new PostureEditorWindow)
 		, prototypeManagerWindow_(new PrototypeManagerWindow)
 		, specialTransitionEditorWindow_(new TransitionEditorWindow)
@@ -117,6 +121,8 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(ruleEditorWindow_.get(), SIGNAL(transitionReferenceChanged())       , prototypeManagerWindow_.get(), SLOT(setupTransitionsTree()));
 	connect(ruleEditorWindow_.get(), SIGNAL(specialTransitionReferenceChanged()), prototypeManagerWindow_.get(), SLOT(setupSpecialTransitionsTree()));
 	connect(ruleEditorWindow_.get(), SIGNAL(equationReferenceChanged())         , prototypeManagerWindow_.get(), SLOT(setupEquationsTree()));
+
+	connect(synthesisWindow_.get(), SIGNAL(textSynthesized()), intonationWindow_.get(), SLOT(loadIntonationFromEventList()));
 }
 
 MainWindow::~MainWindow()
@@ -156,22 +162,26 @@ MainWindow::on_openAction_triggered()
 	config_.newConfigFileName = QString();
 
 	try {
-		std::unique_ptr<TRMControlModel::Model> newModel(new TRMControlModel::Model);
-		newModel->load(config_.projectDir.toStdString().c_str(), config_.origConfigFileName.toStdString().c_str());
-		dataEntryWindow_->resetModel(newModel.get());
-		postureEditorWindow_->resetModel(newModel.get());
-		prototypeManagerWindow_->resetModel(newModel.get());
-		transitionEditorWindow_->resetModel(newModel.get());
-		specialTransitionEditorWindow_->resetModel(newModel.get());
-		ruleEditorWindow_->resetModel(newModel.get());
-		ruleManagerWindow_->resetModel(newModel.get());
-		ruleTesterWindow_->resetModel(newModel.get());
-		synthesisWindow_->setup(config_.projectDir, newModel.get());
+		model_.reset(new TRMControlModel::Model);
+		model_->load(config_.projectDir.toStdString().c_str(), config_.origConfigFileName.toStdString().c_str());
 
-		model_ = std::move(newModel); // must be executed after all the previous resetModel() calls
+		synthesis_->setup(config_.projectDir, model_.get());
+
+		dataEntryWindow_->resetModel(model_.get());
+		postureEditorWindow_->resetModel(model_.get());
+		prototypeManagerWindow_->resetModel(model_.get());
+		transitionEditorWindow_->resetModel(model_.get());
+		specialTransitionEditorWindow_->resetModel(model_.get());
+		ruleEditorWindow_->resetModel(model_.get());
+		ruleManagerWindow_->resetModel(model_.get());
+		ruleTesterWindow_->resetModel(model_.get());
+		synthesisWindow_->setup(model_.get(), synthesis_.get());
+		intonationWindow_->setup(model_.get(), synthesis_.get());
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
-		synthesisWindow_->setup(QString(), nullptr);
+
+		intonationWindow_->setup(nullptr, nullptr);
+		synthesisWindow_->setup(nullptr, nullptr);
 		ruleTesterWindow_->resetModel(nullptr);
 		ruleManagerWindow_->resetModel(nullptr);
 		ruleEditorWindow_->resetModel(nullptr);
@@ -180,6 +190,9 @@ MainWindow::on_openAction_triggered()
 		prototypeManagerWindow_->resetModel(nullptr);
 		postureEditorWindow_->resetModel(nullptr);
 		dataEntryWindow_->resetModel(nullptr);
+
+		synthesis_->setup(QString(), nullptr);
+
 		model_.reset();
 	}
 }
@@ -288,7 +301,8 @@ MainWindow::on_synthesizerControlPanelAction_triggered()
 void
 MainWindow::on_intonationWindowAction_triggered()
 {
-
+	intonationWindow_->show();
+	intonationWindow_->raise();
 }
 
 void

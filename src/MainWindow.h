@@ -30,7 +30,10 @@ class MainWindow;
 
 namespace GS {
 
+class Synthesis;
+
 class DataEntryWindow;
+class IntonationWindow;
 class LogStreamBuffer;
 class PostureEditorWindow;
 class PrototypeManagerWindow;
@@ -70,9 +73,11 @@ public slots:
 private:
 	AppConfig config_;
 	std::unique_ptr<TRMControlModel::Model> model_;
+	std::unique_ptr<Synthesis> synthesis_;
 
 	std::unique_ptr<Ui::MainWindow> ui_;
 	std::unique_ptr<DataEntryWindow> dataEntryWindow_;
+	std::unique_ptr<IntonationWindow> intonationWindow_;
 	std::unique_ptr<PostureEditorWindow> postureEditorWindow_;
 	std::unique_ptr<PrototypeManagerWindow> prototypeManagerWindow_;
 	std::unique_ptr<TransitionEditorWindow> specialTransitionEditorWindow_;

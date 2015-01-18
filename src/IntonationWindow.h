@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2015 Marcelo Y. Matuda                                       *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -15,18 +15,15 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef SYNTHESIS_WINDOW_H
-#define SYNTHESIS_WINDOW_H
+#ifndef INTONATION_WINDOW_H
+#define INTONATION_WINDOW_H
 
 #include <memory>
 
-#include <QString>
 #include <QWidget>
 
-
-
 namespace Ui {
-class SynthesisWindow;
+class IntonationWindow;
 }
 
 namespace GS {
@@ -36,31 +33,32 @@ namespace TRMControlModel {
 class Model;
 }
 
-class SynthesisWindow : public QWidget {
+class IntonationWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit SynthesisWindow(QWidget* parent=0);
-	~SynthesisWindow();
+	explicit IntonationWindow(QWidget* parent=0);
+	~IntonationWindow();
 
 	void clear();
 	void setup(TRMControlModel::Model* model, Synthesis* synthesis);
-signals:
-	void textSynthesized();
+public slots:
+	void loadIntonationFromEventList();
 private slots:
-	void on_parseButton_clicked();
-	void on_synthesizeButton_clicked();
-	void on_parameterTableWidget_cellChanged(int row, int column);
-	void setupParameterTable();
+	void on_valueLineEdit_editingFinished();
+	void on_slopeLineEdit_editingFinished();
+	void on_beatOffsetLineEdit_editingFinished();
+	void setPointData(
+		double value,
+		double slope,
+		double beat,
+		double beatOffset,
+		double absoluteTime);
 private:
-	enum {
-		NUM_PARAM = 16
-	};
-
-	std::unique_ptr<Ui::SynthesisWindow> ui_;
+	std::unique_ptr<Ui::IntonationWindow> ui_;
 	TRMControlModel::Model* model_;
 	Synthesis* synthesis_;
 };
 
 } // namespace GS
 
-#endif // SYNTHESIS_WINDOW_H
+#endif // INTONATION_WINDOW_H

@@ -30,6 +30,7 @@
 #include "en/phonetic_string_parser/PhoneticStringParser.h"
 #include "en/text_parser/TextParser.h"
 #include "Model.h"
+#include "Synthesis.h"
 
 #define TRM_PARAM_FILE_NAME "generated__trm_param.txt"
 #define SPEECH_FILE_NAME "generated__speech.wav"
@@ -42,6 +43,7 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 		: QWidget(parent)
 		, ui_(new Ui::SynthesisWindow)
 		, model_(nullptr)
+		, synthesis_(nullptr)
 {
 	ui_->setupUi(this);
 
@@ -62,17 +64,14 @@ SynthesisWindow::~SynthesisWindow()
 void
 SynthesisWindow::clear()
 {
+	synthesis_ = nullptr;
 	model_ = nullptr;
-	phoneticStringParser_.reset(0);
-	textParser_.reset(0);
-	trmController_.reset(0);
-	projectDir_.clear();
 }
 
 void
-SynthesisWindow::setup(const QString& projectDir, TRMControlModel::Model* model)
+SynthesisWindow::setup(TRMControlModel::Model* model, Synthesis* synthesis)
 {
-	if (model == nullptr) {
+	if (model == nullptr || synthesis == nullptr) {
 		clear();
 		return;
 	}
@@ -83,14 +82,10 @@ SynthesisWindow::setup(const QString& projectDir, TRMControlModel::Model* model)
 	}
 
 	try {
-		projectDir_ = projectDir;
-		const std::string configDirPath = projectDir_.toStdString();
-		trmController_.reset(new TRMControlModel::Controller(configDirPath.c_str(), *model));
-		textParser_.reset(new En::TextParser(configDirPath.c_str()));
-		phoneticStringParser_.reset(new En::PhoneticStringParser(configDirPath.c_str(), *trmController_));
 		model_ = model;
+		synthesis_ = synthesis;
 
-		ui_->eventWidget->updateData(&trmController_->eventList(), model_);
+		ui_->eventWidget->updateData(&synthesis_->trmController->eventList(), model_);
 		ui_->eventWidget->clearParameterSelection();
 
 		setupParameterTable();
@@ -103,7 +98,7 @@ SynthesisWindow::setup(const QString& projectDir, TRMControlModel::Model* model)
 void
 SynthesisWindow::on_parseButton_clicked()
 {
-	if (!trmController_) {
+	if (!synthesis_) {
 		return;
 	}
 	QString text = ui_->textLineEdit->text();
@@ -112,7 +107,7 @@ SynthesisWindow::on_parseButton_clicked()
 	}
 
 	try {
-		std::string phoneticString = textParser_->parseText(text.toStdString().c_str());
+		std::string phoneticString = synthesis_->textParser->parseText(text.toStdString().c_str());
 		ui_->phoneticStringTextEdit->setPlainText(phoneticString.c_str());
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
@@ -125,7 +120,7 @@ SynthesisWindow::on_parseButton_clicked()
 void
 SynthesisWindow::on_synthesizeButton_clicked()
 {
-	if (!trmController_) {
+	if (!synthesis_) {
 		return;
 	}
 	QString phoneticString = ui_->phoneticStringTextEdit->toPlainText();
@@ -134,11 +129,11 @@ SynthesisWindow::on_synthesizeButton_clicked()
 	}
 
 	try {
-		QString trmParamFilePath = projectDir_ + TRM_PARAM_FILE_NAME;
-		QString speechFilePath = projectDir_ + SPEECH_FILE_NAME;
+		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
+		QString speechFilePath = synthesis_->projectDir + SPEECH_FILE_NAME;
 
-		trmController_->synthesizePhoneticString(
-					*phoneticStringParser_,
+		synthesis_->trmController->synthesizePhoneticString(
+					*synthesis_->phoneticStringParser,
 					phoneticString.toStdString().c_str(),
 					trmParamFilePath.toStdString().c_str(),
 					speechFilePath.toStdString().c_str());
@@ -151,6 +146,8 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		QProcess* process = new QProcess(this);
 		process->start("aplay", arguments);
 		// Do not check the return value.
+
+		emit textSynthesized();
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}

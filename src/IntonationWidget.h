@@ -1,5 +1,6 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 1991, 1992, 1993, 1994, 1995, 1996, 2001, 2002               *
+ *    David R. Hill, Leonard Manzara, Craig Schock                         *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -14,67 +15,75 @@
  *  You should have received a copy of the GNU General Public License      *
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
+// 2015-01
+// This file was copied from Gnuspeech and modified by Marcelo Y. Matuda.
 
-#ifndef TRANSITION_WIDGET_H
-#define TRANSITION_WIDGET_H
+#ifndef INTONATION_WIDGET_H
+#define INTONATION_WIDGET_H
 
 #include <vector>
 
 #include <QWidget>
 
-#include "Transition.h"
-#include "TransitionPoint.h"
+#include "IntonationPoint.h"
 
 
 
 namespace GS {
 
-class TransitionWidget : public QWidget {
+namespace TRMControlModel {
+class EventList;
+}
+
+class IntonationWidget : public QWidget {
 	Q_OBJECT
 public:
-	explicit TransitionWidget(QWidget* parent=0);
+	explicit IntonationWidget(QWidget* parent=0);
 
-	void setSpecial() { special_ = true; }
-	void clear();
-	void updateData(TRMControlModel::Transition::Type transitionType,
-			std::vector<TransitionPoint>* pointList,
-			float ruleDuration,
-			float mark1,
-			float mark2,
-			float mark3);
-
-	void setSelectedPointIndex(int index);
+	virtual QSize sizeHint() const;
+	void updateData(TRMControlModel::EventList* eventList);
+	void setSelectedPointValue(double value);
+	void setSelectedPointSlope(double slope);
+	void setSelectedPointBeatOffset(double beatOffset);
 signals:
-	void pointCreationRequested(unsigned int pointType, float time, float value);
+	void pointSelected(
+		double value,
+		double slope,
+		double beat,
+		double beatOffset,
+		double absoluteTime);
+public slots:
+	void loadIntonationFromEventList();
 protected:
 	virtual void paintEvent(QPaintEvent*);
-	virtual void resizeEvent(QResizeEvent* event);
 	virtual void mouseDoubleClickEvent(QMouseEvent* event);
+	virtual void mousePressEvent(QMouseEvent* event);
+	virtual void keyPressEvent(QKeyEvent* event);
 private:
-	void updateScales();
 	double valueToY(double value);
 	double timeToX(double time);
 	double yToValue(double y);
 	double xToTime(double x);
-	static void drawDiPoint(QPainter& painter, double x, double y);
-	static void drawTriPoint(QPainter& painter, double x, double y);
-	static void drawTetraPoint(QPainter& painter, double x, double y);
+	void drawPointMarker(QPainter& painter, double x, double y);
+	void smoothPoints(QPainter& painter);
+	int addIntonationPoint(TRMControlModel::IntonationPoint& newPoint);
+	void sendSelectedPointData();
 
-	bool special_;
-	bool dataUpdated_;
+	TRMControlModel::EventList* eventList_;
+	double timeScale_;
+	bool modelUpdated_;
 	double textYOffset_;
 	double leftMargin_;
 	double yStep_;
+	double maxTime_;
 	double graphWidth_;
-	TRMControlModel::Transition::Type transitionType_;
-	const std::vector<TransitionPoint>* pointList_;
-	float ruleDuration_;
-	float mark1_;
-	float mark2_;
-	float mark3_;
-	int selectedPointIndex_;
+	int totalWidth_;
+	int totalHeight_;
+	int selectedPoint_;
+	std::vector<TRMControlModel::IntonationPoint> intonationPointList_;
+	std::vector<int> postureTimeList_;
 };
 
 } // namespace GS
 
-#endif // TRANSITION_WIDGET_H
+#endif // INTONATION_WIDGET_H

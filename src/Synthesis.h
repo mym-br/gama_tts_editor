@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2015 Marcelo Y. Matuda                                       *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -15,52 +15,39 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef SYNTHESIS_WINDOW_H
-#define SYNTHESIS_WINDOW_H
+#ifndef SYNTHESIS_H
+#define SYNTHESIS_H
 
 #include <memory>
 
 #include <QString>
-#include <QWidget>
 
 
-
-namespace Ui {
-class SynthesisWindow;
-}
 
 namespace GS {
 
-class Synthesis;
+namespace En {
+class PhoneticStringParser;
+class TextParser;
+}
 namespace TRMControlModel {
+class Controller;
 class Model;
 }
 
-class SynthesisWindow : public QWidget {
-	Q_OBJECT
-public:
-	explicit SynthesisWindow(QWidget* parent=0);
-	~SynthesisWindow();
+struct Synthesis {
+	QString projectDir;
+	std::unique_ptr<TRMControlModel::Controller> trmController;
+	std::unique_ptr<En::TextParser> textParser;
+	std::unique_ptr<En::PhoneticStringParser> phoneticStringParser;
+
+	Synthesis();
+	~Synthesis();
 
 	void clear();
-	void setup(TRMControlModel::Model* model, Synthesis* synthesis);
-signals:
-	void textSynthesized();
-private slots:
-	void on_parseButton_clicked();
-	void on_synthesizeButton_clicked();
-	void on_parameterTableWidget_cellChanged(int row, int column);
-	void setupParameterTable();
-private:
-	enum {
-		NUM_PARAM = 16
-	};
-
-	std::unique_ptr<Ui::SynthesisWindow> ui_;
-	TRMControlModel::Model* model_;
-	Synthesis* synthesis_;
+	void setup(const QString& newProjectDir, TRMControlModel::Model* model);
 };
 
 } // namespace GS
 
-#endif // SYNTHESIS_WINDOW_H
+#endif // SYNTHESIS_H
