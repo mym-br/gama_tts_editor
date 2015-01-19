@@ -33,7 +33,8 @@ SOURCES += src/main.cpp\
     src/RuleEditorWindow.cpp \
     src/IntonationWindow.cpp \
     src/IntonationWidget.cpp \
-    src/Synthesis.cpp
+    src/Synthesis.cpp \
+    src/IntonationParametersWindow.cpp
 
 HEADERS  += src/MainWindow.h \
     src/DataEntryWindow.h \
@@ -56,7 +57,8 @@ HEADERS  += src/MainWindow.h \
     src/RuleEditorWindow.h \
     src/IntonationWindow.h \
     src/IntonationWidget.h \
-    src/Synthesis.h
+    src/Synthesis.h \
+    src/IntonationParametersWindow.h
 
 FORMS    += ui/MainWindow.ui \
     ui/DataEntryWindow.ui \
@@ -67,7 +69,8 @@ FORMS    += ui/MainWindow.ui \
     ui/RuleManagerWindow.ui \
     ui/RuleTesterWindow.ui \
     ui/RuleEditorWindow.ui \
-    ui/IntonationWindow.ui
+    ui/IntonationWindow.ui \
+    ui/IntonationParametersWindow.ui
 
 
 

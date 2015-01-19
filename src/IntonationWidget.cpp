@@ -39,7 +39,7 @@
 #define MININUM_WIDTH 1024
 #define MININUM_HEIGHT 390
 #define TEXT_MARGIN 10.0
-#define DEFAULT_TIME_SCALE 1.0
+#define DEFAULT_TIME_SCALE 0.7
 #define SELECTION_SIZE 6.0
 #define MIN_VALUE (-20.0)
 #define MAX_VALUE 10.0
@@ -471,6 +471,15 @@ IntonationWidget::setSelectedPointBeatOffset(double beatOffset)
 		sendSelectedPointData();
 	}
 	update();
+}
+
+bool
+IntonationWidget::saveIntonationToEventList()
+{
+	if (eventList_ == nullptr || intonationPointList_.empty()) return false;
+
+	eventList_->intonationPoints() = intonationPointList_;
+	return true;
 }
 
 // Slot.

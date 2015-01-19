@@ -34,6 +34,7 @@ class Synthesis;
 
 class DataEntryWindow;
 class IntonationWindow;
+class IntonationParametersWindow;
 class LogStreamBuffer;
 class PostureEditorWindow;
 class PrototypeManagerWindow;
@@ -78,6 +79,7 @@ private:
 	std::unique_ptr<Ui::MainWindow> ui_;
 	std::unique_ptr<DataEntryWindow> dataEntryWindow_;
 	std::unique_ptr<IntonationWindow> intonationWindow_;
+	std::unique_ptr<IntonationParametersWindow> intonationParametersWindow_;
 	std::unique_ptr<PostureEditorWindow> postureEditorWindow_;
 	std::unique_ptr<PrototypeManagerWindow> prototypeManagerWindow_;
 	std::unique_ptr<TransitionEditorWindow> specialTransitionEditorWindow_;

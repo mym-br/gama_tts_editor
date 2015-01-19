@@ -15,47 +15,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef INTONATION_WINDOW_H
-#define INTONATION_WINDOW_H
+#ifndef INTONATION_PARAMETERS_WINDOW_H
+#define INTONATION_PARAMETERS_WINDOW_H
 
 #include <memory>
 
 #include <QWidget>
 
+
+
 namespace Ui {
-class IntonationWindow;
+class IntonationParametersWindow;
 }
 
 namespace GS {
 
 class Synthesis;
 
-class IntonationWindow : public QWidget {
+class IntonationParametersWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit IntonationWindow(QWidget* parent=0);
-	~IntonationWindow();
+	explicit IntonationParametersWindow(QWidget* parent=0);
+	~IntonationParametersWindow();
 
 	void clear();
 	void setup(Synthesis* synthesis);
-public slots:
-	void on_synthesizeButton_clicked();
-	void loadIntonationFromEventList();
 private slots:
-	void on_valueLineEdit_editingFinished();
-	void on_slopeLineEdit_editingFinished();
-	void on_beatOffsetLineEdit_editingFinished();
-	void setPointData(
-		double value,
-		double slope,
-		double beat,
-		double beatOffset,
-		double absoluteTime);
+	void on_updateButton_clicked();
 private:
-	std::unique_ptr<Ui::IntonationWindow> ui_;
+	std::unique_ptr<Ui::IntonationParametersWindow> ui_;
 	Synthesis* synthesis_;
 };
 
 } // namespace GS
 
-#endif // INTONATION_WINDOW_H
+#endif // INTONATION_PARAMETERS_WINDOW_H

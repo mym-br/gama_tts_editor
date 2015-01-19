@@ -28,6 +28,7 @@
 
 #include "DataEntryWindow.h"
 #include "IntonationWindow.h"
+#include "IntonationParametersWindow.h"
 #include "LogStreamBuffer.h"
 #include "Model.h"
 #include "PostureEditorWindow.h"
@@ -54,6 +55,7 @@ MainWindow::MainWindow(QWidget* parent)
 		, ui_(new Ui::MainWindow)
 		, dataEntryWindow_(new DataEntryWindow)
 		, intonationWindow_(new IntonationWindow)
+		, intonationParametersWindow_(new IntonationParametersWindow)
 		, postureEditorWindow_(new PostureEditorWindow)
 		, prototypeManagerWindow_(new PrototypeManagerWindow)
 		, specialTransitionEditorWindow_(new TransitionEditorWindow)
@@ -82,8 +84,6 @@ MainWindow::MainWindow(QWidget* parent)
 
 	connect(ruleManagerWindow_.get(), SIGNAL(editRuleButtonClicked(unsigned int)),
 		ruleEditorWindow_.get(), SLOT(handleEditRuleButtonClicked(unsigned int)));
-
-
 
 	connect(dataEntryWindow_.get(), SIGNAL(categoryChanged()) , postureEditorWindow_.get(), SLOT(unselectPosture()));
 	connect(dataEntryWindow_.get(), SIGNAL(parameterChanged()), postureEditorWindow_.get(), SLOT(unselectPosture()));
@@ -176,11 +176,13 @@ MainWindow::on_openAction_triggered()
 		ruleManagerWindow_->resetModel(model_.get());
 		ruleTesterWindow_->resetModel(model_.get());
 		synthesisWindow_->setup(model_.get(), synthesis_.get());
-		intonationWindow_->setup(model_.get(), synthesis_.get());
+		intonationWindow_->setup(synthesis_.get());
+		intonationParametersWindow_->setup(synthesis_.get());
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 
-		intonationWindow_->setup(nullptr, nullptr);
+		intonationParametersWindow_->setup(nullptr);
+		intonationWindow_->setup(nullptr);
 		synthesisWindow_->setup(nullptr, nullptr);
 		ruleTesterWindow_->resetModel(nullptr);
 		ruleManagerWindow_->resetModel(nullptr);
@@ -308,7 +310,8 @@ MainWindow::on_intonationWindowAction_triggered()
 void
 MainWindow::on_intonationParametersAction_triggered()
 {
-
+	intonationParametersWindow_->show();
+	intonationParametersWindow_->raise();
 }
 
 } // namespace GS

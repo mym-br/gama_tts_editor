@@ -45,6 +45,7 @@ public:
 	void setSelectedPointValue(double value);
 	void setSelectedPointSlope(double slope);
 	void setSelectedPointBeatOffset(double beatOffset);
+	bool saveIntonationToEventList();
 signals:
 	void pointSelected(
 		double value,

@@ -17,12 +17,17 @@
 
 #include "IntonationWindow.h"
 
-#include <QDoubleValidator>
+#include <QMessageBox>
+#include <QProcess>
 #include <QString>
+#include <QStringList>
 
 #include "Controller.h"
 #include "Synthesis.h"
 #include "ui_IntonationWindow.h"
+
+#define TRM_PARAM_FILE_NAME "generated__intonation_trm_param.txt"
+#define SPEECH_FILE_NAME "generated__intonation_speech.wav"
 
 
 
@@ -31,7 +36,6 @@ namespace GS {
 IntonationWindow::IntonationWindow(QWidget* parent)
 		: QWidget(parent)
 		, ui_(new Ui::IntonationWindow)
-		, model_(nullptr)
 		, synthesis_(nullptr)
 {
 	ui_->setupUi(this);
@@ -48,21 +52,56 @@ void
 IntonationWindow::clear()
 {
 	synthesis_ = nullptr;
-	model_ = nullptr;
 }
 
 void
-IntonationWindow::setup(TRMControlModel::Model* model, Synthesis* synthesis)
+IntonationWindow::setup(Synthesis* synthesis)
 {
-	if (model == nullptr || synthesis == nullptr) {
+	if (synthesis == nullptr) {
 		clear();
 		return;
 	}
 
-	model_ = model;
 	synthesis_ = synthesis;
 
 	ui_->intonationWidget->updateData(&synthesis_->trmController->eventList());
+}
+
+void
+IntonationWindow::on_synthesizeButton_clicked()
+{
+	qDebug("IntonationWindow::on_synthesizeButton_clicked");
+
+	if (synthesis_ == nullptr) return;
+
+	if (!ui_->intonationWidget->saveIntonationToEventList()) {
+		return;
+	}
+
+	try {
+		auto& eventList = synthesis_->trmController->eventList();
+		if (eventList.list().empty()) {
+			return;
+		}
+		eventList.clearMacroIntonation();
+		eventList.applyIntonationSmooth();
+
+		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
+		QString speechFilePath = synthesis_->projectDir + SPEECH_FILE_NAME;
+
+		synthesis_->trmController->synthesizeFromEventList(
+					trmParamFilePath.toStdString().c_str(),
+					speechFilePath.toStdString().c_str());
+
+		//TODO: replace temporary solution
+		QStringList arguments;
+		arguments << speechFilePath;
+		QProcess* process = new QProcess(this);
+		process->start("aplay", arguments);
+		// Do not check the return value.
+	} catch (const Exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
+	}
 }
 
 // Slot.
