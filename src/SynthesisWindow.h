@@ -51,6 +51,7 @@ private slots:
 	void on_synthesizeButton_clicked();
 	void on_parameterTableWidget_cellChanged(int row, int column);
 	void setupParameterTable();
+	void updateMouseTracking(double time, double value);
 private:
 	enum {
 		NUM_PARAM = 16

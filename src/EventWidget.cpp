@@ -23,7 +23,9 @@
 #include "EventWidget.h"
 
 #include <cmath>
+#include <cstring> /* strlen */
 
+#include <QMouseEvent>
 #include <QPainter>
 #include <QPointF>
 #include <QRectF>
@@ -54,6 +56,7 @@ EventWidget::EventWidget(QWidget* parent)
 		, textAscent_(0.0)
 		, textYOffset_(0.0)
 		, labelWidth_(0.0)
+		, maxLabelSize_(0)
 		, totalWidth_(MININUM_WIDTH)
 		, totalHeight_(MININUM_HEIGHT)
 {
@@ -66,31 +69,42 @@ EventWidget::EventWidget(QWidget* parent)
 	pal.setColor(QPalette::Window, Qt::white);
 	setPalette(pal);
 	setAutoFillBackground(true);
+
+	setMouseTracking(true);
 }
 
 // Note: with no antialiasing, the coordinates in QPointF are rounded to the nearest integer.
 void
-EventWidget::paintEvent(QPaintEvent*)
+EventWidget::paintEvent(QPaintEvent* /*event*/)
 {
 	if (eventList_ == nullptr || eventList_->list().empty()) {
 		return;
 	}
 
-	QPainter p(this);
+	QPainter painter(this);
+	painter.setFont(QFont("monospace"));
 
 	if (modelUpdated_) {
-		QFontMetrics fm = p.fontMetrics();
+		QFontMetrics fm = painter.fontMetrics();
 		textAscent_ = fm.ascent();
 		textYOffset_ = 0.5 * textAscent_;
 
 		int maxWidth = 0;
 		for (unsigned int i = 0; i < model_->parameterList().size(); ++i) {
+			unsigned int labelSize = model_->parameterList()[i].name().size();
+			if (labelSize > maxLabelSize_) {
+				maxLabelSize_ = labelSize;
+			}
 			int width = fm.width(model_->parameterList()[i].name().c_str());
 			if (width > maxWidth) {
 				maxWidth = width;
 			}
 		}
-		int width = fm.width(tr(SPECIAL_STRING));
+		unsigned int labelSize = std::strlen(SPECIAL_STRING);
+		if (labelSize > maxLabelSize_) {
+			maxLabelSize_ = labelSize;
+		}
+		int width = fm.width(SPECIAL_STRING);
 		if (width > maxWidth) {
 			maxWidth = width;
 		}
@@ -128,25 +142,25 @@ EventWidget::paintEvent(QPaintEvent*)
 			double x = 2.0 * MARGIN + labelWidth_ + ev->time * timeScale_;
 			if (ev->flag) {
 				postureTimeList_.push_back(ev->time);
-				p.setPen(Qt::black);
+				painter.setPen(Qt::black);
 				const TRMControlModel::Posture* posture = eventList_->getPostureAtIndex(postureIndex++);
 				if (posture) {
 					// Posture name.
-					p.drawText(QPointF(x, y), posture->name().c_str());
+					painter.drawText(QPointF(x, y), posture->name().c_str());
 				}
 				// Event vertical line.
-				p.drawLine(QPointF(x, MARGIN + 2.0 * TRACK_HEIGHT), QPointF(x, yEnd));
+				painter.drawLine(QPointF(x, MARGIN + 2.0 * TRACK_HEIGHT), QPointF(x, yEnd));
 			} else {
-				p.setPen(Qt::lightGray);
+				painter.setPen(Qt::lightGray);
 				// Event vertical line.
-				p.drawLine(QPointF(x, MARGIN + 2.0 * TRACK_HEIGHT), QPointF(x, yEnd));
+				painter.drawLine(QPointF(x, MARGIN + 2.0 * TRACK_HEIGHT), QPointF(x, yEnd));
 			}
 		}
-		p.setPen(Qt::black);
+		painter.setPen(Qt::black);
 
 		double xRule = 2.0 * MARGIN + labelWidth_;
 		double yRuleText = MARGIN + TRACK_HEIGHT - 0.5 * (TRACK_HEIGHT - 1.0) + textYOffset_;
-		p.drawText(QPointF(MARGIN, yRuleText), tr("Rule"));
+		painter.drawText(QPointF(MARGIN, yRuleText), tr("Rule"));
 		for (int i = 0; i < eventList_->numberOfRules(); ++i) {
 			auto* ruleData = eventList_->getRuleAtIndex(i);
 			if (ruleData) {
@@ -166,11 +180,11 @@ EventWidget::paintEvent(QPaintEvent*)
 				}
 
 				// Rule frame.
-				p.drawRect(QRectF(
+				painter.drawRect(QRectF(
 						QPointF(xRule + postureTime1 * timeScale_, MARGIN),
 						QPointF(xRule + postureTime2 * timeScale_, MARGIN + TRACK_HEIGHT)));
 				// Rule number.
-				p.drawText(QPointF(xRule + postureTime1 * timeScale_ + TEXT_MARGIN, yRuleText), QString::number(ruleData->number));
+				painter.drawText(QPointF(xRule + postureTime1 * timeScale_ + TEXT_MARGIN, yRuleText), QString::number(ruleData->number));
 			}
 		}
 	}
@@ -193,23 +207,23 @@ EventWidget::paintEvent(QPaintEvent*)
 		double yBase = 2.0 * TRACK_HEIGHT + (MARGIN + GRAPH_HEIGHT) * (i + 1U);
 
 		// Label.
-		p.drawText(QPointF(MARGIN, yBase - 0.5 * GRAPH_HEIGHT + textYOffset_), model_->parameterList()[modelParamIndex].name().c_str());
+		painter.drawText(QPointF(MARGIN, yBase - 0.5 * GRAPH_HEIGHT + textYOffset_), model_->parameterList()[modelParamIndex].name().c_str());
 		if (paramIndex >= NUM_PARAM) {
-			p.drawText(QPointF(MARGIN, yBase - 0.5 * GRAPH_HEIGHT + textYOffset_ + TRACK_HEIGHT), tr(SPECIAL_STRING));
+			painter.drawText(QPointF(MARGIN, yBase - 0.5 * GRAPH_HEIGHT + textYOffset_ + TRACK_HEIGHT), tr(SPECIAL_STRING));
 		}
 		// Limits.
-		p.drawText(QPointF(MARGIN, yBase), QString::number(currentMin));
-		p.drawText(QPointF(MARGIN, yBase - GRAPH_HEIGHT + textAscent_), QString::number(currentMax));
+		painter.drawText(QPointF(MARGIN, yBase), QString("%1").arg(currentMin, maxLabelSize_));
+		painter.drawText(QPointF(MARGIN, yBase - GRAPH_HEIGHT + textAscent_), QString("%1").arg(currentMax, maxLabelSize_));
 
 		// Graph frame.
-		p.drawLine(QPointF(2.0 * MARGIN + labelWidth_, yBase - GRAPH_HEIGHT), QPointF(xEnd, yBase - GRAPH_HEIGHT));
-		p.drawLine(QPointF(2.0 * MARGIN + labelWidth_, yBase)               , QPointF(xEnd, yBase));
-		p.drawLine(QPointF(2.0 * MARGIN + labelWidth_, yBase - GRAPH_HEIGHT), QPointF(2.0 * MARGIN + labelWidth_, yBase));
-		p.drawLine(QPointF(xEnd, yBase - GRAPH_HEIGHT)                      , QPointF(xEnd, yBase));
+		painter.drawLine(QPointF(2.0 * MARGIN + labelWidth_, yBase - GRAPH_HEIGHT), QPointF(xEnd, yBase - GRAPH_HEIGHT));
+		painter.drawLine(QPointF(2.0 * MARGIN + labelWidth_, yBase)               , QPointF(xEnd, yBase));
+		painter.drawLine(QPointF(2.0 * MARGIN + labelWidth_, yBase - GRAPH_HEIGHT), QPointF(2.0 * MARGIN + labelWidth_, yBase));
+		painter.drawLine(QPointF(xEnd, yBase - GRAPH_HEIGHT)                      , QPointF(xEnd, yBase));
 
 		// Graph curve.
-		p.setPen(pen2);
-		p.setRenderHint(QPainter::Antialiasing);
+		painter.setPen(pen2);
+		painter.setRenderHint(QPainter::Antialiasing);
 		QPointF prevPoint;
 		const double valueFactor = 1.0 / (currentMax - currentMin);
 		for (const TRMControlModel::Event_ptr& ev : eventList_->list()) {
@@ -218,15 +232,61 @@ EventWidget::paintEvent(QPaintEvent*)
 			if (value != GS_EVENTLIST_INVALID_EVENT_VALUE) {
 				double y = 0.5 + yBase - (value - currentMin) * valueFactor * GRAPH_HEIGHT; // 0.5 added because of antialiasing
 				if (!prevPoint.isNull()) {
-					p.drawLine(prevPoint, QPointF(x, y));
+					painter.drawLine(prevPoint, QPointF(x, y));
 				}
 				prevPoint.setX(x);
 				prevPoint.setY(y);
 			}
 		}
-		p.setRenderHint(QPainter::Antialiasing, false);
-		p.setPen(pen);
+		painter.setRenderHint(QPainter::Antialiasing, false);
+		painter.setPen(pen);
 	}
+}
+
+void
+EventWidget::mouseMoveEvent(QMouseEvent* event)
+{
+	double time = -1.0;
+	double value = 0.0;
+
+	if (model_ == nullptr || eventList_ == nullptr || eventList_->list().empty() || selectedParamList_.empty()) {
+		emit mouseMoved(time, value);
+		return;
+	}
+
+	double x = event->x();
+	double y = event->y();
+	double xStart = 2.0 * MARGIN + labelWidth_;
+	double xEnd = xStart + eventList_->list().back()->time * timeScale_;
+
+	if (x < xStart || x > xEnd) {
+		emit mouseMoved(time, value);
+		return;
+	}
+
+	for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
+		double yStart = 2.0 * TRACK_HEIGHT + (MARGIN + GRAPH_HEIGHT) * (i + 1U);
+		double yEnd = yStart - GRAPH_HEIGHT;
+		if (yEnd <= y && y <= yStart) {
+			unsigned int paramIndex = selectedParamList_[i];
+			unsigned int modelParamIndex;
+			if (paramIndex >= NUM_PARAM) { // special
+				modelParamIndex = paramIndex - NUM_PARAM;
+			} else {
+				modelParamIndex = paramIndex;
+			}
+			double currentMin = model_->parameterList()[modelParamIndex].minimum();
+			double currentMax = model_->parameterList()[modelParamIndex].maximum();
+			value = ((yStart - y) / GRAPH_HEIGHT) * (currentMax - currentMin) + currentMin;
+
+			time = (x - xStart) / timeScale_;
+
+			emit mouseMoved(time, value);
+			return;
+		}
+	}
+
+	emit mouseMoved(time, value);
 }
 
 QSize
@@ -277,6 +337,7 @@ EventWidget::changeParameterSelection(unsigned int paramIndex, bool special, boo
 			}
 		}
 	}
+	emit mouseMoved(-1.0, 0.0);
 	update();
 }
 

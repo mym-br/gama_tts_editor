@@ -55,6 +55,14 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->parameterTableWidget->setColumnCount(2);
 	ui_->parameterTableWidget->setHorizontalHeaderLabels(QStringList() << tr("Parameter") << tr("Special"));
+
+	ui_->tempoSpinBox->setRange(0.1, 10.0);
+	ui_->tempoSpinBox->setSingleStep(0.1);
+	ui_->tempoSpinBox->setDecimals(1);
+	ui_->tempoSpinBox->setValue(1.0);
+
+	connect(ui_->textLineEdit, SIGNAL(returnPressed()), ui_->parseButton, SLOT(click()));
+	connect(ui_->eventWidget, SIGNAL(mouseMoved(double, double)), this, SLOT(updateMouseTracking(double, double)));
 }
 
 SynthesisWindow::~SynthesisWindow()
@@ -132,6 +140,9 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
 		QString speechFilePath = synthesis_->projectDir + SPEECH_FILE_NAME;
 
+		TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfig();
+		config.tempo = ui_->tempoSpinBox->value();
+
 		synthesis_->trmController->synthesizePhoneticString(
 					*synthesis_->phoneticStringParser,
 					phoneticString.toStdString().c_str(),
@@ -180,6 +191,19 @@ SynthesisWindow::setupParameterTable()
 		table->setItem(i, 1, item.release());
 	}
 	table->resizeColumnsToContents();
+}
+
+// Slot.
+void
+SynthesisWindow::updateMouseTracking(double time, double value)
+{
+	if (time < -0.1) {
+		ui_->timeLineEdit->clear();
+		ui_->valueLineEdit->clear();
+	} else {
+		ui_->timeLineEdit->setText(QString::number(time, 'f', 0));
+		ui_->valueLineEdit->setText(QString::number(value, 'f', 2));
+	}
 }
 
 } // namespace GS

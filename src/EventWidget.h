@@ -40,8 +40,11 @@ public:
 	void updateData(TRMControlModel::EventList* eventList, TRMControlModel::Model* model);
 	void clearParameterSelection();
 	void changeParameterSelection(unsigned int paramIndex, bool special, bool selected);
+signals:
+	void mouseMoved(double time, double value);
 protected:
-	virtual void paintEvent(QPaintEvent*);
+	virtual void paintEvent(QPaintEvent* event);
+	virtual void mouseMoveEvent(QMouseEvent* event);
 private:
 	enum {
 		NUM_PARAM = 16
@@ -54,6 +57,7 @@ private:
 	double textAscent_;
 	double textYOffset_;
 	double labelWidth_;
+	unsigned int maxLabelSize_;
 	int totalWidth_;
 	int totalHeight_;
 	std::vector<unsigned int> selectedParamList_;
