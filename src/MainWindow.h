@@ -55,23 +55,27 @@ public:
 	~MainWindow();
 protected:
 	virtual void closeEvent(QCloseEvent* event);
-public slots:
+private slots:
 	void on_openAction_triggered();
 	void on_saveAction_triggered();
+	void on_saveAsAction_triggered();
+	void on_revertAction_triggered();
 
-	void on_dataEntryAction_triggered();
-	void on_postureEditorAction_triggered();
-	void on_prototypeManagerAction_triggered();
-	void on_transitionEditorAction_triggered();
-	void on_specialTransitionEditorAction_triggered();
-	void on_ruleEditorAction_triggered();
-	void on_ruleManagerAction_triggered();
-	void on_ruleTesterAction_triggered();
-	void on_synthesisWindowAction_triggered();
-	void on_synthesizerControlPanelAction_triggered();
-	void on_intonationWindowAction_triggered();
-	void on_intonationParametersAction_triggered();
+	void on_dataEntryButton_clicked();
+	void on_ruleManagerButton_clicked();
+	void on_prototypeManagerButton_clicked();
+	void on_postureEditorButton_clicked();
+	void on_intonationWindowButton_clicked();
+	void on_ruleTesterButton_clicked();
+	void on_synthesisWindowButton_clicked();
+	void on_intonationParametersButton_clicked();
+
+	void about();
 private:
+	bool selectNewConfigFileName();
+	void openModel();
+	void saveModel();
+
 	AppConfig config_;
 	std::unique_ptr<TRMControlModel::Model> model_;
 	std::unique_ptr<Synthesis> synthesis_;

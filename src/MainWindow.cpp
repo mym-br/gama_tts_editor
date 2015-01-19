@@ -21,10 +21,14 @@
 #include <utility> /* move */
 
 #include <QCloseEvent>
+#include <QDialog>
+#include <QDialogButtonBox>
 #include <QDir>
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QTextEdit>
+#include <QVBoxLayout>
 
 #include "DataEntryWindow.h"
 #include "IntonationWindow.h"
@@ -41,6 +45,8 @@
 #include "TransitionEditorWindow.h"
 #include "ui_MainWindow.h"
 
+#define PROGRAM_NAME "GS Editor"
+#define PROGRAM_VERSION "0.1"
 #define MAX_LOG_BLOCK_COUNT 500
 
 
@@ -71,6 +77,7 @@ MainWindow::MainWindow(QWidget* parent)
 	specialTransitionEditorWindow_->setSpecial();
 
 	connect(ui_->quitAction, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
+	connect(ui_->aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
 	coutStreamBuffer_.reset(new LogStreamBuffer(std::cout, ui_->logTextEdit));
 	cerrStreamBuffer_.reset(new LogStreamBuffer(std::cerr, ui_->logTextEdit));
@@ -150,8 +157,7 @@ MainWindow::on_openAction_triggered()
 	if (dir.isNull()) {
 		dir = QDir::currentPath();
 	}
-	//QString filePath = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("XML files (*.xml)"));
-	QString filePath = "../gs_editor/data/monet.xml"; //TODO: remove test
+	QString filePath = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("XML files (*.xml)"));
 	if (filePath.isEmpty()) {
 		return;
 	}
@@ -161,6 +167,128 @@ MainWindow::on_openAction_triggered()
 	config_.origConfigFileName = fileInfo.fileName();
 	config_.newConfigFileName = QString();
 
+	openModel();
+	qDebug("### Model opened.");
+}
+
+void
+MainWindow::on_saveAction_triggered()
+{
+	if (model_.get() == nullptr || config_.origConfigFileName.isNull()) {
+		return;
+	}
+
+	if (config_.newConfigFileName.isNull()) {
+		while (!selectNewConfigFileName()) {}
+	}
+
+	if (!config_.newConfigFileName.isEmpty()) {
+		saveModel();
+		qDebug("### Model saved.");
+	}
+}
+
+void
+MainWindow::on_saveAsAction_triggered()
+{
+	if (model_.get() == nullptr || config_.origConfigFileName.isNull()) {
+		return;
+	}
+
+	while (!selectNewConfigFileName()) {}
+
+	if (!config_.newConfigFileName.isEmpty()) {
+		saveModel();
+		qDebug("### Model saved.");
+	}
+}
+
+void
+MainWindow::on_revertAction_triggered()
+{
+	if (config_.projectDir.isEmpty() || config_.origConfigFileName.isEmpty()) {
+		return;
+	}
+
+	openModel();
+	qDebug("### Model opened.");
+}
+
+void
+MainWindow::on_dataEntryButton_clicked()
+{
+	dataEntryWindow_->show();
+	dataEntryWindow_->raise();
+}
+
+void
+MainWindow::on_ruleManagerButton_clicked()
+{
+	ruleManagerWindow_->show();
+	ruleManagerWindow_->raise();
+}
+
+void
+MainWindow::on_prototypeManagerButton_clicked()
+{
+	prototypeManagerWindow_->show();
+	prototypeManagerWindow_->raise();
+}
+
+void
+MainWindow::on_postureEditorButton_clicked()
+{
+	postureEditorWindow_->show();
+	postureEditorWindow_->raise();
+}
+
+void
+MainWindow::on_intonationWindowButton_clicked()
+{
+	intonationWindow_->show();
+	intonationWindow_->raise();
+}
+
+void
+MainWindow::on_ruleTesterButton_clicked()
+{
+	ruleTesterWindow_->show();
+	ruleTesterWindow_->raise();
+}
+
+void
+MainWindow::on_synthesisWindowButton_clicked()
+{
+	synthesisWindow_->show();
+	synthesisWindow_->raise();
+}
+
+void
+MainWindow::on_intonationParametersButton_clicked()
+{
+	intonationParametersWindow_->show();
+	intonationParametersWindow_->raise();
+}
+
+bool
+MainWindow::selectNewConfigFileName()
+{
+	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), config_.projectDir + "new_" + config_.origConfigFileName, tr("XML files (*.xml)"));
+	if (!filePath.isEmpty()) {
+		QFileInfo fileInfo(filePath);
+		QString dir = fileInfo.absolutePath() + '/';
+		if (dir != config_.projectDir) {
+			QMessageBox::critical(this, tr("Error"), tr("The directory must be the same of the original file."));
+			return false;
+		}
+		config_.newConfigFileName = fileInfo.fileName();
+	}
+	return true;
+}
+
+void
+MainWindow::openModel()
+{
 	try {
 		model_.reset(new TRMControlModel::Model);
 		model_->load(config_.projectDir.toStdString().c_str(), config_.origConfigFileName.toStdString().c_str());
@@ -200,118 +328,67 @@ MainWindow::on_openAction_triggered()
 }
 
 void
-MainWindow::on_saveAction_triggered()
+MainWindow::saveModel()
 {
-	if (model_.get() == nullptr || config_.origConfigFileName.isNull()) {
-		return;
-	}
-
-	if (config_.newConfigFileName.isNull()) {
-		while (true) {
-			QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), config_.projectDir + "new_" + config_.origConfigFileName, tr("XML files (*.xml)"));
-			if (!filePath.isEmpty()) {
-				QFileInfo fileInfo(filePath);
-				QString dir = fileInfo.absolutePath() + '/';
-				if (dir != config_.projectDir) {
-					QMessageBox::critical(this, tr("Error"), tr("The directory must be the same of the original file."));
-					continue;
-				}
-				config_.newConfigFileName = fileInfo.fileName();
-			}
-			break;
-		}
-	}
-
-	if (!config_.newConfigFileName.isEmpty()) {
-		try {
-			model_->save(config_.projectDir.toStdString().c_str(), config_.newConfigFileName.toStdString().c_str());
-		} catch (const Exception& exc) {
-			QMessageBox::critical(this, tr("Error"), exc.what());
-		}
+	try {
+		model_->save(config_.projectDir.toStdString().c_str(), config_.newConfigFileName.toStdString().c_str());
+	} catch (const Exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
 	}
 }
 
+// Slot.
 void
-MainWindow::on_dataEntryAction_triggered()
+MainWindow::about()
 {
-	dataEntryWindow_->show();
-	dataEntryWindow_->raise();
-}
+	QDialog aboutDialog(this);
+	QVBoxLayout* layout = new QVBoxLayout(&aboutDialog);
 
-void
-MainWindow::on_postureEditorAction_triggered()
-{
-	postureEditorWindow_->show();
-	postureEditorWindow_->raise();
-}
+	QTextEdit* textEdit = new QTextEdit(&aboutDialog);
+	textEdit->setReadOnly(true);
+	textEdit->setHtml(tr(
+		"<pre>"
+		PROGRAM_NAME " " PROGRAM_VERSION "\n\n"
 
-void
-MainWindow::on_prototypeManagerAction_triggered()
-{
-	prototypeManagerWindow_->show();
-	prototypeManagerWindow_->raise();
-}
+		"This program is free software: you can redistribute it and/or modify\n"
+		"it under the terms of the GNU General Public License as published by\n"
+		"the Free Software Foundation, either version 3 of the License, or\n"
+		"(at your option) any later version.\n\n"
 
-void
-MainWindow::on_transitionEditorAction_triggered()
-{
-	transitionEditorWindow_->show();
-	transitionEditorWindow_->raise();
-}
+		"This program is distributed in the hope that it will be useful,\n"
+		"but WITHOUT ANY WARRANTY; without even the implied warranty of\n"
+		"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\n"
+		"GNU General Public License for more details.\n\n"
 
-void
-MainWindow::on_specialTransitionEditorAction_triggered()
-{
-	specialTransitionEditorWindow_->show();
-	specialTransitionEditorWindow_->raise();
-}
+		"You should have received a copy of the GNU General Public License\n"
+		"along with this program. If not, see http://www.gnu.org/licenses/.\n"
+		"</pre>"
 
-void
-MainWindow::on_ruleEditorAction_triggered()
-{
-	ruleEditorWindow_->show();
-	ruleEditorWindow_->raise();
-}
+		"<hr/>"
 
-void
-MainWindow::on_ruleManagerAction_triggered()
-{
-	ruleManagerWindow_->show();
-	ruleManagerWindow_->raise();
-}
+		"<pre>"
+		"This program uses code from:\n\n"
 
-void
-MainWindow::on_ruleTesterAction_triggered()
-{
-	ruleTesterWindow_->show();
-	ruleTesterWindow_->raise();
-}
+		"- The Gnuspeech project (http://www.gnu.org/software/gnuspeech/).\n\n"
 
-void
-MainWindow::on_synthesisWindowAction_triggered()
-{
-	synthesisWindow_->show();
-	synthesisWindow_->raise();
-}
+		"  Copyright 1991, 1992, 1993, 1994, 1995, 1996, 2001, 2002\n"
+		"  David R. Hill, Leonard Manzara, Craig Schock\n\n"
 
-void
-MainWindow::on_synthesizerControlPanelAction_triggered()
-{
+		"  Gnuspeech is distributed under the terms of the GNU General Public License\n"
+		"  as published by the Free Software Foundation, either version 3 of the\n"
+		"  License, or (at your option) any later version.\n"
+		"</pre>"
+	));
+	layout->addWidget(textEdit);
 
-}
+	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, &aboutDialog);
+	layout->addWidget(buttonBox);
 
-void
-MainWindow::on_intonationWindowAction_triggered()
-{
-	intonationWindow_->show();
-	intonationWindow_->raise();
-}
+	connect(buttonBox, SIGNAL(accepted()), &aboutDialog, SLOT(accept()));
 
-void
-MainWindow::on_intonationParametersAction_triggered()
-{
-	intonationParametersWindow_->show();
-	intonationParametersWindow_->raise();
+	aboutDialog.setWindowTitle(tr("About " PROGRAM_NAME));
+	aboutDialog.resize(600, 550);
+	aboutDialog.exec();
 }
 
 } // namespace GS

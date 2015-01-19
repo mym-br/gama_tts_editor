@@ -16,6 +16,74 @@
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
+     <widget class="QWidget" name="widget" native="true">
+      <layout class="QGridLayout" name="gridLayout">
+       <property name="margin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item row="0" column="0">
+        <widget class="QPushButton" name="dataEntryButton">
+         <property name="text">
+          <string>Data entry</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="3">
+        <widget class="QPushButton" name="ruleManagerButton">
+         <property name="text">
+          <string>Rule manager</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="2">
+        <widget class="QPushButton" name="prototypeManagerButton">
+         <property name="text">
+          <string>Prototype manager</string>
+         </property>
+        </widget>
+       </item>
+       <item row="0" column="1">
+        <widget class="QPushButton" name="postureEditorButton">
+         <property name="text">
+          <string>Posture editor</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="2">
+        <widget class="QPushButton" name="intonationWindowButton">
+         <property name="text">
+          <string>Intonation window</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="3">
+        <widget class="QPushButton" name="ruleTesterButton">
+         <property name="text">
+          <string>Rule tester</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="0">
+        <widget class="QPushButton" name="synthesisWindowButton">
+         <property name="text">
+          <string>Synthesis window</string>
+         </property>
+        </widget>
+       </item>
+       <item row="1" column="1">
+        <widget class="QPushButton" name="intonationParametersButton">
+         <property name="text">
+          <string>Intonation parameters</string>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item>
      <widget class="QPlainTextEdit" name="logTextEdit">
       <property name="readOnly">
        <bool>true</bool>
@@ -47,23 +115,6 @@
     <addaction name="separator"/>
     <addaction name="quitAction"/>
    </widget>
-   <widget class="QMenu" name="menuTools">
-    <property name="title">
-     <string>Tools</string>
-    </property>
-    <addaction name="dataEntryAction"/>
-    <addaction name="postureEditorAction"/>
-    <addaction name="prototypeManagerAction"/>
-    <addaction name="transitionEditorAction"/>
-    <addaction name="specialTransitionEditorAction"/>
-    <addaction name="ruleManagerAction"/>
-    <addaction name="ruleEditorAction"/>
-    <addaction name="ruleTesterAction"/>
-    <addaction name="synthesisWindowAction"/>
-    <addaction name="synthesizerControlPanelAction"/>
-    <addaction name="intonationWindowAction"/>
-    <addaction name="intonationParametersAction"/>
-   </widget>
    <widget class="QMenu" name="menuInfo">
     <property name="title">
      <string>Info</string>
@@ -71,7 +122,6 @@
     <addaction name="aboutAction"/>
    </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuTools"/>
    <addaction name="menuInfo"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
@@ -103,71 +153,6 @@
   <action name="aboutAction">
    <property name="text">
     <string>About</string>
-   </property>
-  </action>
-  <action name="dataEntryAction">
-   <property name="text">
-    <string>Data entry</string>
-   </property>
-  </action>
-  <action name="postureEditorAction">
-   <property name="text">
-    <string>Posture editor</string>
-   </property>
-  </action>
-  <action name="postureCategoriesAction">
-   <property name="text">
-    <string>Posture categories</string>
-   </property>
-  </action>
-  <action name="prototypeManagerAction">
-   <property name="text">
-    <string>Prototype manager</string>
-   </property>
-  </action>
-  <action name="transitionEditorAction">
-   <property name="text">
-    <string>Transition editor</string>
-   </property>
-  </action>
-  <action name="specialTransitionEditorAction">
-   <property name="text">
-    <string>Special transition editor</string>
-   </property>
-  </action>
-  <action name="ruleManagerAction">
-   <property name="text">
-    <string>Rule manager</string>
-   </property>
-  </action>
-  <action name="ruleTesterAction">
-   <property name="text">
-    <string>Rule tester</string>
-   </property>
-  </action>
-  <action name="synthesisWindowAction">
-   <property name="text">
-    <string>Synthesis window</string>
-   </property>
-  </action>
-  <action name="synthesizerControlPanelAction">
-   <property name="text">
-    <string>Synthesizer control panel</string>
-   </property>
-  </action>
-  <action name="intonationWindowAction">
-   <property name="text">
-    <string>Intonation window</string>
-   </property>
-  </action>
-  <action name="intonationParametersAction">
-   <property name="text">
-    <string>Intonation parameters</string>
-   </property>
-  </action>
-  <action name="ruleEditorAction">
-   <property name="text">
-    <string>Rule editor</string>
    </property>
   </action>
  </widget>
