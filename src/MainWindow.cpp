@@ -130,6 +130,9 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(ruleEditorWindow_.get(), SIGNAL(equationReferenceChanged())         , prototypeManagerWindow_.get(), SLOT(setupEquationsTree()));
 
 	connect(synthesisWindow_.get(), SIGNAL(textSynthesized()), intonationWindow_.get(), SLOT(loadIntonationFromEventList()));
+	connect(synthesisWindow_.get(), SIGNAL(audioStarted()), intonationWindow_.get(), SLOT(handleAudioStarted()));
+	connect(synthesisWindow_.get(), SIGNAL(audioFinished()), intonationWindow_.get(), SLOT(handleAudioFinished()));
+	connect(intonationWindow_.get(), SIGNAL(playAudioFileRequested(QString)), synthesisWindow_.get(), SLOT(handlePlayAudioFileRequested(QString)));
 }
 
 MainWindow::~MainWindow()

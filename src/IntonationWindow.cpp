@@ -78,6 +78,8 @@ IntonationWindow::on_synthesizeButton_clicked()
 		return;
 	}
 
+	ui_->synthesizeButton->setEnabled(false);
+
 	try {
 		auto& eventList = synthesis_->trmController->eventList();
 		if (eventList.list().empty()) {
@@ -93,12 +95,7 @@ IntonationWindow::on_synthesizeButton_clicked()
 					trmParamFilePath.toStdString().c_str(),
 					speechFilePath.toStdString().c_str());
 
-		//TODO: replace temporary solution
-		QStringList arguments;
-		arguments << speechFilePath;
-		QProcess* process = new QProcess(this);
-		process->start("aplay", arguments);
-		// Do not check the return value.
+		emit playAudioFileRequested(speechFilePath);
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}
@@ -109,6 +106,20 @@ void
 IntonationWindow::loadIntonationFromEventList()
 {
 	ui_->intonationWidget->loadIntonationFromEventList();
+}
+
+// Slot.
+void
+IntonationWindow::handleAudioStarted()
+{
+	ui_->synthesizeButton->setEnabled(false);
+}
+
+// Slot.
+void
+IntonationWindow::handleAudioFinished()
+{
+	ui_->synthesizeButton->setEnabled(true);
 }
 
 void

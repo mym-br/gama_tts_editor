@@ -15,51 +15,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef INTONATION_WINDOW_H
-#define INTONATION_WINDOW_H
+#ifndef AUDIO_WORKER_H
+#define AUDIO_WORKER_H
 
-#include <memory>
+#include <QObject>
+#include <QString>
+#include <QStringList>
 
-#include <QWidget>
+#include "AudioPlayer.h"
 
-namespace Ui {
-class IntonationWindow;
-}
+
 
 namespace GS {
 
-class Synthesis;
-
-class IntonationWindow : public QWidget {
+class AudioWorker : public QObject {
 	Q_OBJECT
 public:
-	explicit IntonationWindow(QWidget* parent=0);
-	~IntonationWindow();
-
-	void clear();
-	void setup(Synthesis* synthesis);
+	explicit AudioWorker(QObject* parent=0);
+	~AudioWorker();
 signals:
-	void playAudioFileRequested(QString filePath);
+	void audioOutputDeviceListSent(QStringList deviceNameList, int defaultDeviceIndex);
+	void finished();
+	void errorOccurred(QString);
 public slots:
-	void on_synthesizeButton_clicked();
-	void loadIntonationFromEventList();
-	void handleAudioStarted();
-	void handleAudioFinished();
-private slots:
-	void on_valueLineEdit_editingFinished();
-	void on_slopeLineEdit_editingFinished();
-	void on_beatOffsetLineEdit_editingFinished();
-	void setPointData(
-		double value,
-		double slope,
-		double beat,
-		double beatOffset,
-		double absoluteTime);
+	void sendOutputDeviceList();
+	void playAudioFile(QString filePath, int outputDeviceIndex);
 private:
-	std::unique_ptr<Ui::IntonationWindow> ui_;
-	Synthesis* synthesis_;
+	AudioWorker(const AudioWorker&);
+	AudioWorker& operator=(const AudioWorker&);
+
+	AudioPlayer player_;
 };
 
 } // namespace GS
 
-#endif // INTONATION_WINDOW_H
+#endif // AUDIO_WORKER_H

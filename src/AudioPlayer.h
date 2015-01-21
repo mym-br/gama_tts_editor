@@ -15,51 +15,38 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef INTONATION_WINDOW_H
-#define INTONATION_WINDOW_H
+#ifndef AUDIO_PLAYER_H
+#define AUDIO_PLAYER_H
 
-#include <memory>
+#include <cstdint>
+#include <string>
+#include <vector>
 
-#include <QWidget>
+#include "portaudio.h"
+#include "portaudiocpp/AutoSystem.hxx"
 
-namespace Ui {
-class IntonationWindow;
-}
+
 
 namespace GS {
 
-class Synthesis;
-
-class IntonationWindow : public QWidget {
-	Q_OBJECT
+class AudioPlayer {
 public:
-	explicit IntonationWindow(QWidget* parent=0);
-	~IntonationWindow();
+	AudioPlayer();
 
-	void clear();
-	void setup(Synthesis* synthesis);
-signals:
-	void playAudioFileRequested(QString filePath);
-public slots:
-	void on_synthesizeButton_clicked();
-	void loadIntonationFromEventList();
-	void handleAudioStarted();
-	void handleAudioFinished();
-private slots:
-	void on_valueLineEdit_editingFinished();
-	void on_slopeLineEdit_editingFinished();
-	void on_beatOffsetLineEdit_editingFinished();
-	void setPointData(
-		double value,
-		double slope,
-		double beat,
-		double beatOffset,
-		double absoluteTime);
+	void getOutputDeviceList(std::vector<std::string>& deviceNameList, int& defaultDeviceIndex);
+	void playFile(const std::string& filePath, int outputDeviceIndex);
 private:
-	std::unique_ptr<Ui::IntonationWindow> ui_;
-	Synthesis* synthesis_;
+	AudioPlayer(const AudioPlayer&);
+	AudioPlayer& operator=(const AudioPlayer&);
+
+	int callback(const void* inputBuffer, void* outputBuffer, unsigned long framesPerBuffer,
+			const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags);
+
+	std::vector<int16_t> buffer_;
+	unsigned int bufferIndex_;
+	unsigned int numInputChannels_;
 };
 
 } // namespace GS
 
-#endif // INTONATION_WINDOW_H
+#endif // AUDIO_PLAYER_H

@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-
+CONFIG += link_pkgconfig
 
 TARGET = gs_editor
 TEMPLATE = app
@@ -34,7 +34,9 @@ SOURCES += src/main.cpp\
     src/IntonationWindow.cpp \
     src/IntonationWidget.cpp \
     src/Synthesis.cpp \
-    src/IntonationParametersWindow.cpp
+    src/IntonationParametersWindow.cpp \
+    src/AudioPlayer.cpp \
+    src/AudioWorker.cpp
 
 HEADERS  += src/MainWindow.h \
     src/DataEntryWindow.h \
@@ -58,7 +60,9 @@ HEADERS  += src/MainWindow.h \
     src/IntonationWindow.h \
     src/IntonationWidget.h \
     src/Synthesis.h \
-    src/IntonationParametersWindow.h
+    src/IntonationParametersWindow.h \
+    src/AudioPlayer.h \
+    src/AudioWorker.h
 
 FORMS    += ui/MainWindow.ui \
     ui/DataEntryWindow.ui \
@@ -75,7 +79,7 @@ FORMS    += ui/MainWindow.ui \
 
 
 #UI_DIR = ui
-#PKGCONFIG += jack
+PKGCONFIG += sndfile portaudiocpp
 INCLUDEPATH += src \
     src/qt_model \
     ../gnuspeech_sa/src \

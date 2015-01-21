@@ -21,6 +21,7 @@
 #include <memory>
 
 #include <QString>
+#include <QThread>
 #include <QWidget>
 
 
@@ -46,12 +47,21 @@ public:
 	void setup(TRMControlModel::Model* model, Synthesis* synthesis);
 signals:
 	void textSynthesized();
+	void playAudioFileRequested(QString filePath, int outputDeviceIndex);
+	void updateAudioDeviceComboBoxRequested();
+	void audioFinished();
+	void audioStarted();
+public slots:
+	void handlePlayAudioFileRequested(QString filePath);
 private slots:
 	void on_parseButton_clicked();
 	void on_synthesizeButton_clicked();
 	void on_parameterTableWidget_cellChanged(int row, int column);
 	void setupParameterTable();
 	void updateMouseTracking(double time, double value);
+	void handleAudioError(QString msg);
+	void handleAudioFinished();
+	void updateAudioDeviceComboBox(QStringList deviceNameList, int defaultDeviceIndex);
 private:
 	enum {
 		NUM_PARAM = 16
@@ -60,6 +70,7 @@ private:
 	std::unique_ptr<Ui::SynthesisWindow> ui_;
 	TRMControlModel::Model* model_;
 	Synthesis* synthesis_;
+	QThread audioThread_;
 };
 
 } // namespace GS

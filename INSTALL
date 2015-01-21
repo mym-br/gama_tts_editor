@@ -2,14 +2,16 @@
 - Requirements:
 
   - A C++ compiler with C++11 support.
-    The following compilers have been tested:
+    The following compiler has been tested:
     - GCC 4.8.2 (GNU/Linux x86_64).
 
   - Qt (tested with version 4.8.5).
 
   - Gnuspeech-SA.
 
-  - Currently the sound is played using the program "aplay" from ALSA.
+  - libsndfile (tested with version 1.0.25).
+
+  - PortAudio with C++ binding (tested with version v19_20140130).
 
 - Build Gnuspeech-SA, with source directory at ../gnuspeech_sa and
   build directory at ../gnuspeech_sa-build.

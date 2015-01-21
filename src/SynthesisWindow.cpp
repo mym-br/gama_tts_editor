@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "SynthesisWindow.h"
-#include "ui_SynthesisWindow.h"
 
 #include <memory>
 #include <string>
@@ -26,11 +25,13 @@
 #include <QString>
 #include <QStringList>
 
+#include "AudioWorker.h"
 #include "Controller.h"
 #include "en/phonetic_string_parser/PhoneticStringParser.h"
 #include "en/text_parser/TextParser.h"
 #include "Model.h"
 #include "Synthesis.h"
+#include "ui_SynthesisWindow.h"
 
 #define TRM_PARAM_FILE_NAME "generated__trm_param.txt"
 #define SPEECH_FILE_NAME "generated__speech.wav"
@@ -63,10 +64,22 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 
 	connect(ui_->textLineEdit, SIGNAL(returnPressed()), ui_->parseButton, SLOT(click()));
 	connect(ui_->eventWidget, SIGNAL(mouseMoved(double, double)), this, SLOT(updateMouseTracking(double, double)));
+
+	AudioWorker* audioWorker = new AudioWorker;
+	audioWorker->moveToThread(&audioThread_);
+	connect(&audioThread_, SIGNAL(finished()), audioWorker, SLOT(deleteLater()));
+	connect(this, SIGNAL(playAudioFileRequested(QString, int)), audioWorker, SLOT(playAudioFile(QString, int)));
+	connect(audioWorker, SIGNAL(finished()), this, SLOT(handleAudioFinished()));
+	connect(audioWorker, SIGNAL(errorOccurred(QString)), this, SLOT(handleAudioError(QString)));
+	connect(this, SIGNAL(updateAudioDeviceComboBoxRequested()), audioWorker, SLOT(sendOutputDeviceList()));
+	connect(audioWorker, SIGNAL(audioOutputDeviceListSent(QStringList, int)), this, SLOT(updateAudioDeviceComboBox(QStringList, int)));
+	audioThread_.start();
 }
 
 SynthesisWindow::~SynthesisWindow()
 {
+	audioThread_.quit();
+	audioThread_.wait();
 }
 
 void
@@ -101,6 +114,8 @@ SynthesisWindow::setup(TRMControlModel::Model* model, Synthesis* synthesis)
 		clear();
 		throw;
 	}
+
+	emit updateAudioDeviceComboBoxRequested();
 }
 
 void
@@ -113,6 +128,9 @@ SynthesisWindow::on_parseButton_clicked()
 	if (text.trimmed().isEmpty()) {
 		return;
 	}
+
+	ui_->parseButton->setEnabled(false);
+	ui_->synthesizeButton->setEnabled(false);
 
 	try {
 		std::string phoneticString = synthesis_->textParser->parseText(text.toStdString().c_str());
@@ -136,6 +154,9 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		return;
 	}
 
+	ui_->parseButton->setEnabled(false);
+	ui_->synthesizeButton->setEnabled(false);
+
 	try {
 		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
 		QString speechFilePath = synthesis_->projectDir + SPEECH_FILE_NAME;
@@ -151,12 +172,12 @@ SynthesisWindow::on_synthesizeButton_clicked()
 
 		ui_->eventWidget->update();
 
-		//TODO: replace temporary solution
-		QStringList arguments;
-		arguments << speechFilePath;
-		QProcess* process = new QProcess(this);
-		process->start("aplay", arguments);
-		// Do not check the return value.
+		int audioDeviceIndex = ui_->audioDeviceComboBox->currentIndex();
+		if (audioDeviceIndex == -1) {
+			audioDeviceIndex = 0;
+		}
+		emit audioStarted();
+		emit playAudioFileRequested(speechFilePath, audioDeviceIndex);
 
 		emit textSynthesized();
 	} catch (const Exception& exc) {
@@ -204,6 +225,67 @@ SynthesisWindow::updateMouseTracking(double time, double value)
 		ui_->timeLineEdit->setText(QString::number(time, 'f', 0));
 		ui_->valueLineEdit->setText(QString::number(value, 'f', 2));
 	}
+}
+
+// Slot.
+void
+SynthesisWindow::handleAudioError(QString msg)
+{
+	QMessageBox::critical(this, tr("Error"), msg);
+
+	ui_->parseButton->setEnabled(true);
+	ui_->synthesizeButton->setEnabled(true);
+
+	emit updateAudioDeviceComboBoxRequested();
+	emit audioFinished();
+}
+
+// Slot.
+void
+SynthesisWindow::handleAudioFinished()
+{
+	ui_->parseButton->setEnabled(true);
+	ui_->synthesizeButton->setEnabled(true);
+
+	emit updateAudioDeviceComboBoxRequested();
+	emit audioFinished();
+}
+
+// Slot.
+void
+SynthesisWindow::updateAudioDeviceComboBox(QStringList deviceNameList, int defaultDeviceIndex)
+{
+	int oldIndex = ui_->audioDeviceComboBox->currentIndex();
+	int oldCount = ui_->audioDeviceComboBox->count();
+
+	ui_->audioDeviceComboBox->clear();
+
+	if (deviceNameList.empty()) {
+		ui_->audioDeviceComboBox->setCurrentIndex(-1);
+		return;
+	}
+
+	ui_->audioDeviceComboBox->addItems(deviceNameList);
+
+	if (oldIndex == -1 || oldCount != ui_->audioDeviceComboBox->count()) {
+		ui_->audioDeviceComboBox->setCurrentIndex(defaultDeviceIndex);
+	} else {
+		ui_->audioDeviceComboBox->setCurrentIndex(oldIndex);
+	}
+}
+
+// Slot.
+void
+SynthesisWindow::handlePlayAudioFileRequested(QString filePath)
+{
+	ui_->parseButton->setEnabled(false);
+	ui_->synthesizeButton->setEnabled(false);
+
+	int audioDeviceIndex = ui_->audioDeviceComboBox->currentIndex();
+	if (audioDeviceIndex == -1) {
+		audioDeviceIndex = 0;
+	}
+	emit playAudioFileRequested(filePath, audioDeviceIndex);
 }
 
 } // namespace GS

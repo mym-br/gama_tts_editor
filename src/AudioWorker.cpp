@@ -15,51 +15,51 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef INTONATION_WINDOW_H
-#define INTONATION_WINDOW_H
+#include "AudioWorker.h"
 
-#include <memory>
+#include <exception>
+#include <string>
+#include <vector>
 
-#include <QWidget>
 
-namespace Ui {
-class IntonationWindow;
-}
 
 namespace GS {
 
-class Synthesis;
+AudioWorker::AudioWorker(QObject* parent)
+		: QObject(parent)
+{
+}
 
-class IntonationWindow : public QWidget {
-	Q_OBJECT
-public:
-	explicit IntonationWindow(QWidget* parent=0);
-	~IntonationWindow();
+AudioWorker::~AudioWorker()
+{
+}
 
-	void clear();
-	void setup(Synthesis* synthesis);
-signals:
-	void playAudioFileRequested(QString filePath);
-public slots:
-	void on_synthesizeButton_clicked();
-	void loadIntonationFromEventList();
-	void handleAudioStarted();
-	void handleAudioFinished();
-private slots:
-	void on_valueLineEdit_editingFinished();
-	void on_slopeLineEdit_editingFinished();
-	void on_beatOffsetLineEdit_editingFinished();
-	void setPointData(
-		double value,
-		double slope,
-		double beat,
-		double beatOffset,
-		double absoluteTime);
-private:
-	std::unique_ptr<Ui::IntonationWindow> ui_;
-	Synthesis* synthesis_;
-};
+// Slot.
+void
+AudioWorker::sendOutputDeviceList()
+{
+	std::vector<std::string> deviceNameList;
+	int defaultDeviceIndex;
+	player_.getOutputDeviceList(deviceNameList, defaultDeviceIndex);
+
+	QStringList list;
+	for (const auto& name : deviceNameList) {
+		list.append(name.c_str());
+	}
+	emit audioOutputDeviceListSent(list, defaultDeviceIndex);
+}
+
+// Slot.
+void
+AudioWorker::playAudioFile(QString filePath, int outputDeviceIndex)
+{
+	try {
+		player_.playFile(filePath.toStdString(), outputDeviceIndex);
+	} catch (const std::exception& exc) {
+		emit errorOccurred(QString(exc.what()));
+	}
+
+	emit finished();
+}
 
 } // namespace GS
-
-#endif // INTONATION_WINDOW_H
