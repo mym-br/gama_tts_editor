@@ -98,6 +98,7 @@ IntonationWindow::on_synthesizeButton_clicked()
 		emit playAudioFileRequested(speechFilePath);
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
+		ui_->synthesizeButton->setEnabled(true);
 	}
 }
 
