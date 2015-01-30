@@ -13,8 +13,8 @@ public:
 	~SignalBlocker() { obj_->blockSignals(previousSignalsBlocked_); }
 
 private:
-	SignalBlocker(const SignalBlocker&);
-	SignalBlocker& operator=(const SignalBlocker&);
+	SignalBlocker(const SignalBlocker&) = delete;
+	SignalBlocker& operator=(const SignalBlocker&) = delete;
 
 	QObject* obj_;
 	bool previousSignalsBlocked_;

@@ -61,8 +61,8 @@ signals:
 public slots:
 	void updateView();
 private:
-	CategoryModel(const CategoryModel&);
-	CategoryModel& operator=(const CategoryModel&);
+	CategoryModel(const CategoryModel&) = delete;
+	CategoryModel& operator=(const CategoryModel&) = delete;
 
 	TRMControlModel::Model* model_;
 };

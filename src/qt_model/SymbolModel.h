@@ -57,8 +57,8 @@ signals:
 	void symbolChanged();
 	void errorOccurred(QString msg);
 private:
-	SymbolModel(const SymbolModel&);
-	SymbolModel& operator=(const SymbolModel&);
+	SymbolModel(const SymbolModel&) = delete;
+	SymbolModel& operator=(const SymbolModel&) = delete;
 
 	TRMControlModel::Model* model_;
 };

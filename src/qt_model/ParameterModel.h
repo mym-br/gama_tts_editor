@@ -57,8 +57,8 @@ signals:
 	void parameterChanged();
 	void errorOccurred(QString msg);
 private:
-	ParameterModel(const ParameterModel&);
-	ParameterModel& operator=(const ParameterModel&);
+	ParameterModel(const ParameterModel&) = delete;
+	ParameterModel& operator=(const ParameterModel&) = delete;
 
 	TRMControlModel::Model* model_;
 };

@@ -36,8 +36,8 @@ public:
 	void getOutputDeviceList(std::vector<std::string>& deviceNameList, int& defaultDeviceIndex);
 	void playFile(const std::string& filePath, int outputDeviceIndex);
 private:
-	AudioPlayer(const AudioPlayer&);
-	AudioPlayer& operator=(const AudioPlayer&);
+	AudioPlayer(const AudioPlayer&) = delete;
+	AudioPlayer& operator=(const AudioPlayer&) = delete;
 
 	int callback(const void* inputBuffer, void* outputBuffer, unsigned long framesPerBuffer,
 			const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags);

@@ -41,8 +41,8 @@ public slots:
 	void sendOutputDeviceList();
 	void playAudioFile(QString filePath, int outputDeviceIndex);
 private:
-	AudioWorker(const AudioWorker&);
-	AudioWorker& operator=(const AudioWorker&);
+	AudioWorker(const AudioWorker&) = delete;
+	AudioWorker& operator=(const AudioWorker&) = delete;
 
 	AudioPlayer player_;
 };
