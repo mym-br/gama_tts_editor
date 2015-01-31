@@ -171,7 +171,6 @@ MainWindow::on_openAction_triggered()
 	config_.newConfigFileName = QString();
 
 	openModel();
-	qDebug("### Model opened.");
 }
 
 void
@@ -187,7 +186,6 @@ MainWindow::on_saveAction_triggered()
 
 	if (!config_.newConfigFileName.isEmpty()) {
 		saveModel();
-		qDebug("### Model saved.");
 	}
 }
 
@@ -202,7 +200,6 @@ MainWindow::on_saveAsAction_triggered()
 
 	if (!config_.newConfigFileName.isEmpty()) {
 		saveModel();
-		qDebug("### Model saved.");
 	}
 }
 
@@ -214,7 +211,6 @@ MainWindow::on_revertAction_triggered()
 	}
 
 	openModel();
-	qDebug("### Model opened.");
 }
 
 void
@@ -309,6 +305,8 @@ MainWindow::openModel()
 		synthesisWindow_->setup(model_.get(), synthesis_.get());
 		intonationWindow_->setup(synthesis_.get());
 		intonationParametersWindow_->setup(synthesis_.get());
+
+		qDebug("### Model opened.");
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 
@@ -335,6 +333,8 @@ MainWindow::saveModel()
 {
 	try {
 		model_->save(config_.projectDir.toStdString().c_str(), config_.newConfigFileName.toStdString().c_str());
+
+		qDebug("### Model saved.");
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}
