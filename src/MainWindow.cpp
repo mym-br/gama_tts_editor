@@ -46,7 +46,7 @@
 #include "ui_MainWindow.h"
 
 #define PROGRAM_NAME "GS Editor"
-#define PROGRAM_VERSION "0.1"
+#define PROGRAM_VERSION "0.1.0"
 #define MAX_LOG_BLOCK_COUNT 500
 
 
