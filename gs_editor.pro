@@ -76,18 +76,36 @@ FORMS    += ui/MainWindow.ui \
     ui/IntonationWindow.ui \
     ui/IntonationParametersWindow.ui
 
-
-
-#UI_DIR = ui
 PKGCONFIG += sndfile portaudiocpp
 INCLUDEPATH += src \
-    src/qt_model \
-    ../gnuspeech_sa/src \
-    ../gnuspeech_sa/src/trm \
-    ../gnuspeech_sa/src/trm_control_model
-
-DEPENDPATH += $$INCLUDEPATH
+    src/qt_model
 
 QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra
 
-LIBS += ../gnuspeech_sa-build/libgnuspeechsa.a
+exists(../gnuspeech_sa/CMakeLists.txt) {
+    message(Using local Gnuspeech-SA)
+    INCLUDEPATH += \
+        ../gnuspeech_sa/src \
+        ../gnuspeech_sa/src/trm \
+        ../gnuspeech_sa/src/trm_control_model
+    LIBS += -L../gnuspeech_sa-build -lgnuspeechsa
+} else {
+    message(Using system Gnuspeech-SA)
+    PKGCONFIG += gnuspeechsa
+}
+
+DEPENDPATH += $${INCLUDEPATH}
+
+MOC_DIR = tmp
+OBJECTS_DIR = tmp
+UI_DIR = tmp
+
+unix {
+    isEmpty(INSTALL_PREFIX) {
+        INSTALL_PREFIX = /usr/local
+    }
+    target.path = $${INSTALL_PREFIX}/bin
+    dataset.path = $${INSTALL_PREFIX}/share/gnuspeech/gs_editor
+    dataset.files = data
+    INSTALLS = target dataset
+}
