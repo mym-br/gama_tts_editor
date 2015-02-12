@@ -7,19 +7,23 @@
 
   - Qt (tested with version 4.8.5).
 
-  - Gnuspeech-SA.
-
   - libsndfile (tested with version 1.0.25).
 
   - PortAudio with C++ binding (tested with version v19_20140130).
 
-- Build Gnuspeech-SA, with source directory at ../gnuspeech_sa and
-  build directory at ../gnuspeech_sa-build.
+  - Gnuspeech-SA (tested with version 0.1.0).
 
-- Generate the Makefile (GNU/Linux):
+- Generate the Makefile:
 
-  qmake "MOC_DIR=tmp" "OBJECTS_DIR=tmp"
+  qmake
+  # or
+  qmake "INSTALL_PREFIX=/usr"
 
-- Build (GNU/Linux):
+- Build:
 
   make
+
+  # Optional (GNU/Linux):
+  make install
+  # or
+  make install INSTALL_ROOT=/tmp/install
