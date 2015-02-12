@@ -137,6 +137,8 @@ SynthesisWindow::on_parseButton_clicked()
 		ui_->phoneticStringTextEdit->setPlainText(phoneticString.c_str());
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
+		ui_->parseButton->setEnabled(true);
+		ui_->synthesizeButton->setEnabled(true);
 		return;
 	}
 
@@ -182,6 +184,8 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		emit textSynthesized();
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
+		ui_->parseButton->setEnabled(true);
+		ui_->synthesizeButton->setEnabled(true);
 	}
 }
 
