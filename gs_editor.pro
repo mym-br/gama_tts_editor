@@ -4,18 +4,20 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+greaterThan(QT_MAJOR_VERSION, 4) {
+    QT += widgets
+    CONFIG += c++11
+}
 
 CONFIG += link_pkgconfig
 
 TARGET = gs_editor
 TEMPLATE = app
 
-
-SOURCES += src/main.cpp\
-        src/MainWindow.cpp \
+SOURCES += src/main.cpp \
+    src/MainWindow.cpp \
     src/DataEntryWindow.cpp \
     src/qt_model/CategoryModel.cpp \
     src/Application.cpp \
@@ -38,7 +40,7 @@ SOURCES += src/main.cpp\
     src/AudioPlayer.cpp \
     src/AudioWorker.cpp
 
-HEADERS  += src/MainWindow.h \
+HEADERS += src/MainWindow.h \
     src/DataEntryWindow.h \
     src/qt_model/CategoryModel.h \
     src/Application.h \
@@ -64,7 +66,7 @@ HEADERS  += src/MainWindow.h \
     src/AudioPlayer.h \
     src/AudioWorker.h
 
-FORMS    += ui/MainWindow.ui \
+FORMS += ui/MainWindow.ui \
     ui/DataEntryWindow.ui \
     ui/SynthesisWindow.ui \
     ui/PrototypeManagerWindow.ui \
@@ -80,7 +82,7 @@ PKGCONFIG += sndfile portaudiocpp
 INCLUDEPATH += src \
     src/qt_model
 
-QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra
+QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra -march=native
 
 exists(../gnuspeech_sa/CMakeLists.txt) {
     message(Using local Gnuspeech-SA)

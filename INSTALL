@@ -5,7 +5,7 @@
     The following compiler has been tested:
     - GCC 4.8.2 (GNU/Linux x86_64).
 
-  - Qt (tested with version 4.8.5).
+  - Qt (tested with version 4.8.5, 5.4.0).
 
   - libsndfile (tested with version 1.0.25).
 

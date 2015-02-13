@@ -77,11 +77,14 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 	int rowHeight = fm.height() + fm.xHeight();
 
 	QHeaderView* vHeader = ui_->pointsTable->verticalHeader();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	vHeader->setSectionResizeMode(QHeaderView::Fixed);
+#else
 	vHeader->setResizeMode(QHeaderView::Fixed);
+#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->pointsTable->setColumnCount(NUM_POINTS_TABLE_COLUMNS);
 	ui_->pointsTable->setHorizontalHeaderLabels(QStringList() << tr("Type") << tr("Value") << tr("Is phantom?") << tr("Has slope?") << tr("Slope") << tr("Time"));
-	//ui_->pointsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch); // Qt5
 	//ui_->pointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 
 //	QDoubleValidator* validator = new QDoubleValidator(0.0, 1000.0, 1, this);

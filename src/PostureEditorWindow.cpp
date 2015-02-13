@@ -49,31 +49,57 @@ PostureEditorWindow::PostureEditorWindow(QWidget* parent)
 	int rowHeight = fm.height() + fm.xHeight();
 
 	QHeaderView* vHeader = ui_->posturesTable->verticalHeader();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	vHeader->setSectionResizeMode(QHeaderView::Fixed);
+#else
 	vHeader->setResizeMode(QHeaderView::Fixed);
+#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->posturesTable->setColumnCount(NUM_POSTURES_TABLE_COLUMNS);
 	ui_->posturesTable->setHorizontalHeaderLabels(QStringList() << tr("Posture"));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	ui_->posturesTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#else
 	ui_->posturesTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#endif
 
 	vHeader = ui_->categoriesTable->verticalHeader();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	vHeader->setSectionResizeMode(QHeaderView::Fixed);
+#else
 	vHeader->setResizeMode(QHeaderView::Fixed);
+#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->categoriesTable->setColumnCount(NUM_CATEGORIES_TABLE_COLUMNS);
 	ui_->categoriesTable->setHorizontalHeaderLabels(QStringList() << tr("Name") << tr("Is member?"));
 
 	vHeader = ui_->parametersTable->verticalHeader();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	vHeader->setSectionResizeMode(QHeaderView::Fixed);
+#else
 	vHeader->setResizeMode(QHeaderView::Fixed);
+#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->parametersTable->setColumnCount(NUM_PARAMETERS_TABLE_COLUMNS);
 	ui_->parametersTable->setHorizontalHeaderLabels(QStringList() << tr("Name") << tr("Value") << tr("Minimum") << tr("Maximum") << tr("Default"));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#else
 	ui_->parametersTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#endif
 
 	vHeader = ui_->symbolsTable->verticalHeader();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	vHeader->setSectionResizeMode(QHeaderView::Fixed);
+#else
 	vHeader->setResizeMode(QHeaderView::Fixed);
+#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->symbolsTable->setColumnCount(NUM_SYMBOLS_TABLE_COLUMNS);
 	ui_->symbolsTable->setHorizontalHeaderLabels(QStringList() << tr("Name") << tr("Value") << tr("Minimum") << tr("Maximum") << tr("Default"));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+#else
 	ui_->symbolsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#endif
 }
 
 PostureEditorWindow::~PostureEditorWindow()

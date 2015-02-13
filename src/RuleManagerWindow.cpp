@@ -43,11 +43,19 @@ RuleManagerWindow::RuleManagerWindow(QWidget* parent)
 	int rowHeight = fm.height() + fm.xHeight();
 
 	QHeaderView* vHeader = ui_->rulesTable->verticalHeader();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	vHeader->setSectionResizeMode(QHeaderView::Fixed);
+#else
 	vHeader->setResizeMode(QHeaderView::Fixed);
+#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->rulesTable->setColumnCount(NUM_RULES_TABLE_COLUMNS);
 	ui_->rulesTable->setHorizontalHeaderLabels(QStringList() << tr("Rule"));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	ui_->rulesTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#else
 	ui_->rulesTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#endif
 }
 
 RuleManagerWindow::~RuleManagerWindow()

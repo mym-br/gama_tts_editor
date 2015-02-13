@@ -35,10 +35,31 @@ public:
 	}
 
 	static void registerQDebugMessageHandler() {
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+		qInstallMessageHandler(logQDebugMessageHandler);
+#else
 		qInstallMsgHandler(logQDebugMessageHandler);
+#endif
 	}
-
 private:
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	static void logQDebugMessageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg) {
+		switch (type) {
+		case QtDebugMsg:
+			std::cout << msg.toStdString() << std::endl;
+			break;
+		case QtWarningMsg:
+			std::cerr << "Warning: " << msg.toStdString() << std::endl;
+			break;
+		case QtCriticalMsg:
+			std::cerr << "Critical error: " << msg.toStdString() << std::endl;
+			break;
+		case QtFatalMsg:
+			fprintf(stderr, "Fatal error: %s\n[file: %s]\n[function: %s]\n[line: %d]\n", msg.toUtf8().constData(), context.file, context.function, context.line);
+			std::terminate();
+		}
+	}
+#else
 	static void logQDebugMessageHandler(QtMsgType type, const char* msg) {
 		switch (type) {
 		case QtDebugMsg:
@@ -55,7 +76,7 @@ private:
 			std::terminate();
 		}
 	}
-
+#endif
 protected:
 	virtual int_type overflow(int_type ch) {
 		if (ch == '\n') {
