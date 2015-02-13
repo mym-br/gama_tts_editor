@@ -1,4 +1,4 @@
 /tmp
 /Makefile
-*.user
+*.pro.user*
 *__NOP
