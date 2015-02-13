@@ -88,7 +88,7 @@ exists(../gnuspeech_sa/CMakeLists.txt) {
         ../gnuspeech_sa/src \
         ../gnuspeech_sa/src/trm \
         ../gnuspeech_sa/src/trm_control_model
-    LIBS += -L../gnuspeech_sa-build -lgnuspeechsa
+    LIBS += -l:../gnuspeech_sa-build/libgnuspeechsa.so
 } else {
     message(Using system Gnuspeech-SA)
     PKGCONFIG += gnuspeechsa
