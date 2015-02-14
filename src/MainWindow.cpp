@@ -349,7 +349,7 @@ MainWindow::about()
 
 	QTextEdit* textEdit = new QTextEdit(&aboutDialog);
 	textEdit->setReadOnly(true);
-	textEdit->setHtml(tr(
+	textEdit->setHtml(
 		"<pre>"
 		PROGRAM_NAME " " PROGRAM_VERSION "\n\n"
 
@@ -381,7 +381,7 @@ MainWindow::about()
 		"  as published by the Free Software Foundation, either version 3 of the\n"
 		"  License, or (at your option) any later version.\n"
 		"</pre>"
-	));
+	);
 	layout->addWidget(textEdit);
 
 	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, &aboutDialog);
@@ -389,7 +389,7 @@ MainWindow::about()
 
 	connect(buttonBox, SIGNAL(accepted()), &aboutDialog, SLOT(accept()));
 
-	aboutDialog.setWindowTitle(tr("About " PROGRAM_NAME));
+	aboutDialog.setWindowTitle(tr("About ") + PROGRAM_NAME);
 	aboutDialog.resize(600, 550);
 	aboutDialog.exec();
 }

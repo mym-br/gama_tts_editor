@@ -209,7 +209,7 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 		// Label.
 		painter.drawText(QPointF(MARGIN, yBase - 0.5 * GRAPH_HEIGHT + textYOffset_), model_->parameterList()[modelParamIndex].name().c_str());
 		if (paramIndex >= NUM_PARAM) {
-			painter.drawText(QPointF(MARGIN, yBase - 0.5 * GRAPH_HEIGHT + textYOffset_ + TRACK_HEIGHT), tr(SPECIAL_STRING));
+			painter.drawText(QPointF(MARGIN, yBase - 0.5 * GRAPH_HEIGHT + textYOffset_ + TRACK_HEIGHT), SPECIAL_STRING);
 		}
 		// Limits.
 		painter.drawText(QPointF(MARGIN, yBase), QString("%1").arg(currentMin, maxLabelSize_));

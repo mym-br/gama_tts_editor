@@ -66,9 +66,9 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 {
 	ui_->setupUi(this);
 
-	ui_->transitionTypeComboBox->addItem(tr(typeNames[2]), 2);
-	ui_->transitionTypeComboBox->addItem(tr(typeNames[3]), 3);
-	ui_->transitionTypeComboBox->addItem(tr(typeNames[4]), 4);
+	ui_->transitionTypeComboBox->addItem(typeNames[2], 2);
+	ui_->transitionTypeComboBox->addItem(typeNames[3], 3);
+	ui_->transitionTypeComboBox->addItem(typeNames[4], 4);
 
 	ui_->equationsTree->setColumnCount(NUM_EQUATIONS_TREE_COLUMNS);
 	ui_->equationsTree->setHeaderLabels(QStringList() << tr("Equation"));
