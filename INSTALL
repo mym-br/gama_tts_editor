@@ -11,7 +11,7 @@
 
   - PortAudio with C++ binding (tested with version v19_20140130).
 
-  - Gnuspeech-SA (tested with version 0.1.0).
+  - Gnuspeech-SA (tested with version 0.1.1).
 
 - Generate the Makefile:
 
