@@ -28,11 +28,7 @@ namespace Ui {
 class PostureEditorWindow;
 }
 
-QT_BEGIN_NAMESPACE
-class QTableWidgetItem;
-QT_END_NAMESPACE
-
-
+QT_FORWARD_DECLARE_CLASS(QTableWidgetItem)
 
 namespace GS {
 

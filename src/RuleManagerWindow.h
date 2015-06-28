@@ -28,10 +28,8 @@ namespace Ui {
 class RuleManagerWindow;
 }
 
-QT_BEGIN_NAMESPACE
-class QString;
-class QTableWidgetItem;
-QT_END_NAMESPACE
+QT_FORWARD_DECLARE_CLASS(QString)
+QT_FORWARD_DECLARE_CLASS(QTableWidgetItem)
 
 namespace GS {
 

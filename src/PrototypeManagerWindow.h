@@ -27,9 +27,7 @@
 
 
 
-QT_BEGIN_NAMESPACE
-class QTreeWidgetItem;
-QT_END_NAMESPACE
+QT_FORWARD_DECLARE_CLASS(QTreeWidgetItem)
 
 namespace Ui {
 class PrototypeManagerWindow;

@@ -28,10 +28,8 @@ namespace Ui {
 class RuleEditorWindow;
 }
 
-QT_BEGIN_NAMESPACE
-class QTableWidgetItem;
-class QTreeWidgetItem;
-QT_END_NAMESPACE
+QT_FORWARD_DECLARE_CLASS(QTableWidgetItem)
+QT_FORWARD_DECLARE_CLASS(QTreeWidgetItem)
 
 namespace GS {
 
