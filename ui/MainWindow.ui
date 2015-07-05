@@ -18,7 +18,16 @@
     <item>
      <widget class="QWidget" name="widget" native="true">
       <layout class="QGridLayout" name="gridLayout">
-       <property name="margin">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
         <number>0</number>
        </property>
        <property name="spacing">
@@ -101,7 +110,7 @@
      <x>0</x>
      <y>0</y>
      <width>1000</width>
-     <height>24</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -111,6 +120,7 @@
     <addaction name="openAction"/>
     <addaction name="saveAction"/>
     <addaction name="saveAsAction"/>
+    <addaction name="separator"/>
     <addaction name="revertAction"/>
     <addaction name="separator"/>
     <addaction name="quitAction"/>
@@ -147,7 +157,7 @@
   </action>
   <action name="revertAction">
    <property name="text">
-    <string>Revert</string>
+    <string>Reload</string>
    </property>
   </action>
   <action name="aboutAction">
