@@ -167,7 +167,7 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
 		QString speechFilePath = synthesis_->projectDir + SPEECH_FILE_NAME;
 
-		TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfig();
+		TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();
 
 		synthesis_->trmController->synthesizePhoneticString(

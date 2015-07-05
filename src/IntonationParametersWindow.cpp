@@ -114,7 +114,7 @@ IntonationParametersWindow::setup(Synthesis* synthesis)
 
 	synthesis_ = synthesis;
 
-	TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfig();
+	TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfiguration();
 
 	ui_->deviationSpinBox->setValue(config.driftDeviation);
 	ui_->cutoffSpinBox->setValue(config.driftLowpassCutoff);
@@ -137,7 +137,7 @@ IntonationParametersWindow::on_updateButton_clicked()
 {
 	if (synthesis_ == nullptr) return;
 
-	TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfig();
+	TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfiguration();
 
 	config.intonation = changeIntonation(config.intonation, TRMControlModel::Configuration::INTONATION_MICRO    , ui_->microCheckBox->checkState());
 	config.intonation = changeIntonation(config.intonation, TRMControlModel::Configuration::INTONATION_MACRO    , ui_->macroCheckBox->checkState());
