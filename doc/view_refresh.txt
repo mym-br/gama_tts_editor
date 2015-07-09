@@ -14,15 +14,15 @@ Data entry
 		Remove    [no posture && no rule]
 		Move up   [no posture && no rule]
 		Move down [no posture && no rule]
-		Change name        -> Posture editor : unselect posture / Rule editor : clear rule data / Synthesis window : reload parameters
-		Change min/max/def -> Posture editor : unselect posture / Rule editor : clear rule data
+		Change name        -> Posture editor : unselect posture / Rule manager : load rule data / Synthesis window : reload parameters
+		Change min/max/def -> Posture editor : unselect posture / Rule manager : load rule data
 	Symbols
 		Add       [no posture && no rule]
 		Remove    [no posture && no rule]
 		Move up   [no posture && no rule]
 		Move down [no posture && no rule]
-		Change name        -> Posture editor : unselect posture / Rule editor : clear rule data
-		Change min/max/def -> Posture editor : unselect posture / Rule editor : clear rule data
+		Change name        -> Posture editor : unselect posture
+		Change min/max/def -> Posture editor : unselect posture
 
 Posture editor
 	Add             -> Rule manager : unselect rule
@@ -34,7 +34,7 @@ Posture editor
 
 Prototype manager
 	Equations
-		Add                          -> Transition editor : reload equations, point list / Rule editor : reload equations, reload rule symbols
+		Add                          -> Transition editor : reload equations, point list / Rule manager : reload equations, reload rule symbols
 		Remove            [not used] -> "
 		Move up                      -> "
 		Move down                    -> "
@@ -42,14 +42,14 @@ Prototype manager
 		Change name                  -> "
 		Update formula               -> "
 	Transitions
-		Add                          -> Transition editor : clear / Rule editor : reload transitions, reload rule transitions
+		Add                          -> Transition editor : clear / Rule manager : reload transitions, reload rule transitions
 		Remove            [not used] -> "
 		Move up                      -> "
 		Move down                    -> "
 		Change group name            -> "
 		Change name                  -> "
 	Special transitions
-		Add                          -> Special transition editor : clear / Rule editor : reload special transitions, reload rule special transitions
+		Add                          -> Special transition editor : clear / Rule manager : reload special transitions, reload rule special transitions
 		Remove            [not used] -> "
 		Move up                      -> "
 		Move down                    -> "
@@ -67,9 +67,8 @@ Special transition editor
 	Update          -> Prototype manager : reload equations, clear special transition data
 
 Rule manager
-	Update -> Data entry : reload categories
-
-Rule editor
+	Add                       -> Data entry : reload categories
+	Update                    -> Data entry : reload categories
 	Select transition         -> Prototype manager : reload transitions
 	Select special transition -> Prototype manager : reload special transitions
 	Select equation           -> Prototype manager : reload equations

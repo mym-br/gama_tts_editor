@@ -32,7 +32,6 @@ SOURCES += src/main.cpp \
     src/PostureEditorWindow.cpp \
     src/RuleManagerWindow.cpp \
     src/RuleTesterWindow.cpp \
-    src/RuleEditorWindow.cpp \
     src/IntonationWindow.cpp \
     src/IntonationWidget.cpp \
     src/Synthesis.cpp \
@@ -58,7 +57,6 @@ HEADERS += src/MainWindow.h \
     src/PostureEditorWindow.h \
     src/RuleManagerWindow.h \
     src/RuleTesterWindow.h \
-    src/RuleEditorWindow.h \
     src/IntonationWindow.h \
     src/IntonationWidget.h \
     src/Synthesis.h \
@@ -74,7 +72,6 @@ FORMS += ui/MainWindow.ui \
     ui/PostureEditorWindow.ui \
     ui/RuleManagerWindow.ui \
     ui/RuleTesterWindow.ui \
-    ui/RuleEditorWindow.ui \
     ui/IntonationWindow.ui \
     ui/IntonationParametersWindow.ui
 

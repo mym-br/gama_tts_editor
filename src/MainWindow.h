@@ -38,7 +38,6 @@ class IntonationParametersWindow;
 class LogStreamBuffer;
 class PostureEditorWindow;
 class PrototypeManagerWindow;
-class RuleEditorWindow;
 class RuleManagerWindow;
 class RuleTesterWindow;
 class SynthesisWindow;
@@ -87,7 +86,6 @@ private:
 	std::unique_ptr<PostureEditorWindow> postureEditorWindow_;
 	std::unique_ptr<PrototypeManagerWindow> prototypeManagerWindow_;
 	std::unique_ptr<TransitionEditorWindow> specialTransitionEditorWindow_;
-	std::unique_ptr<RuleEditorWindow> ruleEditorWindow_;
 	std::unique_ptr<RuleManagerWindow> ruleManagerWindow_;
 	std::unique_ptr<RuleTesterWindow> ruleTesterWindow_;
 	std::unique_ptr<SynthesisWindow> synthesisWindow_;

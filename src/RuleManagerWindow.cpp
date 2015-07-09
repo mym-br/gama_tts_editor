@@ -27,6 +27,12 @@
 #include "ui_RuleManagerWindow.h"
 
 #define NUM_RULES_TABLE_COLUMNS 1
+#define NUM_RULE_TRANSITIONS_TABLE_COLUMNS 2
+#define NUM_RULE_SPECIAL_TRANSITIONS_TABLE_COLUMNS 2
+#define NUM_RULE_SYMBOL_EQUATIONS_TABLE_COLUMNS 2
+#define NUM_TRANSITIONS_TREE_COLUMNS 1
+#define NUM_SPECIAL_TRANSITIONS_TREE_COLUMNS 1
+#define NUM_EQUATIONS_TREE_COLUMNS 1
 
 
 
@@ -36,6 +42,7 @@ RuleManagerWindow::RuleManagerWindow(QWidget* parent)
 		: QWidget(parent)
 		, ui_(new Ui::RuleManagerWindow)
 		, model_(nullptr)
+		, selectedRule_(nullptr)
 {
 	ui_->setupUi(this);
 
@@ -56,6 +63,60 @@ RuleManagerWindow::RuleManagerWindow(QWidget* parent)
 #else
 	ui_->rulesTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
 #endif
+
+	vHeader = ui_->ruleTransitionsTable->verticalHeader();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	vHeader->setSectionResizeMode(QHeaderView::Fixed);
+#else
+	vHeader->setResizeMode(QHeaderView::Fixed);
+#endif
+	vHeader->setDefaultSectionSize(rowHeight);
+	ui_->ruleTransitionsTable->setColumnCount(NUM_RULE_TRANSITIONS_TABLE_COLUMNS);
+	ui_->ruleTransitionsTable->setHorizontalHeaderLabels(QStringList() << tr("Parameter") << tr("Rule transition"));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	ui_->ruleTransitionsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#else
+	ui_->ruleTransitionsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#endif
+
+	vHeader = ui_->ruleSpecialTransitionsTable->verticalHeader();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	vHeader->setSectionResizeMode(QHeaderView::Fixed);
+#else
+	vHeader->setResizeMode(QHeaderView::Fixed);
+#endif
+	vHeader->setDefaultSectionSize(rowHeight);
+	ui_->ruleSpecialTransitionsTable->setColumnCount(NUM_RULE_SPECIAL_TRANSITIONS_TABLE_COLUMNS);
+	ui_->ruleSpecialTransitionsTable->setHorizontalHeaderLabels(QStringList() << tr("Parameter") << tr("Rule special transition"));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	ui_->ruleSpecialTransitionsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#else
+	ui_->ruleSpecialTransitionsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#endif
+
+	vHeader = ui_->ruleSymbolEquationsTable->verticalHeader();
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	vHeader->setSectionResizeMode(QHeaderView::Fixed);
+#else
+	vHeader->setResizeMode(QHeaderView::Fixed);
+#endif
+	vHeader->setDefaultSectionSize(rowHeight);
+	ui_->ruleSymbolEquationsTable->setColumnCount(NUM_RULE_SYMBOL_EQUATIONS_TABLE_COLUMNS);
+	ui_->ruleSymbolEquationsTable->setHorizontalHeaderLabels(QStringList() << tr("Symbol") << tr("Rule equation"));
+#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
+	ui_->ruleSymbolEquationsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
+#else
+	ui_->ruleSymbolEquationsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
+#endif
+
+	ui_->transitionsTree->setColumnCount(NUM_TRANSITIONS_TREE_COLUMNS);
+	ui_->transitionsTree->setHeaderLabels(QStringList() << tr("Transition"));
+
+	ui_->specialTransitionsTree->setColumnCount(NUM_SPECIAL_TRANSITIONS_TREE_COLUMNS);
+	ui_->specialTransitionsTree->setHeaderLabels(QStringList() << tr("Special transition"));
+
+	ui_->equationsTree->setColumnCount(NUM_EQUATIONS_TREE_COLUMNS);
+	ui_->equationsTree->setHeaderLabels(QStringList() << tr("Equation"));
 }
 
 RuleManagerWindow::~RuleManagerWindow()
@@ -66,6 +127,7 @@ void
 RuleManagerWindow::resetModel(TRMControlModel::Model* model)
 {
 	model_ = model;
+	selectedRule_ = nullptr;
 
 	if (model_ == nullptr) {
 		clearRuleData();
@@ -73,6 +135,10 @@ RuleManagerWindow::resetModel(TRMControlModel::Model* model)
 	} else {
 		setupRulesList();
 		ui_->rulesTable->setCurrentItem(nullptr);
+
+		setupTransitionsTree();
+		setupSpecialTransitionsTree();
+		setupEquationsTree();
 	}
 }
 
@@ -140,6 +206,8 @@ RuleManagerWindow::on_addButton_clicked()
 	// Force the emission of signal currentItemChanged.
 	ui_->rulesTable->setCurrentItem(nullptr);
 	ui_->rulesTable->setCurrentCell(insertRow, 0);
+
+	emit categoryReferenceChanged();
 }
 
 void
@@ -225,18 +293,6 @@ RuleManagerWindow::on_moveDownButton_clicked()
 }
 
 void
-RuleManagerWindow::on_editButton_clicked()
-{
-	if (model_ == nullptr) return;
-
-	QTableWidgetItem* currItem = ui_->rulesTable->currentItem();
-	if (currItem == nullptr) return;
-
-	int currRow = currItem->row();
-	emit editRuleButtonClicked(currRow);
-}
-
-void
 RuleManagerWindow::on_rulesTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* /*previous*/)
 {
 	qDebug("on_rulesTable_currentItemChanged");
@@ -248,17 +304,9 @@ RuleManagerWindow::on_rulesTable_currentItemChanged(QTableWidgetItem* current, Q
 	}
 
 	unsigned int row = current->row();
-	const TRMControlModel::Rule& rule = *model_->ruleList()[row];
+	selectedRule_ = model_->ruleList()[row].get();
 
-	clearRuleData();
-
-	unsigned int numExpr = rule.booleanExpressionList().size();
-	if (numExpr >= 1) ui_->expression1LineEdit->setText(rule.booleanExpressionList()[0].c_str());
-	if (numExpr >= 2) ui_->expression2LineEdit->setText(rule.booleanExpressionList()[1].c_str());
-	if (numExpr >= 3) ui_->expression3LineEdit->setText(rule.booleanExpressionList()[2].c_str());
-	if (numExpr == 4) ui_->expression4LineEdit->setText(rule.booleanExpressionList()[3].c_str());
-
-	showRuleStatistics(rule);
+	loadRuleData();
 }
 
 // Slot.
@@ -278,6 +326,20 @@ RuleManagerWindow::clearRuleData()
 	ui_->matches3ListWidget->clear();
 	ui_->matches4ListWidget->clear();
 	ui_->combinationsLineEdit->clear();
+
+	ui_->ruleTransitionsTable->setRowCount(0);
+	ui_->ruleSpecialTransitionsTable->setRowCount(0);
+	ui_->ruleSymbolEquationsTable->setRowCount(0);
+
+	ui_->ruleTransitionsTable->setCurrentItem(nullptr);
+	ui_->ruleSpecialTransitionsTable->setCurrentItem(nullptr);
+	ui_->ruleSymbolEquationsTable->setCurrentItem(nullptr);
+
+	ui_->transitionsTree->setCurrentItem(nullptr);
+	ui_->specialTransitionsTree->setCurrentItem(nullptr);
+	ui_->equationsTree->setCurrentItem(nullptr);
+
+	ui_->commentTextEdit->clear();
 }
 
 // Slot.
@@ -285,6 +347,31 @@ void
 RuleManagerWindow::unselectRule()
 {
 	ui_->rulesTable->setCurrentItem(nullptr);
+}
+
+// Slot.
+void
+RuleManagerWindow::loadRuleData()
+{
+	clearRuleData();
+
+	if (selectedRule_ == nullptr) {
+		return;
+	}
+
+	unsigned int numExpr = selectedRule_->booleanExpressionList().size();
+	if (numExpr >= 1) ui_->expression1LineEdit->setText(selectedRule_->booleanExpressionList()[0].c_str());
+	if (numExpr >= 2) ui_->expression2LineEdit->setText(selectedRule_->booleanExpressionList()[1].c_str());
+	if (numExpr >= 3) ui_->expression3LineEdit->setText(selectedRule_->booleanExpressionList()[2].c_str());
+	if (numExpr == 4) ui_->expression4LineEdit->setText(selectedRule_->booleanExpressionList()[3].c_str());
+
+	showRuleStatistics(*selectedRule_);
+
+	setupRuleTransitionsTable();
+	setupRuleSpecialTransitionsTable();
+	setupRuleSymbolEquationsTable();
+
+	ui_->commentTextEdit->setPlainText(selectedRule_->comment().c_str());
 }
 
 void
@@ -381,6 +468,493 @@ RuleManagerWindow::numInputExpressions(const QString& exp1, const QString& exp2,
 		}
 	}
 	return 0;
+}
+
+void
+RuleManagerWindow::on_ruleTransitionsTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* /*previous*/)
+{
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+	if (current == nullptr) return;
+
+	int row = ui_->ruleTransitionsTable->row(current);
+	qDebug("on_ruleTransitionsTable_currentItemChanged row=%d", row);
+
+	auto transition = selectedRule_->getParamProfileTransition(row);
+	if (transition) {
+		unsigned int groupIndex;
+		unsigned int transitionIndex;
+		if (model_->findTransitionIndex(transition->name(), groupIndex, transitionIndex)) {
+			QTreeWidgetItem* topLevelItem = ui_->transitionsTree->topLevelItem(groupIndex);
+			if (topLevelItem == nullptr) {
+				qCritical("[RuleManagerWindow::on_ruleTransitionsTable_currentItemChanged]: Invalid group index: %u.", groupIndex);
+				return;
+			}
+			QTreeWidgetItem* item = topLevelItem->child(transitionIndex);
+			if (item == nullptr) {
+				qCritical("[RuleManagerWindow::on_ruleTransitionsTable_currentItemChanged]: Invalid index: %u for groupIndex: %u.", transitionIndex, groupIndex);
+				return;
+			}
+			ui_->transitionsTree->setCurrentItem(item);
+		}
+	} else {
+		ui_->transitionsTree->setCurrentItem(nullptr);
+	}
+}
+
+void
+RuleManagerWindow::on_ruleSpecialTransitionsTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* /*previous*/)
+{
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+	if (current == nullptr) return;
+
+	int row = ui_->ruleSpecialTransitionsTable->row(current);
+	qDebug("on_ruleSpecialTransitionsTable_currentItemChanged row=%d", row);
+
+	auto transition = selectedRule_->getSpecialProfileTransition(row);
+	if (transition) {
+		unsigned int groupIndex;
+		unsigned int transitionIndex;
+		if (model_->findSpecialTransitionIndex(transition->name(), groupIndex, transitionIndex)) {
+			QTreeWidgetItem* topLevelItem = ui_->specialTransitionsTree->topLevelItem(groupIndex);
+			if (topLevelItem == nullptr) {
+				qCritical("[RuleManagerWindow::on_ruleSpecialTransitionsTable_currentItemChanged]: Invalid group index: %u.", groupIndex);
+				return;
+			}
+			QTreeWidgetItem* item = topLevelItem->child(transitionIndex);
+			if (item == nullptr) {
+				qCritical("[RuleManagerWindow::on_ruleSpecialTransitionsTable_currentItemChanged]: Invalid index: %u for groupIndex: %u.", transitionIndex, groupIndex);
+				return;
+			}
+			ui_->specialTransitionsTree->setCurrentItem(item);
+		}
+	} else {
+		ui_->specialTransitionsTree->setCurrentItem(nullptr);
+	}
+}
+
+void
+RuleManagerWindow::on_ruleSymbolEquationsTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* /*previous*/)
+{
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+	if (current == nullptr) return;
+
+	int row = ui_->ruleSymbolEquationsTable->row(current);
+	qDebug("on_ruleSymbolEquationsTable_currentItemChanged row=%d", row);
+
+	std::shared_ptr<TRMControlModel::Equation> equation;
+	switch (row) {
+	case 0:
+		equation = selectedRule_->exprSymbolEquations().ruleDuration;
+		break;
+	case 1:
+		equation = selectedRule_->exprSymbolEquations().beat;
+		break;
+	case 2:
+		equation = selectedRule_->exprSymbolEquations().mark1;
+		break;
+	case 3:
+		equation = selectedRule_->exprSymbolEquations().mark2;
+		break;
+	case 4:
+		equation = selectedRule_->exprSymbolEquations().mark3;
+		break;
+	}
+
+	if (equation) {
+		unsigned int groupIndex;
+		unsigned int equationIndex;
+		if (model_->findEquationIndex(equation->name(), groupIndex, equationIndex)) {
+			QTreeWidgetItem* topLevelItem = ui_->equationsTree->topLevelItem(groupIndex);
+			if (topLevelItem == nullptr) {
+				qCritical("[RuleManagerWindow::on_ruleSymbolEquationsTable_currentItemChanged]: Invalid group index: %u.", groupIndex);
+				return;
+			}
+			QTreeWidgetItem* item = topLevelItem->child(equationIndex);
+			if (item == nullptr) {
+				qCritical("[RuleManagerWindow::on_ruleSymbolEquationsTable_currentItemChanged]: Invalid index: %u for groupIndex: %u.", equationIndex, groupIndex);
+				return;
+			}
+			ui_->equationsTree->setCurrentItem(item);
+		}
+	} else {
+		ui_->equationsTree->setCurrentItem(nullptr);
+	}
+}
+
+void
+RuleManagerWindow::on_transitionsTree_itemClicked(QTreeWidgetItem* item, int /*column*/)
+{
+	qDebug("on_transitionsTree_itemClicked");
+
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+	if (item == nullptr) return;
+
+	QTreeWidgetItem* parent = item->parent();
+	if (parent == nullptr) { // root item
+		return;
+	}
+	int parentIndex = ui_->transitionsTree->indexOfTopLevelItem(parent);
+	int index = parent->indexOfChild(item);
+	const auto& transition = model_->transitionGroupList()[parentIndex].transitionList[index];
+
+	QTableWidgetItem* currentItem = ui_->ruleTransitionsTable->currentItem();
+	if (currentItem == nullptr) return;
+
+	int row = currentItem->row();
+	const auto& ruleTransition = selectedRule_->getParamProfileTransition(row);
+	if (ruleTransition != transition) {
+		selectedRule_->setParamProfileTransition(row, transition);
+		setupRuleTransitionsTable();
+
+		emit transitionReferenceChanged();
+	}
+}
+
+void
+RuleManagerWindow::on_specialTransitionsTree_itemClicked(QTreeWidgetItem* item, int /*column*/)
+{
+	qDebug("on_specialTransitionsTree_itemClicked");
+
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+	if (item == nullptr) return;
+
+	QTreeWidgetItem* parent = item->parent();
+	if (parent == nullptr) { // root item
+		return;
+	}
+	int parentIndex = ui_->specialTransitionsTree->indexOfTopLevelItem(parent);
+	int index = parent->indexOfChild(item);
+	const auto& transition = model_->specialTransitionGroupList()[parentIndex].transitionList[index];
+
+	QTableWidgetItem* currentItem = ui_->ruleSpecialTransitionsTable->currentItem();
+	if (currentItem == nullptr) return;
+
+	int row = currentItem->row();
+	const auto& ruleTransition = selectedRule_->getSpecialProfileTransition(row);
+	if (ruleTransition != transition) {
+		selectedRule_->setSpecialProfileTransition(row, transition);
+		setupRuleSpecialTransitionsTable();
+
+		emit specialTransitionReferenceChanged();
+	}
+}
+
+void
+RuleManagerWindow::on_equationsTree_itemClicked(QTreeWidgetItem* item, int /*column*/)
+{
+	qDebug("on_equationsTree_itemClicked");
+
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+	if (item == nullptr) return;
+
+	QTreeWidgetItem* parent = item->parent();
+	if (parent == nullptr) { // root item
+		return;
+	}
+	int parentIndex = ui_->equationsTree->indexOfTopLevelItem(parent);
+	int index = parent->indexOfChild(item);
+	const auto& equation = model_->equationGroupList()[parentIndex].equationList[index];
+
+	QTableWidgetItem* currentItem = ui_->ruleSymbolEquationsTable->currentItem();
+	if (currentItem == nullptr) return;
+
+	std::shared_ptr<TRMControlModel::Equation>* ruleEquation = nullptr;
+	int row = currentItem->row();
+	switch (row) {
+	case 0:
+		ruleEquation = &selectedRule_->exprSymbolEquations().ruleDuration;
+		break;
+	case 1:
+		ruleEquation = &selectedRule_->exprSymbolEquations().beat;
+		break;
+	case 2:
+		ruleEquation = &selectedRule_->exprSymbolEquations().mark1;
+		break;
+	case 3:
+		ruleEquation = &selectedRule_->exprSymbolEquations().mark2;
+		break;
+	case 4:
+		ruleEquation = &selectedRule_->exprSymbolEquations().mark3;
+		break;
+	default:
+		return;
+	}
+
+	if (*ruleEquation != equation) {
+		*ruleEquation = equation;
+		setupRuleSymbolEquationsTable();
+
+		emit equationReferenceChanged();
+	}
+}
+
+void
+RuleManagerWindow::on_updateCommentButton_clicked()
+{
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+
+	selectedRule_->setComment(ui_->commentTextEdit->toPlainText().toStdString());
+}
+
+// Slot.
+void
+RuleManagerWindow::setupRuleTransitionsTable()
+{
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+
+	QTableWidget* table = ui_->ruleTransitionsTable;
+
+	SignalBlocker blocker(table);
+
+	table->setRowCount(model_->parameterList().size());
+	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
+		const auto& parameter = model_->parameterList()[i];
+
+		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(parameter.name().c_str()));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(i, 0, item.release());
+
+		const auto& transition = selectedRule_->getParamProfileTransition(i);
+		item.reset(new QTableWidgetItem(transition ? transition->name().c_str() : ""));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(i, 1, item.release());
+	}
+}
+
+// Slot.
+void
+RuleManagerWindow::setupTransitionsTree()
+{
+	if (model_ == nullptr) return;
+
+	QTreeWidget* tree = ui_->transitionsTree;
+	tree->clear();
+	for (const auto& group : model_->transitionGroupList()) {
+		std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+		item->setText(0, group.name.c_str());
+		item->setFlags(Qt::ItemIsEnabled);
+
+		for (const auto& transition : group.transitionList) {
+			std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+			childItem->setText(0, transition->name().c_str());
+			childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			item->addChild(childItem.release());
+		}
+
+		tree->addTopLevelItem(item.release());
+	}
+	tree->expandAll();
+}
+
+// Slot.
+void
+RuleManagerWindow::setupRuleSpecialTransitionsTable()
+{
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+
+	QTableWidget* table = ui_->ruleSpecialTransitionsTable;
+
+	SignalBlocker blocker(table);
+
+	table->setRowCount(model_->parameterList().size());
+	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
+		const auto& parameter = model_->parameterList()[i];
+
+		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(parameter.name().c_str()));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(i, 0, item.release());
+
+		const auto& transition = selectedRule_->getSpecialProfileTransition(i);
+		item.reset(new QTableWidgetItem(transition ? transition->name().c_str() : ""));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(i, 1, item.release());
+	}
+}
+
+// Slot.
+void
+RuleManagerWindow::setupSpecialTransitionsTree()
+{
+	if (model_ == nullptr) return;
+
+	QTreeWidget* tree = ui_->specialTransitionsTree;
+	tree->clear();
+	for (const auto& group : model_->specialTransitionGroupList()) {
+		std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+		item->setText(0, group.name.c_str());
+		item->setFlags(Qt::ItemIsEnabled);
+
+		for (const auto& specialTransition : group.transitionList) {
+			std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+			childItem->setText(0, specialTransition->name().c_str());
+			childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			item->addChild(childItem.release());
+		}
+
+		tree->addTopLevelItem(item.release());
+	}
+	tree->expandAll();
+}
+
+// Slot.
+void
+RuleManagerWindow::setupRuleSymbolEquationsTable()
+{
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+
+	QTableWidget* table = ui_->ruleSymbolEquationsTable;
+
+	SignalBlocker blocker(table);
+
+	table->setRowCount(5);
+	{
+		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem("Rule duration"));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(0, 0, item.release());
+
+		const auto& equation = selectedRule_->exprSymbolEquations().ruleDuration;
+		item.reset(new QTableWidgetItem(equation ? equation->name().c_str() : ""));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(0, 1, item.release());
+	}
+	{
+		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem("Beat location"));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(1, 0, item.release());
+
+		const auto& equation = selectedRule_->exprSymbolEquations().beat;
+		item.reset(new QTableWidgetItem(equation ? equation->name().c_str() : ""));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(1, 1, item.release());
+	}
+	{
+		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem("Mark 1"));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(2, 0, item.release());
+
+		const auto& equation = selectedRule_->exprSymbolEquations().mark1;
+		item.reset(new QTableWidgetItem(equation ? equation->name().c_str() : ""));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(2, 1, item.release());
+	}
+	{
+		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem("Mark 2"));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(3, 0, item.release());
+
+		const auto& equation = selectedRule_->exprSymbolEquations().mark2;
+		item.reset(new QTableWidgetItem(equation ? equation->name().c_str() : ""));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(3, 1, item.release());
+	}
+	{
+		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem("Mark 3"));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(4, 0, item.release());
+
+		const auto& equation = selectedRule_->exprSymbolEquations().mark3;
+		item.reset(new QTableWidgetItem(equation ? equation->name().c_str() : ""));
+		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+		table->setItem(4, 1, item.release());
+	}
+}
+
+// Slot.
+void
+RuleManagerWindow::setupEquationsTree()
+{
+	if (model_ == nullptr) return;
+
+	QTreeWidget* tree = ui_->equationsTree;
+	tree->clear();
+	for (const auto& group : model_->equationGroupList()) {
+		std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+		item->setText(0, group.name.c_str());
+		item->setFlags(Qt::ItemIsEnabled);
+
+		for (const auto& equation : group.equationList) {
+			std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+			childItem->setText(0, equation->name().c_str());
+			childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
+			item->addChild(childItem.release());
+		}
+
+		tree->addTopLevelItem(item.release());
+	}
+	tree->expandAll();
+}
+
+void
+RuleManagerWindow::on_clearSpecialTransitionButton_clicked()
+{
+	qDebug("on_clearSpecialTransitionButton_clicked");
+
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+
+	QTableWidgetItem* currentItem = ui_->ruleSpecialTransitionsTable->currentItem();
+	if (currentItem == nullptr) return;
+
+	int row = currentItem->row();
+
+	std::shared_ptr<TRMControlModel::Transition> empty;
+	selectedRule_->setSpecialProfileTransition(row, empty);
+
+	setupRuleSpecialTransitionsTable();
+	ui_->specialTransitionsTree->setCurrentItem(nullptr);
+
+	emit specialTransitionReferenceChanged();
+}
+
+void
+RuleManagerWindow::on_clearEquationButton_clicked()
+{
+	qDebug("on_clearEquationButton_clicked");
+
+	if (model_ == nullptr) return;
+	if (selectedRule_ == nullptr) return;
+
+	QTableWidgetItem* currentItem = ui_->ruleSymbolEquationsTable->currentItem();
+	if (currentItem == nullptr) return;
+
+	std::shared_ptr<TRMControlModel::Equation>* ruleEquation = nullptr;
+	int row = currentItem->row();
+	switch (row) {
+	case 0:
+		ruleEquation = &selectedRule_->exprSymbolEquations().ruleDuration;
+		break;
+	case 1:
+		ruleEquation = &selectedRule_->exprSymbolEquations().beat;
+		break;
+	case 2:
+		ruleEquation = &selectedRule_->exprSymbolEquations().mark1;
+		break;
+	case 3:
+		ruleEquation = &selectedRule_->exprSymbolEquations().mark2;
+		break;
+	case 4:
+		ruleEquation = &selectedRule_->exprSymbolEquations().mark3;
+		break;
+	default:
+		return;
+	}
+
+	ruleEquation->reset();
+
+	setupRuleSymbolEquationsTable();
+	ui_->equationsTree->setCurrentItem(nullptr);
+
+	emit equationReferenceChanged();
 }
 
 } // namespace GS

@@ -30,6 +30,7 @@ class RuleManagerWindow;
 
 QT_FORWARD_DECLARE_CLASS(QString)
 QT_FORWARD_DECLARE_CLASS(QTableWidgetItem)
+QT_FORWARD_DECLARE_CLASS(QTreeWidgetItem)
 
 namespace GS {
 
@@ -46,18 +47,35 @@ public:
 
 	void resetModel(TRMControlModel::Model* model);
 signals:
-	void editRuleButtonClicked(unsigned int ruleIndex);
 	void categoryReferenceChanged();
+	void transitionReferenceChanged();
+	void specialTransitionReferenceChanged();
+	void equationReferenceChanged();
 public slots:
 	void unselectRule();
+	void loadRuleData();
+	void setupRuleTransitionsTable();
+	void setupTransitionsTree();
+	void setupRuleSpecialTransitionsTable();
+	void setupSpecialTransitionsTree();
+	void setupRuleSymbolEquationsTable();
+	void setupEquationsTree();
 private slots:
 	void on_removeButton_clicked();
 	void on_addButton_clicked();
 	void on_updateButton_clicked();
 	void on_moveUpButton_clicked();
 	void on_moveDownButton_clicked();
-	void on_editButton_clicked();
 	void on_rulesTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
+	void on_clearSpecialTransitionButton_clicked();
+	void on_clearEquationButton_clicked();
+	void on_ruleTransitionsTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
+	void on_ruleSpecialTransitionsTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
+	void on_ruleSymbolEquationsTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
+	void on_transitionsTree_itemClicked(QTreeWidgetItem* item, int column);
+	void on_specialTransitionsTree_itemClicked(QTreeWidgetItem* item, int column);
+	void on_equationsTree_itemClicked(QTreeWidgetItem* item, int column);
+	void on_updateCommentButton_clicked();
 private:
 	void setupRulesList();
 	void clearRuleData();
@@ -67,6 +85,7 @@ private:
 	std::unique_ptr<Ui::RuleManagerWindow> ui_;
 
 	TRMControlModel::Model* model_;
+	TRMControlModel::Rule* selectedRule_;
 };
 
 } // namespace GS
