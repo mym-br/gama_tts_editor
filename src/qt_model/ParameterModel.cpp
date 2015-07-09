@@ -189,7 +189,7 @@ ParameterModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	beginInsertRows(QModelIndex(), row, row);
 	model_->parameterList().insert(
 				model_->parameterList().begin() + row,
-				TRMControlModel::Parameter(NEW_ITEM_NAME, 0.0, 0.0, 0.0));
+				TRMControlModel::Parameter(NEW_ITEM_NAME, 0.0, 0.0, 0.0, ""));
 	endInsertRows();
 
 	emit parameterChanged();
@@ -226,6 +226,33 @@ ParameterModel::resetModel(TRMControlModel::Model* model)
 	beginResetModel();
 	model_ = model;
 	endResetModel();
+}
+
+QString
+ParameterModel::getParameterComment(const QModelIndex& index) const
+{
+	if (model_ == nullptr || !index.isValid()) {
+		return QString();
+	}
+	unsigned int row = index.row();
+	if (row >= model_->parameterList().size()) {
+		return QString();
+	}
+	return QString::fromStdString(model_->parameterList()[row].comment());
+}
+
+void
+ParameterModel::setParameterComment(const QModelIndex& index, const QString& comment) const
+{
+	if (!index.isValid()) {
+		return;
+	}
+	unsigned int row = index.row();
+	if (row >= model_->parameterList().size()) {
+		return;
+	}
+
+	model_->parameterList()[row].setComment(comment.toStdString());
 }
 
 // Returns the new index.

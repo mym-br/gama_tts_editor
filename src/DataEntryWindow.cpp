@@ -86,6 +86,10 @@ DataEntryWindow::DataEntryWindow(QWidget* parent)
 	// QItemSelectionModel
 	connect(ui_->categoriesTableView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)),
 		this, SLOT(showCategoryData(const QModelIndex&, const QModelIndex&)));
+	connect(ui_->parametersTableView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)),
+		this, SLOT(showParameterData(const QModelIndex&, const QModelIndex&)));
+	connect(ui_->symbolsTableView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)),
+		this, SLOT(showSymbolData(const QModelIndex&, const QModelIndex&)));
 
 	connect(categoryModel_, SIGNAL(categoryChanged()), this, SIGNAL(categoryChanged()));
 	connect(categoryModel_, SIGNAL(errorOccurred(QString)), this, SLOT(showError(QString)));
@@ -223,6 +227,19 @@ DataEntryWindow::on_removeParameterButton_clicked()
 	}
 }
 
+// Slot.
+void
+DataEntryWindow::showParameterData(const QModelIndex& current, const QModelIndex& /*previous*/)
+{
+	ui_->parameterCommentTextEdit->setPlainText(parameterModel_->getParameterComment(current));
+}
+
+void
+DataEntryWindow::on_updateParameterCommentButton_clicked()
+{
+	parameterModel_->setParameterComment(ui_->parametersTableView->currentIndex(), ui_->parameterCommentTextEdit->toPlainText());
+}
+
 //=============================================================================
 // Symbols.
 //
@@ -263,6 +280,19 @@ DataEntryWindow::on_removeSymbolButton_clicked()
 	if (curIndex.isValid()) {
 		symbolModel_->removeRows(curIndex.row(), 1);
 	}
+}
+
+// Slot.
+void
+DataEntryWindow::showSymbolData(const QModelIndex& current, const QModelIndex& /*previous*/)
+{
+	ui_->symbolCommentTextEdit->setPlainText(symbolModel_->getSymbolComment(current));
+}
+
+void
+DataEntryWindow::on_updateSymbolCommentButton_clicked()
+{
+	symbolModel_->setSymbolComment(ui_->symbolsTableView->currentIndex(), ui_->symbolCommentTextEdit->toPlainText());
 }
 
 // Slot.

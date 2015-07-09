@@ -189,7 +189,7 @@ SymbolModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	beginInsertRows(QModelIndex(), row, row);
 	model_->symbolList().insert(
 				model_->symbolList().begin() + row,
-				TRMControlModel::Symbol(NEW_ITEM_NAME, 0.0, 0.0, 0.0));
+				TRMControlModel::Symbol(NEW_ITEM_NAME, 0.0, 0.0, 0.0, ""));
 	endInsertRows();
 
 	emit symbolChanged();
@@ -226,6 +226,33 @@ SymbolModel::resetModel(TRMControlModel::Model* model)
 	beginResetModel();
 	model_ = model;
 	endResetModel();
+}
+
+QString
+SymbolModel::getSymbolComment(const QModelIndex& index) const
+{
+	if (model_ == nullptr || !index.isValid()) {
+		return QString();
+	}
+	unsigned int row = index.row();
+	if (row >= model_->symbolList().size()) {
+		return QString();
+	}
+	return QString::fromStdString(model_->symbolList()[row].comment());
+}
+
+void
+SymbolModel::setSymbolComment(const QModelIndex& index, const QString& comment) const
+{
+	if (!index.isValid()) {
+		return;
+	}
+	unsigned int row = index.row();
+	if (row >= model_->symbolList().size()) {
+		return;
+	}
+
+	model_->symbolList()[row].setComment(comment.toStdString());
 }
 
 // Returns the new index.

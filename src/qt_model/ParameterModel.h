@@ -51,6 +51,8 @@ public:
 	virtual bool removeRows(int row, int count, const QModelIndex& parent=QModelIndex());
 
 	void resetModel(TRMControlModel::Model* model);
+	QString getParameterComment(const QModelIndex& index) const;
+	void setParameterComment(const QModelIndex& index, const QString& comment) const;
 	QModelIndex incrementParameterRow(const QModelIndex& index);
 	QModelIndex decrementParameterRow(const QModelIndex& index);
 signals:

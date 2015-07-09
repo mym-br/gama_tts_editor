@@ -63,11 +63,15 @@ private slots:
 	void on_moveParameterUpButton_clicked();
 	void on_addParameterButton_clicked();
 	void on_removeParameterButton_clicked();
+	void showParameterData(const QModelIndex& current, const QModelIndex& previous);
+	void on_updateParameterCommentButton_clicked();
 
 	void on_moveSymbolDownButton_clicked();
 	void on_moveSymbolUpButton_clicked();
 	void on_addSymbolButton_clicked();
 	void on_removeSymbolButton_clicked();
+	void showSymbolData(const QModelIndex& current, const QModelIndex& previous);
+	void on_updateSymbolCommentButton_clicked();
 
 	void showError(QString msg);
 private:
