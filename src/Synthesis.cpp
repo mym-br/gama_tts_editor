@@ -53,7 +53,11 @@ Synthesis::setup(const QString& newProjectDir, TRMControlModel::Model* model)
 		projectDir = newProjectDir;
 		const std::string configDirPath = projectDir.toStdString();
 		trmController.reset(new TRMControlModel::Controller(configDirPath.c_str(), *model));
-		textParser.reset(new En::TextParser(configDirPath.c_str()));
+		const TRMControlModel::Configuration& trmControlConfig = trmController->trmControlModelConfiguration();
+		textParser.reset(new En::TextParser(configDirPath.c_str(),
+							trmControlConfig.dictionary1File,
+							trmControlConfig.dictionary2File,
+							trmControlConfig.dictionary3File));
 		phoneticStringParser.reset(new En::PhoneticStringParser(configDirPath.c_str(), *trmController));
 	} catch (...) {
 		clear();
