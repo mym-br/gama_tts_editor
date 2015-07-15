@@ -28,7 +28,7 @@ class IntonationWindow;
 
 namespace GS {
 
-class Synthesis;
+struct Synthesis;
 
 class IntonationWindow : public QWidget {
 	Q_OBJECT

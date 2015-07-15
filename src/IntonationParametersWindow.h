@@ -30,7 +30,7 @@ class IntonationParametersWindow;
 
 namespace GS {
 
-class Synthesis;
+struct Synthesis;
 
 class IntonationParametersWindow : public QWidget {
 	Q_OBJECT

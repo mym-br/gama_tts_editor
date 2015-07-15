@@ -32,7 +32,7 @@ class SynthesisWindow;
 
 namespace GS {
 
-class Synthesis;
+struct Synthesis;
 namespace TRMControlModel {
 class Model;
 }

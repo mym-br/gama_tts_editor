@@ -30,7 +30,7 @@ class MainWindow;
 
 namespace GS {
 
-class Synthesis;
+struct Synthesis;
 
 class DataEntryWindow;
 class IntonationWindow;
