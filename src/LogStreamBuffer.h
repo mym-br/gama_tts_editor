@@ -22,11 +22,11 @@ namespace GS {
 
 class LogStreamBuffer : public std::streambuf {
 public:
-	LogStreamBuffer(std::ostream& stream, QPlainTextEdit* textEdit)
+	LogStreamBuffer(std::ostream& stream, bool streamIsStderr, QPlainTextEdit* textEdit)
 			: stream_(stream)
 			, logWidget_(textEdit)
 			, origBuf_(stream_.rdbuf(this))
-			, streamIsStderr_(stream == std::cerr)
+			, streamIsStderr_(streamIsStderr)
 	{
 	}
 

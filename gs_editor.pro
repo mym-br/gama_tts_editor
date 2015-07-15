@@ -8,10 +8,15 @@ QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
-    CONFIG += c++11
 }
+CONFIG += c++11
 
-CONFIG += link_pkgconfig
+unix {
+    !macx {
+        CONFIG += link_pkgconfig
+        PKGCONFIG += sndfile portaudiocpp
+    }
+}
 
 TARGET = gs_editor
 TEMPLATE = app
@@ -75,34 +80,25 @@ FORMS += ui/MainWindow.ui \
     ui/IntonationWindow.ui \
     ui/IntonationParametersWindow.ui
 
-PKGCONFIG += sndfile portaudiocpp
 INCLUDEPATH += src \
     src/qt_model
 
 unix {
-    QMAKE_CXXFLAGS += -std=c++11 -Wall -Wextra -march=native
-}
-
-exists(../gnuspeech_sa/CMakeLists.txt) {
-    message(Using local Gnuspeech-SA)
-    INCLUDEPATH += \
-        ../gnuspeech_sa/src \
-        ../gnuspeech_sa/src/trm \
-        ../gnuspeech_sa/src/trm_control_model
-    LIBS += -L../gnuspeech_sa-build -lgnuspeechsa
-} else {
-    message(Using system Gnuspeech-SA)
-    PKGCONFIG += gnuspeechsa
-}
-
-DEPENDPATH += $${INCLUDEPATH}
-
-MOC_DIR = tmp
-OBJECTS_DIR = tmp
-UI_DIR = tmp
-
-unix {
     !macx {
+        QMAKE_CXXFLAGS += -Wall -Wextra -march=native
+
+        exists(../gnuspeech_sa/CMakeLists.txt) {
+            message(Using local Gnuspeech-SA)
+            INCLUDEPATH += \
+                ../gnuspeech_sa/src \
+                ../gnuspeech_sa/src/trm \
+                ../gnuspeech_sa/src/trm_control_model
+            LIBS += -L../gnuspeech_sa-build -lgnuspeechsa
+        } else {
+            message(Using system Gnuspeech-SA)
+            PKGCONFIG += gnuspeechsa
+        }
+
         isEmpty(INSTALL_PREFIX) {
             INSTALL_PREFIX = /usr/local
         }
@@ -112,3 +108,25 @@ unix {
         INSTALLS = target dataset
     }
 }
+
+win32 {
+    INCLUDEPATH += \
+        ../gnuspeech_sa/src \
+        ../gnuspeech_sa/src/trm \
+        ../gnuspeech_sa/src/trm_control_model \
+        ../pa_stable_v19_20140130/portaudio/include \
+        ../pa_stable_v19_20140130/portaudio/bindings/cpp/include \
+        "c:/Program Files (x86)/Mega-Nerd/libsndfile/include"
+    LIBS += \
+        $$_PRO_FILE_PWD_/../pa_stable_v19_20140130/portaudio-cpp-build/portaudio-cpp.lib \
+        $$_PRO_FILE_PWD_/../pa_stable_v19_20140130/portaudio-build/Release/portaudio_x86.lib \
+        $$_PRO_FILE_PWD_/../gnuspeech_sa-build/Release/gnuspeechsa.lib \
+        "c:/Program Files (x86)/Mega-Nerd/libsndfile/lib/libsndfile-1.lib" \
+        -L"c:/Program Files (x86)/Microsoft SDKs/Windows/v7.1A/Lib"
+}
+
+DEPENDPATH += $${INCLUDEPATH}
+
+MOC_DIR = tmp
+OBJECTS_DIR = tmp
+UI_DIR = tmp

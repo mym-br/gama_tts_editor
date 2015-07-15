@@ -77,8 +77,8 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(ui_->quitAction, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 	connect(ui_->aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-	coutStreamBuffer_.reset(new LogStreamBuffer(std::cout, ui_->logTextEdit));
-	cerrStreamBuffer_.reset(new LogStreamBuffer(std::cerr, ui_->logTextEdit));
+	coutStreamBuffer_.reset(new LogStreamBuffer(std::cout, false, ui_->logTextEdit));
+	cerrStreamBuffer_.reset(new LogStreamBuffer(std::cerr, true, ui_->logTextEdit));
 	LogStreamBuffer::registerQDebugMessageHandler();
 
 	connect(prototypeManagerWindow_.get(), SIGNAL(editTransitionButtonClicked(unsigned int, unsigned int)),
