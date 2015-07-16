@@ -169,7 +169,7 @@ RuleManagerWindow::on_addButton_clicked()
 
 	unsigned int numExpr = numInputExpressions(exp1, exp2, exp3, exp4);
 	if (numExpr == 0) {
-		QMessageBox::critical(this, tr("Error"), "Wrong number of expressions.");
+		QMessageBox::critical(this, tr("Error"), tr("Wrong number of expressions."));
 		return;
 	}
 
@@ -230,7 +230,7 @@ RuleManagerWindow::on_updateButton_clicked()
 
 	unsigned int numExpr = numInputExpressions(exp1, exp2, exp3, exp4);
 	if (numExpr == 0) {
-		QMessageBox::critical(this, tr("Error"), "Wrong number of expressions.");
+		QMessageBox::critical(this, tr("Error"), tr("Wrong number of expressions."));
 		return;
 	}
 
@@ -317,10 +317,10 @@ RuleManagerWindow::clearRuleData()
 	ui_->expression2LineEdit->clear();
 	ui_->expression3LineEdit->clear();
 	ui_->expression4LineEdit->clear();
-	ui_->matches1Label->setText("Total matches: 0");
-	ui_->matches2Label->setText("Total matches: 0");
-	ui_->matches3Label->setText("Total matches: 0");
-	ui_->matches4Label->setText("Total matches: 0");
+	ui_->matches1Label->setText(tr("Total matches: 0"));
+	ui_->matches2Label->setText(tr("Total matches: 0"));
+	ui_->matches3Label->setText(tr("Total matches: 0"));
+	ui_->matches4Label->setText(tr("Total matches: 0"));
 	ui_->matches1ListWidget->clear();
 	ui_->matches2ListWidget->clear();
 	ui_->matches3ListWidget->clear();
@@ -431,10 +431,10 @@ RuleManagerWindow::showRuleStatistics(const TRMControlModel::Rule& rule)
 		}
 	}
 
-	ui_->matches1Label->setText(QString("Total matches: %1").arg(count1));
-	ui_->matches2Label->setText(QString("Total matches: %1").arg(count2));
-	ui_->matches3Label->setText(QString("Total matches: %1").arg(count3));
-	ui_->matches4Label->setText(QString("Total matches: %1").arg(count4));
+	ui_->matches1Label->setText(tr("Total matches: %1").arg(count1));
+	ui_->matches2Label->setText(tr("Total matches: %1").arg(count2));
+	ui_->matches3Label->setText(tr("Total matches: %1").arg(count3));
+	ui_->matches4Label->setText(tr("Total matches: %1").arg(count4));
 
 	double combinations = 1.0;
 	if (count1 != 0) {

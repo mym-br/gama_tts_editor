@@ -70,7 +70,7 @@ RuleTesterWindow::on_testButton_clicked()
 		const TRMControlModel::Posture* posture = model_->postureList().find(posture1Text.toStdString());
 		if (posture == nullptr) {
 			clearResults();
-			QMessageBox::warning(this, tr("Warning"), "Posture 1 not found.");
+			QMessageBox::warning(this, tr("Warning"), tr("Posture 1 not found."));
 			return;
 		} else {
 			postureSequence.push_back(posture);
@@ -84,7 +84,7 @@ RuleTesterWindow::on_testButton_clicked()
 		const TRMControlModel::Posture* posture = model_->postureList().find(posture2Text.toStdString());
 		if (posture == nullptr) {
 			clearResults();
-			QMessageBox::warning(this, tr("Warning"), "Posture 2 not found.");
+			QMessageBox::warning(this, tr("Warning"), tr("Posture 2 not found."));
 			return;
 		} else {
 			postureSequence.push_back(posture);
@@ -98,7 +98,7 @@ RuleTesterWindow::on_testButton_clicked()
 		const TRMControlModel::Posture* posture = model_->postureList().find(posture3Text.toStdString());
 		if (posture == nullptr) {
 			clearResults();
-			QMessageBox::warning(this, tr("Warning"), "Posture 3 not found.");
+			QMessageBox::warning(this, tr("Warning"), tr("Posture 3 not found."));
 			return;
 		} else {
 			postureSequence.push_back(posture);
@@ -109,7 +109,7 @@ RuleTesterWindow::on_testButton_clicked()
 			const TRMControlModel::Posture* posture4 = model_->postureList().find(posture4Text.toStdString());
 			if (posture4 == nullptr) {
 				clearResults();
-				QMessageBox::warning(this, tr("Warning"), "Posture 4 not found.");
+				QMessageBox::warning(this, tr("Warning"), tr("Posture 4 not found."));
 				return;
 			} else {
 				postureSequence.push_back(posture4);
@@ -121,7 +121,7 @@ RuleTesterWindow::on_testButton_clicked()
 	const TRMControlModel::Rule* rule = model_->findFirstMatchingRule(postureSequence, ruleIndex);
 	if (rule == nullptr) {
 		clearResults();
-		QMessageBox::critical(this, tr("Error"), "Could not find a matching rule.");
+		QMessageBox::critical(this, tr("Error"), tr("Could not find a matching rule."));
 		return;
 	}
 

@@ -247,7 +247,7 @@ PrototypeManagerWindow::on_updateEquationButton_clicked()
 		return;
 	}
 	currentEquation_->setComment(ui_->equationCommentTextEdit->toPlainText().toStdString());
-	ui_->eqParserMessagesTextEdit->setPlainText("No errors.");
+	ui_->eqParserMessagesTextEdit->setPlainText(tr("No errors."));
 
 	std::ostringstream out;
 	out << "\nFormula tree:\n" << *currentEquation_;

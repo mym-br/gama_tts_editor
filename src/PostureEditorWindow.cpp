@@ -143,7 +143,7 @@ PostureEditorWindow::on_addPostureButton_clicked()
 					model_->symbolList().size()));
 	std::shared_ptr<TRMControlModel::Category> cat = model_->findCategory("phone"); // hardcoded
 	if (!cat) {
-		QMessageBox::critical(this, tr("Error"), "Category not found: phone.");
+		QMessageBox::critical(this, tr("Error"), tr("Category not found: phone."));
 		return;
 	}
 	newPosture->categoryList().push_back(cat);
