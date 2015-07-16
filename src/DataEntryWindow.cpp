@@ -39,7 +39,7 @@ DataEntryWindow::DataEntryWindow(QWidget* parent)
 	ui_->setupUi(this);
 
 	QFontMetrics fm = fontMetrics();
-	int rowHeight = fm.height() + fm.xHeight();
+	int rowHeight = fm.height() + fm.ascent();
 
 	QHeaderView* vHeader = ui_->categoriesTableView->verticalHeader();
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)

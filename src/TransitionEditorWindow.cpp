@@ -74,7 +74,7 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 	ui_->equationsTree->setHeaderLabels(QStringList() << tr("Equation"));
 
 	QFontMetrics fm = fontMetrics();
-	int rowHeight = fm.height() + fm.xHeight();
+	int rowHeight = fm.height() + fm.ascent();
 
 	QHeaderView* vHeader = ui_->pointsTable->verticalHeader();
 #if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
