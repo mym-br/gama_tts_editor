@@ -36,6 +36,7 @@ struct Synthesis;
 namespace TRMControlModel {
 class Model;
 }
+class AudioWorker;
 
 class SynthesisWindow : public QWidget {
 	Q_OBJECT
@@ -47,15 +48,18 @@ public:
 	void setup(TRMControlModel::Model* model, Synthesis* synthesis);
 signals:
 	void textSynthesized();
-	void playAudioFileRequested(QString filePath, int outputDeviceIndex);
+	void playAudioRequested(double sampleRate, int outputDeviceIndex);
 	void updateAudioDeviceComboBoxRequested();
 	void audioFinished();
 	void audioStarted();
+	void synthesisFinished();
 public slots:
-	void handlePlayAudioFileRequested(QString filePath);
+	void synthesizeWithManualIntonation();
+	void synthesizeToFileWithManualIntonation(QString filePath);
 private slots:
 	void on_parseButton_clicked();
 	void on_synthesizeButton_clicked();
+	void on_synthesizeToFileButton_clicked();
 	void on_parameterTableWidget_cellChanged(int row, int column);
 	void setupParameterTable();
 	void updateMouseTracking(double time, double value);
@@ -71,6 +75,7 @@ private:
 	TRMControlModel::Model* model_;
 	Synthesis* synthesis_;
 	QThread audioThread_;
+	AudioWorker* audioWorker_;
 };
 
 } // namespace GS

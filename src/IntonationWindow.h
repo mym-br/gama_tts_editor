@@ -39,12 +39,15 @@ public:
 	void clear();
 	void setup(Synthesis* synthesis);
 signals:
-	void playAudioFileRequested(QString filePath);
+	void synthesisRequested();
+	void synthesisToFileRequested(QString filePath);
 public slots:
 	void on_synthesizeButton_clicked();
+	void on_synthesizeToFileButton_clicked();
 	void loadIntonationFromEventList();
 	void handleAudioStarted();
 	void handleAudioFinished();
+	void handleSynthesisFinished();
 private slots:
 	void on_valueLineEdit_editingFinished();
 	void on_slopeLineEdit_editingFinished();

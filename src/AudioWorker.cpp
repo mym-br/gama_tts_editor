@@ -51,10 +51,10 @@ AudioWorker::sendOutputDeviceList()
 
 // Slot.
 void
-AudioWorker::playAudioFile(QString filePath, int outputDeviceIndex)
+AudioWorker::playAudio(double sampleRate, int outputDeviceIndex)
 {
 	try {
-		player_.playFile(filePath.toStdString(), outputDeviceIndex);
+		player_.play(sampleRate, outputDeviceIndex);
 	} catch (const std::exception& exc) {
 		emit errorOccurred(QString(exc.what()));
 	}

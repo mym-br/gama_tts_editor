@@ -33,13 +33,15 @@ class AudioWorker : public QObject {
 public:
 	explicit AudioWorker(QObject* parent=0);
 	~AudioWorker();
+
+	AudioPlayer& player() { return player_; }
 signals:
 	void audioOutputDeviceListSent(QStringList deviceNameList, int defaultDeviceIndex);
 	void finished();
 	void errorOccurred(QString);
 public slots:
 	void sendOutputDeviceList();
-	void playAudioFile(QString filePath, int outputDeviceIndex);
+	void playAudio(double sampleRate, int outputDeviceIndex);
 private:
 	AudioWorker(const AudioWorker&) = delete;
 	AudioWorker& operator=(const AudioWorker&) = delete;

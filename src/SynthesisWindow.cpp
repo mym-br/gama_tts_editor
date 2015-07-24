@@ -20,6 +20,7 @@
 #include <memory>
 #include <string>
 
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
 #include <QString>
@@ -34,7 +35,6 @@
 #include "ui_SynthesisWindow.h"
 
 #define TRM_PARAM_FILE_NAME "generated__trm_param.txt"
-#define SPEECH_FILE_NAME "generated__speech.wav"
 
 
 
@@ -45,6 +45,7 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 		, ui_(new Ui::SynthesisWindow)
 		, model_(nullptr)
 		, synthesis_(nullptr)
+		, audioWorker_(nullptr)
 {
 	ui_->setupUi(this);
 
@@ -69,14 +70,14 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 	connect(ui_->textLineEdit, SIGNAL(returnPressed()), ui_->parseButton, SLOT(click()));
 	connect(ui_->eventWidget, SIGNAL(mouseMoved(double, double)), this, SLOT(updateMouseTracking(double, double)));
 
-	AudioWorker* audioWorker = new AudioWorker;
-	audioWorker->moveToThread(&audioThread_);
-	connect(&audioThread_, SIGNAL(finished()), audioWorker, SLOT(deleteLater()));
-	connect(this, SIGNAL(playAudioFileRequested(QString, int)), audioWorker, SLOT(playAudioFile(QString, int)));
-	connect(audioWorker, SIGNAL(finished()), this, SLOT(handleAudioFinished()));
-	connect(audioWorker, SIGNAL(errorOccurred(QString)), this, SLOT(handleAudioError(QString)));
-	connect(this, SIGNAL(updateAudioDeviceComboBoxRequested()), audioWorker, SLOT(sendOutputDeviceList()));
-	connect(audioWorker, SIGNAL(audioOutputDeviceListSent(QStringList, int)), this, SLOT(updateAudioDeviceComboBox(QStringList, int)));
+	audioWorker_ = new AudioWorker;
+	audioWorker_->moveToThread(&audioThread_);
+	connect(&audioThread_, SIGNAL(finished()), audioWorker_, SLOT(deleteLater()));
+	connect(this, SIGNAL(playAudioRequested(double, int)), audioWorker_, SLOT(playAudio(double, int)));
+	connect(audioWorker_, SIGNAL(finished()), this, SLOT(handleAudioFinished()));
+	connect(audioWorker_, SIGNAL(errorOccurred(QString)), this, SLOT(handleAudioError(QString)));
+	connect(this, SIGNAL(updateAudioDeviceComboBoxRequested()), audioWorker_, SLOT(sendOutputDeviceList()));
+	connect(audioWorker_, SIGNAL(audioOutputDeviceListSent(QStringList, int)), this, SLOT(updateAudioDeviceComboBox(QStringList, int)));
 	audioThread_.start();
 }
 
@@ -135,6 +136,7 @@ SynthesisWindow::on_parseButton_clicked()
 
 	ui_->parseButton->setEnabled(false);
 	ui_->synthesizeButton->setEnabled(false);
+	ui_->synthesizeToFileButton->setEnabled(false);
 
 	try {
 		std::string phoneticString = synthesis_->textParser->parseText(text.toUtf8().constData());
@@ -143,6 +145,7 @@ SynthesisWindow::on_parseButton_clicked()
 		QMessageBox::critical(this, tr("Error"), exc.what());
 		ui_->parseButton->setEnabled(true);
 		ui_->synthesizeButton->setEnabled(true);
+		ui_->synthesizeToFileButton->setEnabled(true);
 		return;
 	}
 
@@ -162,19 +165,23 @@ SynthesisWindow::on_synthesizeButton_clicked()
 
 	ui_->parseButton->setEnabled(false);
 	ui_->synthesizeButton->setEnabled(false);
+	ui_->synthesizeToFileButton->setEnabled(false);
 
 	try {
 		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
-		QString speechFilePath = synthesis_->projectDir + SPEECH_FILE_NAME;
 
 		TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();
+
+		TRM::Configuration& trmConfig = synthesis_->trmController->trmConfiguration();
+		trmConfig.channels = 1;
+		const double sampleRate = trmConfig.outputRate;
 
 		synthesis_->trmController->synthesizePhoneticString(
 					*synthesis_->phoneticStringParser,
 					phoneticString.toStdString().c_str(),
 					trmParamFilePath.toStdString().c_str(),
-					speechFilePath.toStdString().c_str());
+					audioWorker_->player().buffer());
 
 		ui_->eventWidget->update();
 
@@ -183,14 +190,135 @@ SynthesisWindow::on_synthesizeButton_clicked()
 			audioDeviceIndex = 0;
 		}
 		emit audioStarted();
-		emit playAudioFileRequested(speechFilePath, audioDeviceIndex);
+		emit playAudioRequested(sampleRate, audioDeviceIndex);
 
 		emit textSynthesized();
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 		ui_->parseButton->setEnabled(true);
 		ui_->synthesizeButton->setEnabled(true);
+		ui_->synthesizeToFileButton->setEnabled(true);
 	}
+}
+
+void
+SynthesisWindow::on_synthesizeToFileButton_clicked()
+{
+	if (!synthesis_) {
+		return;
+	}
+	QString phoneticString = ui_->phoneticStringTextEdit->toPlainText();
+	if (phoneticString.trimmed().isEmpty()) {
+		return;
+	}
+	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), synthesis_->projectDir, tr("WAV files (*.wav)"));
+	if (filePath.isEmpty()) {
+		return;
+	}
+
+	ui_->parseButton->setEnabled(false);
+	ui_->synthesizeButton->setEnabled(false);
+	ui_->synthesizeToFileButton->setEnabled(false);
+
+	try {
+		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
+
+		TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfiguration();
+		config.tempo = ui_->tempoSpinBox->value();
+
+		synthesis_->trmController->synthesizePhoneticString(
+					*synthesis_->phoneticStringParser,
+					phoneticString.toStdString().c_str(),
+					trmParamFilePath.toStdString().c_str(),
+					filePath.toStdString().c_str());
+
+		ui_->eventWidget->update();
+
+		emit textSynthesized();
+	} catch (const Exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
+	}
+
+	ui_->parseButton->setEnabled(true);
+	ui_->synthesizeButton->setEnabled(true);
+	ui_->synthesizeToFileButton->setEnabled(true);
+}
+
+// Slot.
+void
+SynthesisWindow::synthesizeWithManualIntonation()
+{
+	if (!synthesis_) {
+		return;
+	}
+	ui_->parseButton->setEnabled(false);
+	ui_->synthesizeButton->setEnabled(false);
+	ui_->synthesizeToFileButton->setEnabled(false);
+
+	try {
+		auto& eventList = synthesis_->trmController->eventList();
+		if (eventList.list().empty()) {
+			return;
+		}
+		eventList.clearMacroIntonation();
+		eventList.applyIntonationSmooth();
+
+		TRM::Configuration& trmConfig = synthesis_->trmController->trmConfiguration();
+		trmConfig.channels = 1;
+		const double sampleRate = trmConfig.outputRate;
+
+		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
+
+		synthesis_->trmController->synthesizeFromEventList(
+					trmParamFilePath.toStdString().c_str(),
+					audioWorker_->player().buffer());
+
+		int audioDeviceIndex = ui_->audioDeviceComboBox->currentIndex();
+		if (audioDeviceIndex == -1) {
+			audioDeviceIndex = 0;
+		}
+		emit audioStarted();
+		emit playAudioRequested(sampleRate, audioDeviceIndex);
+	} catch (const Exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
+		ui_->parseButton->setEnabled(true);
+		ui_->synthesizeButton->setEnabled(true);
+		ui_->synthesizeToFileButton->setEnabled(true);
+	}
+}
+
+// Slot.
+void
+SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
+{
+	if (!synthesis_) {
+		return;
+	}
+	ui_->parseButton->setEnabled(false);
+	ui_->synthesizeButton->setEnabled(false);
+	ui_->synthesizeToFileButton->setEnabled(false);
+
+	try {
+		auto& eventList = synthesis_->trmController->eventList();
+		if (eventList.list().empty()) {
+			return;
+		}
+		eventList.clearMacroIntonation();
+		eventList.applyIntonationSmooth();
+
+		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
+
+		synthesis_->trmController->synthesizeFromEventList(
+					trmParamFilePath.toStdString().c_str(),
+					filePath.toStdString().c_str());
+
+	} catch (const Exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
+	}
+
+	ui_->parseButton->setEnabled(true);
+	ui_->synthesizeButton->setEnabled(true);
+	ui_->synthesizeToFileButton->setEnabled(true);
 }
 
 void
@@ -243,6 +371,7 @@ SynthesisWindow::handleAudioError(QString msg)
 
 	ui_->parseButton->setEnabled(true);
 	ui_->synthesizeButton->setEnabled(true);
+	ui_->synthesizeToFileButton->setEnabled(true);
 
 	emit updateAudioDeviceComboBoxRequested();
 	emit audioFinished();
@@ -254,6 +383,7 @@ SynthesisWindow::handleAudioFinished()
 {
 	ui_->parseButton->setEnabled(true);
 	ui_->synthesizeButton->setEnabled(true);
+	ui_->synthesizeToFileButton->setEnabled(true);
 
 	emit updateAudioDeviceComboBoxRequested();
 	emit audioFinished();
@@ -280,20 +410,6 @@ SynthesisWindow::updateAudioDeviceComboBox(QStringList deviceNameList, int defau
 	} else {
 		ui_->audioDeviceComboBox->setCurrentIndex(oldIndex);
 	}
-}
-
-// Slot.
-void
-SynthesisWindow::handlePlayAudioFileRequested(QString filePath)
-{
-	ui_->parseButton->setEnabled(false);
-	ui_->synthesizeButton->setEnabled(false);
-
-	int audioDeviceIndex = ui_->audioDeviceComboBox->currentIndex();
-	if (audioDeviceIndex == -1) {
-		audioDeviceIndex = 0;
-	}
-	emit playAudioFileRequested(filePath, audioDeviceIndex);
 }
 
 } // namespace GS

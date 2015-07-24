@@ -33,8 +33,9 @@ class AudioPlayer {
 public:
 	AudioPlayer();
 
+	std::vector<float>& buffer() { return buffer_; }
 	void getOutputDeviceList(std::vector<std::string>& deviceNameList, int& defaultDeviceIndex);
-	void playFile(const std::string& filePath, int outputDeviceIndex);
+	void play(double sampleRate, int outputDeviceIndex);
 private:
 	AudioPlayer(const AudioPlayer&) = delete;
 	AudioPlayer& operator=(const AudioPlayer&) = delete;
@@ -42,9 +43,8 @@ private:
 	int callback(const void* inputBuffer, void* outputBuffer, unsigned long framesPerBuffer,
 			const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags);
 
-	std::vector<int16_t> buffer_;
+	std::vector<float> buffer_;
 	unsigned int bufferIndex_;
-	unsigned int numInputChannels_;
 };
 
 } // namespace GS

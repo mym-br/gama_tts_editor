@@ -14,7 +14,7 @@ CONFIG += c++11
 unix {
     !macx {
         CONFIG += link_pkgconfig
-        PKGCONFIG += sndfile portaudiocpp
+        PKGCONFIG += portaudiocpp
     }
 }
 
@@ -115,13 +115,11 @@ win32 {
         ../gnuspeech_sa/src/trm \
         ../gnuspeech_sa/src/trm_control_model \
         ../pa_stable_v19_20140130/portaudio/include \
-        ../pa_stable_v19_20140130/portaudio/bindings/cpp/include \
-        "c:/Program Files (x86)/Mega-Nerd/libsndfile/include"
+        ../pa_stable_v19_20140130/portaudio/bindings/cpp/include
     LIBS += \
         $$_PRO_FILE_PWD_/../pa_stable_v19_20140130/portaudio-cpp-build/portaudio-cpp.lib \
         $$_PRO_FILE_PWD_/../pa_stable_v19_20140130/portaudio-build/Release/portaudio_x86.lib \
         $$_PRO_FILE_PWD_/../gnuspeech_sa-build/Release/gnuspeechsa.lib \
-        "c:/Program Files (x86)/Mega-Nerd/libsndfile/lib/libsndfile-1.lib" \
         -L"c:/Program Files (x86)/Microsoft SDKs/Windows/v7.1A/Lib"
 }
 

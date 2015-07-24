@@ -17,6 +17,7 @@
 
 #include "IntonationWindow.h"
 
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
 #include <QString>
@@ -79,27 +80,31 @@ IntonationWindow::on_synthesizeButton_clicked()
 	}
 
 	ui_->synthesizeButton->setEnabled(false);
+	ui_->synthesizeToFileButton->setEnabled(false);
 
-	try {
-		auto& eventList = synthesis_->trmController->eventList();
-		if (eventList.list().empty()) {
-			return;
-		}
-		eventList.clearMacroIntonation();
-		eventList.applyIntonationSmooth();
+	emit synthesisRequested();
+}
 
-		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
-		QString speechFilePath = synthesis_->projectDir + SPEECH_FILE_NAME;
+void
+IntonationWindow::on_synthesizeToFileButton_clicked()
+{
+	qDebug("IntonationWindow::on_synthesizeToFileButton_clicked");
 
-		synthesis_->trmController->synthesizeFromEventList(
-					trmParamFilePath.toStdString().c_str(),
-					speechFilePath.toStdString().c_str());
+	if (synthesis_ == nullptr) return;
 
-		emit playAudioFileRequested(speechFilePath);
-	} catch (const Exception& exc) {
-		QMessageBox::critical(this, tr("Error"), exc.what());
-		ui_->synthesizeButton->setEnabled(true);
+	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), synthesis_->projectDir, tr("WAV files (*.wav)"));
+	if (filePath.isEmpty()) {
+		return;
 	}
+
+	if (!ui_->intonationWidget->saveIntonationToEventList()) {
+		return;
+	}
+
+	ui_->synthesizeButton->setEnabled(false);
+	ui_->synthesizeToFileButton->setEnabled(false);
+
+	emit synthesisToFileRequested(filePath);
 }
 
 // Slot.
@@ -114,6 +119,7 @@ void
 IntonationWindow::handleAudioStarted()
 {
 	ui_->synthesizeButton->setEnabled(false);
+	ui_->synthesizeToFileButton->setEnabled(false);
 }
 
 // Slot.
@@ -121,6 +127,15 @@ void
 IntonationWindow::handleAudioFinished()
 {
 	ui_->synthesizeButton->setEnabled(true);
+	ui_->synthesizeToFileButton->setEnabled(true);
+}
+
+// Slot.
+void
+IntonationWindow::handleSynthesisFinished()
+{
+	ui_->synthesizeButton->setEnabled(true);
+	ui_->synthesizeToFileButton->setEnabled(true);
 }
 
 void

@@ -127,7 +127,9 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(synthesisWindow_.get(), SIGNAL(textSynthesized()), intonationWindow_.get(), SLOT(loadIntonationFromEventList()));
 	connect(synthesisWindow_.get(), SIGNAL(audioStarted()), intonationWindow_.get(), SLOT(handleAudioStarted()));
 	connect(synthesisWindow_.get(), SIGNAL(audioFinished()), intonationWindow_.get(), SLOT(handleAudioFinished()));
-	connect(intonationWindow_.get(), SIGNAL(playAudioFileRequested(QString)), synthesisWindow_.get(), SLOT(handlePlayAudioFileRequested(QString)));
+	connect(synthesisWindow_.get(), SIGNAL(synthesisFinished()), intonationWindow_.get(), SLOT(handleSynthesisFinished()));
+	connect(intonationWindow_.get(), SIGNAL(synthesisRequested()), synthesisWindow_.get(), SLOT(synthesizeWithManualIntonation()));
+	connect(intonationWindow_.get(), SIGNAL(synthesisToFileRequested(QString)), synthesisWindow_.get(), SLOT(synthesizeToFileWithManualIntonation(QString)));
 }
 
 MainWindow::~MainWindow()
