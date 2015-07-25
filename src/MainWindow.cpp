@@ -374,7 +374,30 @@ MainWindow::about()
 
 		"  Gnuspeech is distributed under the terms of the GNU General Public License\n"
 		"  as published by the Free Software Foundation, either version 3 of the\n"
-		"  License, or (at your option) any later version.\n"
+		"  License, or (at your option) any later version.\n\n"
+
+		"- PortAudio Portable Real-Time Audio Library (http://www.portaudio.com/).\n\n"
+
+		"  Copyright (c) 1999-2011 Ross Bencina and Phil Burk\n\n"
+
+		"  Permission is hereby granted, free of charge, to any person obtaining a copy\n"
+		"  of this software and associated documentation files (the \"Software\"), to\n"
+		"  deal in the Software without restriction, including without limitation the\n"
+		"  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or\n"
+		"  sell copies of the Software, and to permit persons to whom the Software is\n"
+		"  furnished to do so, subject to the following conditions:\n\n"
+
+		"  The above copyright notice and this permission notice shall be included in\n"
+		"  all copies or substantial portions of the Software.\n\n"
+
+		"  THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n"
+		"  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n"
+		"  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\n"
+		"  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\n"
+		"  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\n"
+		"  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n"
+		"  USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n"
+
 		"</pre>"
 	);
 	layout->addWidget(textEdit);
