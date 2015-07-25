@@ -27,6 +27,8 @@
 
 namespace GS {
 
+std::mutex AudioPlayer::bufferMutex;
+
 AudioPlayer::AudioPlayer()
 		: bufferIndex_(0)
 {
@@ -60,6 +62,8 @@ AudioPlayer::getOutputDeviceList(std::vector<std::string>& deviceNameList, int& 
 void
 AudioPlayer::play(double sampleRate, int outputDeviceIndex)
 {
+	std::lock_guard<std::mutex> lock(bufferMutex);
+
 	portaudio::AutoSystem portaudio;
 	bufferIndex_ = 0;
 
@@ -83,7 +87,7 @@ AudioPlayer::play(double sampleRate, int outputDeviceIndex)
 
 	stream.start();
 	while (stream.isActive()) {
-		sys.sleep(200 /* ms */);
+		sys.sleep(100 /* ms */);
 	}
 	stream.stop();
 	stream.close();

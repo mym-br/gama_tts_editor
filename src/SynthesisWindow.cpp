@@ -169,11 +169,15 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		trmConfig.channels = 1;
 		const double sampleRate = trmConfig.outputRate;
 
-		synthesis_->trmController->synthesizePhoneticString(
-					*synthesis_->phoneticStringParser,
-					phoneticString.toStdString().c_str(),
-					trmParamFilePath.toStdString().c_str(),
-					audioWorker_->player().buffer());
+		{
+			std::lock_guard<std::mutex> lock(AudioPlayer::bufferMutex);
+
+			synthesis_->trmController->synthesizePhoneticString(
+						*synthesis_->phoneticStringParser,
+						phoneticString.toStdString().c_str(),
+						trmParamFilePath.toStdString().c_str(),
+						audioWorker_->player().buffer());
+		}
 
 		ui_->eventWidget->update();
 
@@ -252,9 +256,13 @@ SynthesisWindow::synthesizeWithManualIntonation()
 
 		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
 
-		synthesis_->trmController->synthesizeFromEventList(
-					trmParamFilePath.toStdString().c_str(),
-					audioWorker_->player().buffer());
+		{
+			std::lock_guard<std::mutex> lock(AudioPlayer::bufferMutex);
+
+			synthesis_->trmController->synthesizeFromEventList(
+						trmParamFilePath.toStdString().c_str(),
+						audioWorker_->player().buffer());
+		}
 
 		int audioDeviceIndex = ui_->audioDeviceComboBox->currentIndex();
 		if (audioDeviceIndex == -1) {

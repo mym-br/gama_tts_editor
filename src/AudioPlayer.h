@@ -19,6 +19,7 @@
 #define AUDIO_PLAYER_H
 
 #include <cstdint>
+#include <mutex>
 #include <string>
 #include <vector>
 
@@ -36,6 +37,8 @@ public:
 	std::vector<float>& buffer() { return buffer_; }
 	void getOutputDeviceList(std::vector<std::string>& deviceNameList, int& defaultDeviceIndex);
 	void play(double sampleRate, int outputDeviceIndex);
+
+	static std::mutex bufferMutex;
 private:
 	AudioPlayer(const AudioPlayer&) = delete;
 	AudioPlayer& operator=(const AudioPlayer&) = delete;
