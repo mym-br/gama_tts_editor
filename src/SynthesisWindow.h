@@ -71,6 +71,9 @@ private:
 		NUM_PARAM = 16
 	};
 
+	void enableProcessingButtons();
+	void disableProcessingButtons();
+
 	std::unique_ptr<Ui::SynthesisWindow> ui_;
 	TRMControlModel::Model* model_;
 	Synthesis* synthesis_;

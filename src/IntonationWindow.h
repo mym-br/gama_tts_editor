@@ -59,6 +59,9 @@ private slots:
 		double beatOffset,
 		double absoluteTime);
 private:
+	void enableProcessingButtons();
+	void disableProcessingButtons();
+
 	std::unique_ptr<Ui::IntonationWindow> ui_;
 	Synthesis* synthesis_;
 };

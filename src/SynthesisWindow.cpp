@@ -133,19 +133,14 @@ SynthesisWindow::on_parseButton_clicked()
 	if (text.trimmed().isEmpty()) {
 		return;
 	}
-
-	ui_->parseButton->setEnabled(false);
-	ui_->synthesizeButton->setEnabled(false);
-	ui_->synthesizeToFileButton->setEnabled(false);
+	disableProcessingButtons();
 
 	try {
 		std::string phoneticString = synthesis_->textParser->parseText(text.toUtf8().constData());
 		ui_->phoneticStringTextEdit->setPlainText(phoneticString.c_str());
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
-		ui_->parseButton->setEnabled(true);
-		ui_->synthesizeButton->setEnabled(true);
-		ui_->synthesizeToFileButton->setEnabled(true);
+		enableProcessingButtons();
 		return;
 	}
 
@@ -162,10 +157,7 @@ SynthesisWindow::on_synthesizeButton_clicked()
 	if (phoneticString.trimmed().isEmpty()) {
 		return;
 	}
-
-	ui_->parseButton->setEnabled(false);
-	ui_->synthesizeButton->setEnabled(false);
-	ui_->synthesizeToFileButton->setEnabled(false);
+	disableProcessingButtons();
 
 	try {
 		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
@@ -195,9 +187,7 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		emit textSynthesized();
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
-		ui_->parseButton->setEnabled(true);
-		ui_->synthesizeButton->setEnabled(true);
-		ui_->synthesizeToFileButton->setEnabled(true);
+		enableProcessingButtons();
 	}
 }
 
@@ -215,10 +205,7 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 	if (filePath.isEmpty()) {
 		return;
 	}
-
-	ui_->parseButton->setEnabled(false);
-	ui_->synthesizeButton->setEnabled(false);
-	ui_->synthesizeToFileButton->setEnabled(false);
+	disableProcessingButtons();
 
 	try {
 		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
@@ -239,9 +226,7 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}
 
-	ui_->parseButton->setEnabled(true);
-	ui_->synthesizeButton->setEnabled(true);
-	ui_->synthesizeToFileButton->setEnabled(true);
+	enableProcessingButtons();
 }
 
 // Slot.
@@ -251,9 +236,7 @@ SynthesisWindow::synthesizeWithManualIntonation()
 	if (!synthesis_) {
 		return;
 	}
-	ui_->parseButton->setEnabled(false);
-	ui_->synthesizeButton->setEnabled(false);
-	ui_->synthesizeToFileButton->setEnabled(false);
+	disableProcessingButtons();
 
 	try {
 		auto& eventList = synthesis_->trmController->eventList();
@@ -281,9 +264,7 @@ SynthesisWindow::synthesizeWithManualIntonation()
 		emit playAudioRequested(sampleRate, audioDeviceIndex);
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
-		ui_->parseButton->setEnabled(true);
-		ui_->synthesizeButton->setEnabled(true);
-		ui_->synthesizeToFileButton->setEnabled(true);
+		enableProcessingButtons();
 	}
 }
 
@@ -294,9 +275,7 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 	if (!synthesis_) {
 		return;
 	}
-	ui_->parseButton->setEnabled(false);
-	ui_->synthesizeButton->setEnabled(false);
-	ui_->synthesizeToFileButton->setEnabled(false);
+	disableProcessingButtons();
 
 	try {
 		auto& eventList = synthesis_->trmController->eventList();
@@ -316,9 +295,7 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}
 
-	ui_->parseButton->setEnabled(true);
-	ui_->synthesizeButton->setEnabled(true);
-	ui_->synthesizeToFileButton->setEnabled(true);
+	enableProcessingButtons();
 }
 
 void
@@ -369,9 +346,7 @@ SynthesisWindow::handleAudioError(QString msg)
 {
 	QMessageBox::critical(this, tr("Error"), msg);
 
-	ui_->parseButton->setEnabled(true);
-	ui_->synthesizeButton->setEnabled(true);
-	ui_->synthesizeToFileButton->setEnabled(true);
+	enableProcessingButtons();
 
 	emit updateAudioDeviceComboBoxRequested();
 	emit audioFinished();
@@ -381,9 +356,7 @@ SynthesisWindow::handleAudioError(QString msg)
 void
 SynthesisWindow::handleAudioFinished()
 {
-	ui_->parseButton->setEnabled(true);
-	ui_->synthesizeButton->setEnabled(true);
-	ui_->synthesizeToFileButton->setEnabled(true);
+	enableProcessingButtons();
 
 	emit updateAudioDeviceComboBoxRequested();
 	emit audioFinished();
@@ -410,6 +383,22 @@ SynthesisWindow::updateAudioDeviceComboBox(QStringList deviceNameList, int defau
 	} else {
 		ui_->audioDeviceComboBox->setCurrentIndex(oldIndex);
 	}
+}
+
+void
+SynthesisWindow::enableProcessingButtons()
+{
+	ui_->parseButton->setEnabled(true);
+	ui_->synthesizeButton->setEnabled(true);
+	ui_->synthesizeToFileButton->setEnabled(true);
+}
+
+void
+SynthesisWindow::disableProcessingButtons()
+{
+	ui_->parseButton->setEnabled(false);
+	ui_->synthesizeButton->setEnabled(false);
+	ui_->synthesizeToFileButton->setEnabled(false);
 }
 
 } // namespace GS

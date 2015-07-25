@@ -79,8 +79,7 @@ IntonationWindow::on_synthesizeButton_clicked()
 		return;
 	}
 
-	ui_->synthesizeButton->setEnabled(false);
-	ui_->synthesizeToFileButton->setEnabled(false);
+	disableProcessingButtons();
 
 	emit synthesisRequested();
 }
@@ -101,8 +100,7 @@ IntonationWindow::on_synthesizeToFileButton_clicked()
 		return;
 	}
 
-	ui_->synthesizeButton->setEnabled(false);
-	ui_->synthesizeToFileButton->setEnabled(false);
+	disableProcessingButtons();
 
 	emit synthesisToFileRequested(filePath);
 }
@@ -118,24 +116,21 @@ IntonationWindow::loadIntonationFromEventList()
 void
 IntonationWindow::handleAudioStarted()
 {
-	ui_->synthesizeButton->setEnabled(false);
-	ui_->synthesizeToFileButton->setEnabled(false);
+	disableProcessingButtons();
 }
 
 // Slot.
 void
 IntonationWindow::handleAudioFinished()
 {
-	ui_->synthesizeButton->setEnabled(true);
-	ui_->synthesizeToFileButton->setEnabled(true);
+	enableProcessingButtons();
 }
 
 // Slot.
 void
 IntonationWindow::handleSynthesisFinished()
 {
-	ui_->synthesizeButton->setEnabled(true);
-	ui_->synthesizeToFileButton->setEnabled(true);
+	enableProcessingButtons();
 }
 
 void
@@ -183,6 +178,20 @@ IntonationWindow::setPointData(double value, double slope, double beat, double b
 	ui_->beatLineEdit->setText(QString::number(beat));
 	ui_->beatOffsetLineEdit->setText(QString::number(beatOffset));
 	ui_->absoluteTimeLineEdit->setText(QString::number(absoluteTime));
+}
+
+void
+IntonationWindow::enableProcessingButtons()
+{
+	ui_->synthesizeButton->setEnabled(true);
+	ui_->synthesizeToFileButton->setEnabled(true);
+}
+
+void
+IntonationWindow::disableProcessingButtons()
+{
+	ui_->synthesizeButton->setEnabled(false);
+	ui_->synthesizeToFileButton->setEnabled(false);
 }
 
 } // namespace GS
