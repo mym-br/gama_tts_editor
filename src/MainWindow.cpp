@@ -369,7 +369,7 @@ MainWindow::about()
 
 		"- The Gnuspeech project (http://www.gnu.org/software/gnuspeech/).\n\n"
 
-		"  Provided by David R. Hill, Leonard Manzara and Craig Schock\n\n"
+		"  Provided by David R. Hill, Leonard Manzara and Craig Schock.\n\n"
 
 		"  Gnuspeech is distributed under the terms of the GNU General Public License\n"
 		"  as published by the Free Software Foundation, either version 3 of the\n"
