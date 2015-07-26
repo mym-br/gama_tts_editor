@@ -369,18 +369,25 @@ MainWindow::about()
 
 		"- The Gnuspeech project (http://www.gnu.org/software/gnuspeech/).\n\n"
 
-		"  Copyright 1991, 1992, 1993, 1994, 1995, 1996, 2001, 2002\n"
-		"  David R. Hill, Leonard Manzara, Craig Schock\n\n"
+		"  Provided by David R. Hill, Leonard Manzara and Craig Schock\n\n"
 
 		"  Gnuspeech is distributed under the terms of the GNU General Public License\n"
 		"  as published by the Free Software Foundation, either version 3 of the\n"
 		"  License, or (at your option) any later version.\n\n"
 
+		"- Qt (http://www.qt.io/).\n\n"
+
+		"  Provided by Digia Plc.\n\n"
+
+		"  Qt Free Edition is distributed under the terms of the GNU LGPLv2.1 or LGPLv3,\n"
+		"  depending on the library (see http://www.qt.io/faq/).\n\n"
+
 		"- PortAudio Portable Real-Time Audio Library (http://www.portaudio.com/).\n\n"
 
-		"  Copyright (c) 1999-2011 Ross Bencina and Phil Burk\n\n"
+		"  Provided by Ross Bencina and Phil Burk.\n\n"
 
-		"  Permission is hereby granted, free of charge, to any person obtaining a copy\n"
+		"  PortAudio is distributed under these terms:\n"
+		"  \"Permission is hereby granted, free of charge, to any person obtaining a copy\n"
 		"  of this software and associated documentation files (the \"Software\"), to\n"
 		"  deal in the Software without restriction, including without limitation the\n"
 		"  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or\n"
@@ -396,7 +403,7 @@ MainWindow::about()
 		"  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\n"
 		"  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\n"
 		"  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n"
-		"  USE OR OTHER DEALINGS IN THE SOFTWARE.\n\n"
+		"  USE OR OTHER DEALINGS IN THE SOFTWARE.\"\n\n"
 
 		"</pre>"
 	);
