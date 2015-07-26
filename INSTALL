@@ -2,16 +2,15 @@
 - Requirements:
 
   - A C++ compiler with C++11 support.
-    The following compiler has been tested:
+    The following compilers have been tested:
     - GCC 4.8.2 (GNU/Linux x86_64).
+    - MSVC 2013 Express (Windows 7 x86_64).
 
-  - Qt (tested with version 4.8.5, 5.4.0).
-
-  - libsndfile (tested with version 1.0.25).
+  - Qt (tested with version 4.8.5, 5.4.1).
 
   - PortAudio with C++ binding (tested with version v19_20140130).
 
-  - Gnuspeech-SA (use the latest version).
+  - GnuspeechSA (use the latest version).
 
 - Generate the Makefile:
 

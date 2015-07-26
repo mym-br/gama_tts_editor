@@ -18,7 +18,7 @@ unix {
     }
 }
 
-TARGET = gs_editor
+TARGET = monet_cp
 TEMPLATE = app
 
 SOURCES += src/main.cpp \
@@ -87,15 +87,15 @@ unix {
     !macx {
         QMAKE_CXXFLAGS += -Wall -Wextra -march=native
 
-        exists(../gnuspeech_sa/CMakeLists.txt) {
-            message(Using local Gnuspeech-SA)
+        exists(../GnuspeechSA/CMakeLists.txt) {
+            message(Using local GnuspeechSA)
             INCLUDEPATH += \
-                ../gnuspeech_sa/src \
-                ../gnuspeech_sa/src/trm \
-                ../gnuspeech_sa/src/trm_control_model
-            LIBS += -L../gnuspeech_sa-build -lgnuspeechsa
+                ../GnuspeechSA/src \
+                ../GnuspeechSA/src/trm \
+                ../GnuspeechSA/src/trm_control_model
+            LIBS += -L../GnuspeechSA-build -lgnuspeechsa
         } else {
-            message(Using system Gnuspeech-SA)
+            message(Using system GnuspeechSA)
             PKGCONFIG += gnuspeechsa
         }
 
@@ -103,7 +103,7 @@ unix {
             INSTALL_PREFIX = /usr/local
         }
         target.path = $${INSTALL_PREFIX}/bin
-        dataset.path = $${INSTALL_PREFIX}/share/gnuspeech/gs_editor
+        dataset.path = $${INSTALL_PREFIX}/share/gnuspeech/monet_cp
         dataset.files = data
         INSTALLS = target dataset
     }
@@ -111,15 +111,15 @@ unix {
 
 win32 {
     INCLUDEPATH += \
-        ../gnuspeech_sa/src \
-        ../gnuspeech_sa/src/trm \
-        ../gnuspeech_sa/src/trm_control_model \
-        ../pa_stable_v19_20140130/portaudio/include \
-        ../pa_stable_v19_20140130/portaudio/bindings/cpp/include
+        ../GnuspeechSA/src \
+        ../GnuspeechSA/src/trm \
+        ../GnuspeechSA/src/trm_control_model \
+        ../portaudio/include \
+        ../portaudio/bindings/cpp/include
     LIBS += \
-        $$_PRO_FILE_PWD_/../pa_stable_v19_20140130/portaudio-cpp-build/portaudio-cpp.lib \
-        $$_PRO_FILE_PWD_/../pa_stable_v19_20140130/portaudio-build/Release/portaudio_x86.lib \
-        $$_PRO_FILE_PWD_/../gnuspeech_sa-build/Release/gnuspeechsa.lib \
+        $$_PRO_FILE_PWD_/../portaudio-cpp-build/portaudio-cpp.lib \
+        $$_PRO_FILE_PWD_/../portaudio-build/Release/portaudio_x86.lib \
+        $$_PRO_FILE_PWD_/../GnuspeechSA-build/Release/gnuspeechsa.lib \
         -L"c:/Program Files (x86)/Microsoft SDKs/Windows/v7.1A/Lib"
 }
 
