@@ -117,7 +117,7 @@ win32 {
         ../portaudio/include \
         ../portaudio/bindings/cpp/include
     LIBS += \
-        $$_PRO_FILE_PWD_/../portaudio-cpp-build/portaudio-cpp.lib \
+        $$_PRO_FILE_PWD_/../portaudio-cpp-build/Release/portaudio-cpp.lib \
         $$_PRO_FILE_PWD_/../portaudio-build/Release/portaudio_x86.lib \
         $$_PRO_FILE_PWD_/../GnuspeechSA-build/Release/gnuspeechsa.lib \
         -L"c:/Program Files (x86)/Microsoft SDKs/Windows/v7.1A/Lib"
