@@ -122,9 +122,8 @@ TransitionPoint::adjustValuesInSlopeRatios(std::vector<TransitionPoint>& pointLi
 
 			float valueDeltaSum = 0.0;
 			for (unsigned int k = i; k < j; ++k) {
-				double slope = pointList[k].slope;
-				double timeDelta = pointList[k + 1].time - pointList[k].time;
-				double valueDelta = slope * timeDelta;
+				const float timeDelta = pointList[k + 1].time - pointList[k].time;
+				const float valueDelta = pointList[k].slope * timeDelta;
 				valueDeltaSum += valueDelta;
 				if (k < j - 1) {
 					pointList[k + 1].value = valueDelta; // temporary value
@@ -134,8 +133,8 @@ TransitionPoint::adjustValuesInSlopeRatios(std::vector<TransitionPoint>& pointLi
 				i = j;
 				continue;
 			}
-			double factor = (pointList[j].value - pointList[i].value) / valueDeltaSum;
-			double previousValue = pointList[i].value;
+			const float factor = (pointList[j].value - pointList[i].value) / valueDeltaSum;
+			float previousValue = pointList[i].value;
 			for (unsigned int k = i + 1; k < j; ++k) {
 				pointList[k].value *= factor;
 				pointList[k].value += previousValue;
