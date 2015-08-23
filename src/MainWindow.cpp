@@ -17,6 +17,7 @@
 
 #include "MainWindow.h"
 
+#include <exception>
 #include <iostream>
 #include <utility> /* move */
 
@@ -303,7 +304,7 @@ MainWindow::openModel()
 		intonationParametersWindow_->setup(synthesis_.get());
 
 		qDebug("### Model opened.");
-	} catch (const Exception& exc) {
+	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 
 		intonationParametersWindow_->setup(nullptr);
@@ -330,7 +331,7 @@ MainWindow::saveModel()
 		model_->save(config_.projectDir.toStdString().c_str(), config_.newConfigFileName.toStdString().c_str());
 
 		qDebug("### Model saved.");
-	} catch (const Exception& exc) {
+	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}
 }
