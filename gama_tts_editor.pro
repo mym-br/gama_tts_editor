@@ -18,7 +18,7 @@ unix {
     }
 }
 
-TARGET = monet_cp
+TARGET = gama_tts_editor
 TEMPLATE = app
 
 SOURCES += src/main.cpp \
@@ -87,23 +87,23 @@ unix {
     !macx {
         QMAKE_CXXFLAGS += -Wall -Wextra -march=native
 
-        exists(../GnuspeechSA/CMakeLists.txt) {
-            message(Using local GnuspeechSA)
+        exists(../gama_tts/CMakeLists.txt) {
+            message(Using local GamaTTS)
             INCLUDEPATH += \
-                ../GnuspeechSA/src \
-                ../GnuspeechSA/src/trm \
-                ../GnuspeechSA/src/trm_control_model
-            LIBS += -L../GnuspeechSA-build -lgnuspeechsa
+                ../gama_tts/src \
+                ../gama_tts/src/trm \
+                ../gama_tts/src/trm_control_model
+            LIBS += -L../gama_tts-build -lgamatts
         } else {
-            message(Using system GnuspeechSA)
-            PKGCONFIG += gnuspeechsa
+            message(Using system GamaTTS)
+            PKGCONFIG += gama_tts
         }
 
         isEmpty(INSTALL_PREFIX) {
             INSTALL_PREFIX = /usr/local
         }
         target.path = $${INSTALL_PREFIX}/bin
-        dataset.path = $${INSTALL_PREFIX}/share/gnuspeech/monet_cp
+        dataset.path = $${INSTALL_PREFIX}/share/gama_tts_editor
         dataset.files = data
         INSTALLS = target dataset
     }
@@ -111,15 +111,15 @@ unix {
 
 win32 {
     INCLUDEPATH += \
-        ../GnuspeechSA/src \
-        ../GnuspeechSA/src/trm \
-        ../GnuspeechSA/src/trm_control_model \
+        ../gama_tts/src \
+        ../gama_tts/src/trm \
+        ../gama_tts/src/trm_control_model \
         ../portaudio/include \
         ../portaudio/bindings/cpp/include
     LIBS += \
         $$_PRO_FILE_PWD_/../portaudio-cpp-build/Release/portaudio-cpp.lib \
         $$_PRO_FILE_PWD_/../portaudio-build/Release/portaudio_x86.lib \
-        $$_PRO_FILE_PWD_/../GnuspeechSA-build/Release/gnuspeechsa.lib \
+        $$_PRO_FILE_PWD_/../gama_tts-build/Release/gamatts.lib \
         -L"c:/Program Files (x86)/Microsoft SDKs/Windows/v7.1A/Lib"
 }
 

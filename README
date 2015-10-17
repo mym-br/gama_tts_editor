@@ -1,9 +1,14 @@
 
-MonetCP (Cross-Platform)
-========================
+GamaTTS:Editor
+==============
 
-MonetCP is a port to C++/Qt of Monet, an editor in the Gnuspeech
+This is the editor for the articulatory database in GamaTTS.
+
+GamaTTS:Editor is an approximate clone of Monet, an editor in the Gnuspeech
 project (http://www.gnu.org/software/gnuspeech/).
+
+License
+-------
 
 This program is free software: you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by

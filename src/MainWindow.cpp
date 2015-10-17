@@ -45,7 +45,7 @@
 #include "TransitionEditorWindow.h"
 #include "ui_MainWindow.h"
 
-#define PROGRAM_NAME "MonetCP"
+#define PROGRAM_NAME "GamaTTS:Editor"
 #define PROGRAM_VERSION "0.1.5"
 #define MAX_LOG_BLOCK_COUNT 500
 
