@@ -2,6 +2,12 @@
 GamaTTS:Editor
 ==============
 
+################################################################################
+WARNING:
+  This software is dangerous to your health.
+  Use at your own risk.
+################################################################################
+
 This is the editor for the articulatory database in GamaTTS.
 
 GamaTTS:Editor is an approximate clone of Monet, an editor in the Gnuspeech
