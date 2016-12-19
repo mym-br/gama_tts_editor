@@ -19,7 +19,6 @@
 
 #include "Controller.h"
 #include "Synthesis.h"
-#include "VTMConfiguration.h"
 #include "ui_IntonationParametersWindow.h"
 
 
