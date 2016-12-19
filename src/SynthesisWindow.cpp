@@ -41,11 +41,11 @@
 namespace GS {
 
 SynthesisWindow::SynthesisWindow(QWidget* parent)
-		: QWidget(parent)
-		, ui_(new Ui::SynthesisWindow)
-		, model_(nullptr)
-		, synthesis_(nullptr)
-		, audioWorker_(nullptr)
+		: QWidget {parent}
+		, ui_ {std::make_unique<Ui::SynthesisWindow>()}
+		, model_ {}
+		, synthesis_ {}
+		, audioWorker_ {}
 {
 	ui_->setupUi(this);
 
@@ -320,12 +320,12 @@ SynthesisWindow::setupParameterTable()
 	auto* table = ui_->parameterTableWidget;
 	table->setRowCount(model_->parameterList().size());
 	for (unsigned int i = 0; i < model_->parameterList().size(); ++i) {
-		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(model_->parameterList()[i].name().c_str()));
+		auto item = std::make_unique<QTableWidgetItem>(model_->parameterList()[i].name().c_str());
 		item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
 		item->setCheckState(Qt::Unchecked);
 		table->setItem(i, 0, item.release());
 
-		item.reset(new QTableWidgetItem);
+		item = std::make_unique<QTableWidgetItem>();
 		item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
 		item->setCheckState(Qt::Unchecked);
 		table->setItem(i, 1, item.release());

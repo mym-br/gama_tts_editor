@@ -38,12 +38,12 @@
 namespace GS {
 
 PrototypeManagerWindow::PrototypeManagerWindow(QWidget* parent)
-		: QWidget(parent)
-		, ui_(new Ui::PrototypeManagerWindow)
-		, model_(nullptr)
-		, currentEquation_(nullptr)
-		, currentTransition_(nullptr)
-		, currentSpecialTransition_(nullptr)
+		: QWidget {parent}
+		, ui_ {std::make_unique<Ui::PrototypeManagerWindow>()}
+		, model_ {}
+		, currentEquation_ {}
+		, currentTransition_ {}
+		, currentSpecialTransition_ {}
 {
 	ui_->setupUi(this);
 
@@ -100,7 +100,7 @@ PrototypeManagerWindow::on_addEquationButton_clicked()
 			qWarning("Duplicate equation name.");
 			return;
 		}
-		std::shared_ptr<VTMControlModel::Equation> equation(new VTMControlModel::Equation(NEW_ITEM_NAME));
+		auto equation = std::make_shared<VTMControlModel::Equation>(NEW_ITEM_NAME);
 		try {
 			equation->setFormula(NEW_EQUATION_FORMULA);
 		} catch (const Exception& exc) {
@@ -321,12 +321,12 @@ PrototypeManagerWindow::setupEquationsTree()
 		tree->clear();
 
 		for (const auto& group : model_->equationGroupList()) {
-			std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+			auto item = std::make_unique<QTreeWidgetItem>();
 			item->setText(0, group.name.c_str());
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 
 			for (const auto& equation : group.equationList) {
-				std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+				auto childItem = std::make_unique<QTreeWidgetItem>();
 				childItem->setText(0, equation->name().c_str());
 				childItem->setData(1, Qt::CheckStateRole, equation.use_count() > 1 ? Qt::Checked : Qt::Unchecked);
 				childItem->setData(1, Qt::DisplayRole, static_cast<int>(equation.use_count()) - 1);
@@ -370,8 +370,7 @@ PrototypeManagerWindow::on_addTransitionButton_clicked()
 			return;
 		}
 
-		std::shared_ptr<VTMControlModel::Transition> transition(
-					new VTMControlModel::Transition(NEW_ITEM_NAME, VTMControlModel::Transition::TYPE_DIPHONE, false));
+		auto transition = std::make_shared<VTMControlModel::Transition>(NEW_ITEM_NAME, VTMControlModel::Transition::TYPE_DIPHONE, false);
 		model_->transitionGroupList()[groupIndex].transitionList.push_back(transition);
 	} else {
 		if (model_->findTransitionGroupName(NEW_ITEM_NAME)) {
@@ -605,12 +604,12 @@ PrototypeManagerWindow::setupTransitionsTree()
 		tree->clear();
 
 		for (const auto& group : model_->transitionGroupList()) {
-			std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+			auto item = std::make_unique<QTreeWidgetItem>();
 			item->setText(0, group.name.c_str());
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 
 			for (const auto& transition : group.transitionList) {
-				std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+				auto childItem = std::make_unique<QTreeWidgetItem>();
 				childItem->setText(0, transition->name().c_str());
 				childItem->setData(1, Qt::CheckStateRole, transition.use_count() > 1 ? Qt::Checked : Qt::Unchecked);
 				childItem->setData(1, Qt::DisplayRole, static_cast<int>(transition.use_count()) - 1);
@@ -652,8 +651,7 @@ PrototypeManagerWindow::on_addSpecialTransitionButton_clicked()
 			return;
 		}
 
-		std::shared_ptr<VTMControlModel::Transition> specialTransition(
-					new VTMControlModel::Transition(NEW_ITEM_NAME, VTMControlModel::Transition::TYPE_DIPHONE, true));
+		auto specialTransition = std::make_shared<VTMControlModel::Transition>(NEW_ITEM_NAME, VTMControlModel::Transition::TYPE_DIPHONE, true);
 		model_->specialTransitionGroupList()[groupIndex].transitionList.push_back(specialTransition);
 	} else {
 		if (model_->findSpecialTransitionGroupName(NEW_ITEM_NAME)) {
@@ -886,12 +884,12 @@ PrototypeManagerWindow::setupSpecialTransitionsTree()
 		tree->clear();
 
 		for (const auto& group : model_->specialTransitionGroupList()) {
-			std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+			auto item = std::make_unique<QTreeWidgetItem>();
 			item->setText(0, group.name.c_str());
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 
 			for (const auto& specialTransition : group.transitionList) {
-				std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+				auto childItem = std::make_unique<QTreeWidgetItem>();
 				childItem->setText(0, specialTransition->name().c_str());
 				childItem->setData(1, Qt::CheckStateRole, specialTransition.use_count() > 1 ? Qt::Checked : Qt::Unchecked);
 				childItem->setData(1, Qt::DisplayRole, static_cast<int>(specialTransition.use_count()) - 1);

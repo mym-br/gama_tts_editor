@@ -58,11 +58,11 @@ namespace GS {
 
 TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 		: QWidget(parent)
-		, ui_(new Ui::TransitionEditorWindow)
-		, special_(false)
-		, model_(nullptr)
-		, transition_(nullptr)
-		, transitionType_(VTMControlModel::Transition::TYPE_INVALID)
+		, ui_ {std::make_unique<Ui::TransitionEditorWindow>()}
+		, special_ {false}
+		, model_ {}
+		, transition_ {}
+		, transitionType_ {VTMControlModel::Transition::TYPE_INVALID}
 {
 	ui_->setupUi(this);
 
@@ -553,12 +553,12 @@ TransitionEditorWindow::updateEquationsTree()
 
 	tree->clear();
 	for (const auto& group : model_->equationGroupList()) {
-		std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+		auto item = std::make_unique<QTreeWidgetItem>();
 		item->setText(0, group.name.c_str());
 		item->setFlags(Qt::ItemIsEnabled);
 
 		for (const auto& equation : group.equationList) {
-			std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+			auto childItem = std::make_unique<QTreeWidgetItem>();
 			childItem->setText(0, equation->name().c_str());
 			childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			item->addChild(childItem.release());
@@ -614,34 +614,34 @@ TransitionEditorWindow::updatePointsTable()
 		const auto& point = pointList_[i];
 		unsigned int column = 0;
 
-		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(QString("%1 - %2").arg(point.type).arg(typeNames[point.type])));
+		auto item = std::make_unique<QTableWidgetItem>(QString("%1 - %2").arg(point.type).arg(typeNames[point.type]));
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(i, column++, item.release());
 
-		item.reset(new QTableWidgetItem);
+		item = std::make_unique<QTableWidgetItem>();
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 		item->setData(Qt::DisplayRole, point.value);
 		table->setItem(i, column++, item.release());
 
-		item.reset(new QTableWidgetItem);
+		item = std::make_unique<QTableWidgetItem>();
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
 		item->setCheckState(point.isPhantom ? Qt::Checked : Qt::Unchecked);
 		table->setItem(i, column++, item.release());
 
 		if (!special_) {
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
 			item->setCheckState(point.hasSlope ? Qt::Checked : Qt::Unchecked);
 			table->setItem(i, column++, item.release());
 
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 			item->setData(Qt::DisplayRole, point.slope);
 			table->setItem(i, column++, item.release());
 		}
 
 		const std::shared_ptr<VTMControlModel::Equation> timeExpression(point.timeExpression.lock());
-		item.reset(new QTableWidgetItem(timeExpression ? timeExpression->name().c_str() : ""));
+		item = std::make_unique<QTableWidgetItem>(timeExpression ? timeExpression->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(i, column, item.release());
 	}

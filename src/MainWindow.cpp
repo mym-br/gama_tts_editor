@@ -54,21 +54,21 @@
 namespace GS {
 
 MainWindow::MainWindow(QWidget* parent)
-		: QMainWindow(parent)
-		, config_()
-		, model_()
-		, synthesis_(new Synthesis)
-		, ui_(new Ui::MainWindow)
-		, dataEntryWindow_(new DataEntryWindow)
-		, intonationWindow_(new IntonationWindow)
-		, intonationParametersWindow_(new IntonationParametersWindow)
-		, postureEditorWindow_(new PostureEditorWindow)
-		, prototypeManagerWindow_(new PrototypeManagerWindow)
-		, specialTransitionEditorWindow_(new TransitionEditorWindow)
-		, ruleManagerWindow_(new RuleManagerWindow)
-		, ruleTesterWindow_(new RuleTesterWindow)
-		, synthesisWindow_(new SynthesisWindow)
-		, transitionEditorWindow_(new TransitionEditorWindow)
+		: QMainWindow {parent}
+		, config_ {}
+		, model_ {}
+		, synthesis_ {std::make_unique<Synthesis>()}
+		, ui_ {std::make_unique<Ui::MainWindow>()}
+		, dataEntryWindow_ {std::make_unique<DataEntryWindow>()}
+		, intonationWindow_ {std::make_unique<IntonationWindow>()}
+		, intonationParametersWindow_ {std::make_unique<IntonationParametersWindow>()}
+		, postureEditorWindow_ {std::make_unique<PostureEditorWindow>()}
+		, prototypeManagerWindow_ {std::make_unique<PrototypeManagerWindow>()}
+		, specialTransitionEditorWindow_ {std::make_unique<TransitionEditorWindow>()}
+		, ruleManagerWindow_ {std::make_unique<RuleManagerWindow>()}
+		, ruleTesterWindow_ {std::make_unique<RuleTesterWindow>()}
+		, synthesisWindow_ {std::make_unique<SynthesisWindow>()}
+		, transitionEditorWindow_ {std::make_unique<TransitionEditorWindow>()}
 {
 	ui_->setupUi(this);
 
@@ -78,8 +78,8 @@ MainWindow::MainWindow(QWidget* parent)
 	connect(ui_->quitAction, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
 	connect(ui_->aboutAction, SIGNAL(triggered()), this, SLOT(about()));
 
-	coutStreamBuffer_.reset(new LogStreamBuffer(std::cout, false, ui_->logTextEdit));
-	cerrStreamBuffer_.reset(new LogStreamBuffer(std::cerr, true, ui_->logTextEdit));
+	coutStreamBuffer_ = std::make_unique<LogStreamBuffer>(std::cout, false, ui_->logTextEdit);
+	cerrStreamBuffer_ = std::make_unique<LogStreamBuffer>(std::cerr, true, ui_->logTextEdit);
 	LogStreamBuffer::registerQDebugMessageHandler();
 
 	connect(prototypeManagerWindow_.get(), SIGNAL(editTransitionButtonClicked(unsigned int, unsigned int)),
@@ -287,7 +287,7 @@ void
 MainWindow::openModel()
 {
 	try {
-		model_.reset(new VTMControlModel::Model);
+		model_ = std::make_unique<VTMControlModel::Model>();
 		model_->load(config_.projectDir.toStdString().c_str(), config_.origConfigFileName.toStdString().c_str());
 
 		synthesis_->setup(config_.projectDir, model_.get());

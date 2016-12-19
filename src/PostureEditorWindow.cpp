@@ -40,8 +40,8 @@ namespace GS {
 
 PostureEditorWindow::PostureEditorWindow(QWidget* parent)
 		: QWidget(parent)
-		, ui_(new Ui::PostureEditorWindow)
-		, model_(nullptr)
+		, ui_ {std::make_unique<Ui::PostureEditorWindow>()}
+		, model_ {}
 {
 	ui_->setupUi(this);
 
@@ -136,11 +136,10 @@ PostureEditorWindow::on_addPostureButton_clicked()
 		return;
 	}
 
-	std::unique_ptr<VTMControlModel::Posture> newPosture(
-				new VTMControlModel::Posture(
+	auto newPosture = std::make_unique<VTMControlModel::Posture>(
 					NEW_ITEM_NAME,
 					model_->parameterList().size(),
-					model_->symbolList().size()));
+					model_->symbolList().size());
 	std::shared_ptr<VTMControlModel::Category> cat = model_->findCategory("phone"); // hardcoded
 	if (!cat) {
 		QMessageBox::critical(this, tr("Error"), tr("Category not found: phone."));
@@ -406,7 +405,7 @@ PostureEditorWindow::setupPosturesTable()
 		for (unsigned int i = 0, size = model_->postureList().size(); i < size; ++i) {
 			const auto& posture = model_->postureList()[i];
 
-			std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(posture.name().c_str()));
+			auto item = std::make_unique<QTableWidgetItem>(posture.name().c_str());
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 			table->setItem(i, 0, item.release());
 		}
@@ -434,11 +433,11 @@ PostureEditorWindow::setupCategoriesTable(const VTMControlModel::Posture& postur
 		for (unsigned int i = 0, size = model_->categoryList().size(); i < size; ++i) {
 			const auto& category = model_->categoryList()[i];
 
-			std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(category->name().c_str()));
+			auto item = std::make_unique<QTableWidgetItem>(category->name().c_str());
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			table->setItem(i, 0, item.release());
 
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			if (category->name() == "phone") { // hardcoded
 				item->setFlags(Qt::ItemIsSelectable);
 			} else {
@@ -476,34 +475,34 @@ PostureEditorWindow::setupParametersTable(const VTMControlModel::Posture& postur
 			bool usingDefaultValue = (value == defaultValue);
 
 			// Name.
-			std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(parameter.name().c_str()));
+			auto item = std::make_unique<QTableWidgetItem>(parameter.name().c_str());
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			table->setItem(i, 0, item.release());
 
 			// Value.
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
 			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, value);
 			table->setItem(i, 1, item.release());
 
 			// Min.
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, parameter.minimum());
 			table->setItem(i, 2, item.release());
 
 			// Max.
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, parameter.maximum());
 			table->setItem(i, 3, item.release());
 
 			// Default.
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, defaultValue);
@@ -531,34 +530,34 @@ PostureEditorWindow::setupSymbolsTable(const VTMControlModel::Posture& posture)
 			bool usingDefaultValue = (value == defaultValue);
 
 			// Name.
-			std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(symbol.name().c_str()));
+			auto item = std::make_unique<QTableWidgetItem>(symbol.name().c_str());
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			table->setItem(i, 0, item.release());
 
 			// Value.
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
 			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, value);
 			table->setItem(i, 1, item.release());
 
 			// Min.
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, symbol.minimum());
 			table->setItem(i, 2, item.release());
 
 			// Max.
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, symbol.maximum());
 			table->setItem(i, 3, item.release());
 
 			// Default.
-			item.reset(new QTableWidgetItem);
+			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, defaultValue);

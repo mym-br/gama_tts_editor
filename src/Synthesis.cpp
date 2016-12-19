@@ -52,13 +52,13 @@ Synthesis::setup(const QString& newProjectDir, VTMControlModel::Model* model)
 	try {
 		projectDir = newProjectDir;
 		const std::string configDirPath = projectDir.toStdString();
-		vtmController.reset(new VTMControlModel::Controller(configDirPath.c_str(), *model));
+		vtmController = std::make_unique<VTMControlModel::Controller>(configDirPath.c_str(), *model);
 		const VTMControlModel::Configuration& vtmControlConfig = vtmController->vtmControlModelConfiguration();
-		textParser.reset(new En::TextParser(configDirPath.c_str(),
+		textParser = std::make_unique<En::TextParser>(configDirPath.c_str(),
 							vtmControlConfig.dictionary1File,
 							vtmControlConfig.dictionary2File,
-							vtmControlConfig.dictionary3File));
-		phoneticStringParser.reset(new En::PhoneticStringParser(configDirPath.c_str(), *vtmController));
+							vtmControlConfig.dictionary3File);
+		phoneticStringParser = std::make_unique<En::PhoneticStringParser>(configDirPath.c_str(), *vtmController);
 	} catch (...) {
 		clear();
 		throw;

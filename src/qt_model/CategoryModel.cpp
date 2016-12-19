@@ -164,7 +164,7 @@ CategoryModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	std::shared_ptr<VTMControlModel::Category> newCategory(new VTMControlModel::Category(NEW_ITEM_NAME));
+	auto newCategory = std::make_shared<VTMControlModel::Category>(NEW_ITEM_NAME);
 	model_->categoryList().insert(
 				model_->categoryList().begin() + row,
 				newCategory);

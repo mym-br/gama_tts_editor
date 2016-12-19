@@ -39,10 +39,10 @@
 namespace GS {
 
 RuleManagerWindow::RuleManagerWindow(QWidget* parent)
-		: QWidget(parent)
-		, ui_(new Ui::RuleManagerWindow)
-		, model_(nullptr)
-		, selectedRule_(nullptr)
+		: QWidget {parent}
+		, ui_ {std::make_unique<Ui::RuleManagerWindow>()}
+		, model_ {}
+		, selectedRule_ {}
 {
 	ui_->setupUi(this);
 
@@ -173,8 +173,7 @@ RuleManagerWindow::on_addButton_clicked()
 		return;
 	}
 
-	std::unique_ptr<VTMControlModel::Rule> newRule(
-			new VTMControlModel::Rule(model_->parameterList().size()));
+	auto newRule = std::make_unique<VTMControlModel::Rule>(model_->parameterList().size());
 
 	std::vector<std::string> exprList;
 	exprList.push_back(exp1.toStdString());
@@ -395,7 +394,7 @@ RuleManagerWindow::setupRulesList()
 				ruleText += rule->booleanExpressionList()[j].c_str();
 			}
 
-			std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(ruleText));
+			auto item = std::make_unique<QTableWidgetItem>(ruleText);
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			table->setItem(i, 0, item.release());
 		}
@@ -718,12 +717,12 @@ RuleManagerWindow::setupRuleTransitionsTable()
 	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
 		const auto& parameter = model_->parameterList()[i];
 
-		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(parameter.name().c_str()));
+		auto item = std::make_unique<QTableWidgetItem>(parameter.name().c_str());
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(i, 0, item.release());
 
 		const auto& transition = selectedRule_->getParamProfileTransition(i);
-		item.reset(new QTableWidgetItem(transition ? transition->name().c_str() : ""));
+		item = std::make_unique<QTableWidgetItem>(transition ? transition->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(i, 1, item.release());
 	}
@@ -738,12 +737,12 @@ RuleManagerWindow::setupTransitionsTree()
 	QTreeWidget* tree = ui_->transitionsTree;
 	tree->clear();
 	for (const auto& group : model_->transitionGroupList()) {
-		std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+		auto item = std::make_unique<QTreeWidgetItem>();
 		item->setText(0, group.name.c_str());
 		item->setFlags(Qt::ItemIsEnabled);
 
 		for (const auto& transition : group.transitionList) {
-			std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+			auto childItem = std::make_unique<QTreeWidgetItem>();
 			childItem->setText(0, transition->name().c_str());
 			childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			item->addChild(childItem.release());
@@ -769,12 +768,12 @@ RuleManagerWindow::setupRuleSpecialTransitionsTable()
 	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
 		const auto& parameter = model_->parameterList()[i];
 
-		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem(parameter.name().c_str()));
+		auto item = std::make_unique<QTableWidgetItem>(parameter.name().c_str());
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(i, 0, item.release());
 
 		const auto& transition = selectedRule_->getSpecialProfileTransition(i);
-		item.reset(new QTableWidgetItem(transition ? transition->name().c_str() : ""));
+		item = std::make_unique<QTableWidgetItem>(transition ? transition->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(i, 1, item.release());
 	}
@@ -789,12 +788,12 @@ RuleManagerWindow::setupSpecialTransitionsTree()
 	QTreeWidget* tree = ui_->specialTransitionsTree;
 	tree->clear();
 	for (const auto& group : model_->specialTransitionGroupList()) {
-		std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+		auto item = std::make_unique<QTreeWidgetItem>();
 		item->setText(0, group.name.c_str());
 		item->setFlags(Qt::ItemIsEnabled);
 
 		for (const auto& specialTransition : group.transitionList) {
-			std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+			auto childItem = std::make_unique<QTreeWidgetItem>();
 			childItem->setText(0, specialTransition->name().c_str());
 			childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			item->addChild(childItem.release());
@@ -818,52 +817,52 @@ RuleManagerWindow::setupRuleSymbolEquationsTable()
 
 	table->setRowCount(5);
 	{
-		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem("Rule duration"));
+		auto item = std::make_unique<QTableWidgetItem>("Rule duration");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(0, 0, item.release());
 
 		const auto& equation = selectedRule_->exprSymbolEquations().ruleDuration;
-		item.reset(new QTableWidgetItem(equation ? equation->name().c_str() : ""));
+		item = std::make_unique<QTableWidgetItem>(equation ? equation->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(0, 1, item.release());
 	}
 	{
-		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem("Beat location"));
+		auto item = std::make_unique<QTableWidgetItem>("Beat location");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(1, 0, item.release());
 
 		const auto& equation = selectedRule_->exprSymbolEquations().beat;
-		item.reset(new QTableWidgetItem(equation ? equation->name().c_str() : ""));
+		item = std::make_unique<QTableWidgetItem>(equation ? equation->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(1, 1, item.release());
 	}
 	{
-		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem("Mark 1"));
+		auto item = std::make_unique<QTableWidgetItem>("Mark 1");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(2, 0, item.release());
 
 		const auto& equation = selectedRule_->exprSymbolEquations().mark1;
-		item.reset(new QTableWidgetItem(equation ? equation->name().c_str() : ""));
+		item = std::make_unique<QTableWidgetItem>(equation ? equation->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(2, 1, item.release());
 	}
 	{
-		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem("Mark 2"));
+		auto item = std::make_unique<QTableWidgetItem>("Mark 2");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(3, 0, item.release());
 
 		const auto& equation = selectedRule_->exprSymbolEquations().mark2;
-		item.reset(new QTableWidgetItem(equation ? equation->name().c_str() : ""));
+		item = std::make_unique<QTableWidgetItem>(equation ? equation->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(3, 1, item.release());
 	}
 	{
-		std::unique_ptr<QTableWidgetItem> item(new QTableWidgetItem("Mark 3"));
+		auto item = std::make_unique<QTableWidgetItem>("Mark 3");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(4, 0, item.release());
 
 		const auto& equation = selectedRule_->exprSymbolEquations().mark3;
-		item.reset(new QTableWidgetItem(equation ? equation->name().c_str() : ""));
+		item = std::make_unique<QTableWidgetItem>(equation ? equation->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(4, 1, item.release());
 	}
@@ -878,12 +877,12 @@ RuleManagerWindow::setupEquationsTree()
 	QTreeWidget* tree = ui_->equationsTree;
 	tree->clear();
 	for (const auto& group : model_->equationGroupList()) {
-		std::unique_ptr<QTreeWidgetItem> item(new QTreeWidgetItem);
+		auto item = std::make_unique<QTreeWidgetItem>();
 		item->setText(0, group.name.c_str());
 		item->setFlags(Qt::ItemIsEnabled);
 
 		for (const auto& equation : group.equationList) {
-			std::unique_ptr<QTreeWidgetItem> childItem(new QTreeWidgetItem);
+			auto childItem = std::make_unique<QTreeWidgetItem>();
 			childItem->setText(0, equation->name().c_str());
 			childItem->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 			item->addChild(childItem.release());

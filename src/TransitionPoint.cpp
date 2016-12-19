@@ -176,13 +176,13 @@ TransitionPoint::copyPointsToTransition(VTMControlModel::Transition::Type type, 
 			}
 
 			// Create slope ratio group.
-			std::unique_ptr<VTMControlModel::Transition::SlopeRatio> newSlopeRatio(new VTMControlModel::Transition::SlopeRatio);
+			auto newSlopeRatio = std::make_unique<VTMControlModel::Transition::SlopeRatio>();
 			for (unsigned int k = i; k <= j; ++k) {
 				newSlopeRatio->pointList.push_back(makeNewPoint(pointList[k]));
 			}
 			float slopeSum = 0.0;
 			for (unsigned int k = i; k < j; ++k) {
-				std::unique_ptr<VTMControlModel::Transition::Slope> newSlope(new VTMControlModel::Transition::Slope);
+				auto newSlope = std::make_unique<VTMControlModel::Transition::Slope>();
 				newSlope->slope = pointList[k].slope;
 				slopeSum += newSlope->slope;
 				newSlopeRatio->slopeList.push_back(std::move(newSlope));
@@ -204,7 +204,7 @@ TransitionPoint::copyPointsToTransition(VTMControlModel::Transition::Type type, 
 std::unique_ptr<VTMControlModel::Transition::Point>
 TransitionPoint::makeNewPoint(const TransitionPoint& sourcePoint)
 {
-	std::unique_ptr<VTMControlModel::Transition::Point> newPoint(new VTMControlModel::Transition::Point);
+	auto newPoint = std::make_unique<VTMControlModel::Transition::Point>();
 	newPoint->type = sourcePoint.type;
 	newPoint->value = sourcePoint.value;
 	newPoint->isPhantom = sourcePoint.isPhantom;

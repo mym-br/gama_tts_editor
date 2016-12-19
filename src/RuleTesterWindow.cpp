@@ -33,8 +33,8 @@ namespace GS {
 
 RuleTesterWindow::RuleTesterWindow(QWidget* parent)
 		: QWidget(parent)
-		, ui_(new Ui::RuleTesterWindow)
-		, model_(nullptr)
+		, ui_ {std::make_unique<Ui::RuleTesterWindow>()}
+		, model_ {}
 {
 	ui_->setupUi(this);
 }
