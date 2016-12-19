@@ -38,12 +38,12 @@ Synthesis::clear()
 {
 	phoneticStringParser.reset(0);
 	textParser.reset(0);
-	trmController.reset(0);
+	vtmController.reset(0);
 	projectDir.clear();
 }
 
 void
-Synthesis::setup(const QString& newProjectDir, TRMControlModel::Model* model)
+Synthesis::setup(const QString& newProjectDir, VTMControlModel::Model* model)
 {
 	if (model == nullptr) {
 		clear();
@@ -52,13 +52,13 @@ Synthesis::setup(const QString& newProjectDir, TRMControlModel::Model* model)
 	try {
 		projectDir = newProjectDir;
 		const std::string configDirPath = projectDir.toStdString();
-		trmController.reset(new TRMControlModel::Controller(configDirPath.c_str(), *model));
-		const TRMControlModel::Configuration& trmControlConfig = trmController->trmControlModelConfiguration();
+		vtmController.reset(new VTMControlModel::Controller(configDirPath.c_str(), *model));
+		const VTMControlModel::Configuration& vtmControlConfig = vtmController->vtmControlModelConfiguration();
 		textParser.reset(new En::TextParser(configDirPath.c_str(),
-							trmControlConfig.dictionary1File,
-							trmControlConfig.dictionary2File,
-							trmControlConfig.dictionary3File));
-		phoneticStringParser.reset(new En::PhoneticStringParser(configDirPath.c_str(), *trmController));
+							vtmControlConfig.dictionary1File,
+							vtmControlConfig.dictionary2File,
+							vtmControlConfig.dictionary3File));
+		phoneticStringParser.reset(new En::PhoneticStringParser(configDirPath.c_str(), *vtmController));
 	} catch (...) {
 		clear();
 		throw;

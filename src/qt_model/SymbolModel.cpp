@@ -189,7 +189,7 @@ SymbolModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	beginInsertRows(QModelIndex(), row, row);
 	model_->symbolList().insert(
 				model_->symbolList().begin() + row,
-				TRMControlModel::Symbol(NEW_ITEM_NAME, 0.0, 0.0, 0.0, ""));
+				VTMControlModel::Symbol(NEW_ITEM_NAME, 0.0, 0.0, 0.0, ""));
 	endInsertRows();
 
 	emit symbolChanged();
@@ -221,7 +221,7 @@ SymbolModel::removeRows(int row, int count, const QModelIndex& /*parent*/)
 }
 
 void
-SymbolModel::resetModel(TRMControlModel::Model* model)
+SymbolModel::resetModel(VTMControlModel::Model* model)
 {
 	beginResetModel();
 	model_ = model;

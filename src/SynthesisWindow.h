@@ -33,7 +33,7 @@ class SynthesisWindow;
 namespace GS {
 
 struct Synthesis;
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 }
 class AudioWorker;
@@ -45,7 +45,7 @@ public:
 	~SynthesisWindow();
 
 	void clear();
-	void setup(TRMControlModel::Model* model, Synthesis* synthesis);
+	void setup(VTMControlModel::Model* model, Synthesis* synthesis);
 signals:
 	void textSynthesized();
 	void playAudioRequested(double sampleRate, int outputDeviceIndex);
@@ -75,7 +75,7 @@ private:
 	void disableProcessingButtons();
 
 	std::unique_ptr<Ui::SynthesisWindow> ui_;
-	TRMControlModel::Model* model_;
+	VTMControlModel::Model* model_;
 	Synthesis* synthesis_;
 	QThread audioThread_;
 	AudioWorker* audioWorker_;

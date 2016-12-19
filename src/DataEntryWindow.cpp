@@ -106,7 +106,7 @@ DataEntryWindow::~DataEntryWindow()
 }
 
 void
-DataEntryWindow::resetModel(TRMControlModel::Model* model)
+DataEntryWindow::resetModel(VTMControlModel::Model* model)
 {
 	categoryModel_->resetModel(model);
 	if (categoryModel_->rowCount() > 0) {

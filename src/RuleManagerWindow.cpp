@@ -124,7 +124,7 @@ RuleManagerWindow::~RuleManagerWindow()
 }
 
 void
-RuleManagerWindow::resetModel(TRMControlModel::Model* model)
+RuleManagerWindow::resetModel(VTMControlModel::Model* model)
 {
 	model_ = model;
 	selectedRule_ = nullptr;
@@ -173,8 +173,8 @@ RuleManagerWindow::on_addButton_clicked()
 		return;
 	}
 
-	std::unique_ptr<TRMControlModel::Rule> newRule(
-			new TRMControlModel::Rule(model_->parameterList().size()));
+	std::unique_ptr<VTMControlModel::Rule> newRule(
+			new VTMControlModel::Rule(model_->parameterList().size()));
 
 	std::vector<std::string> exprList;
 	exprList.push_back(exp1.toStdString());
@@ -221,7 +221,7 @@ RuleManagerWindow::on_updateButton_clicked()
 	if (currItem == nullptr) return;
 
 	int currRow = currItem->row();
-	TRMControlModel::Rule& rule = *model_->ruleList()[currRow];
+	VTMControlModel::Rule& rule = *model_->ruleList()[currRow];
 
 	QString exp1 = ui_->expression1LineEdit->text().trimmed();
 	QString exp2 = ui_->expression2LineEdit->text().trimmed();
@@ -403,7 +403,7 @@ RuleManagerWindow::setupRulesList()
 }
 
 void
-RuleManagerWindow::showRuleStatistics(const TRMControlModel::Rule& rule)
+RuleManagerWindow::showRuleStatistics(const VTMControlModel::Rule& rule)
 {
 	unsigned int count1 = 0;
 	unsigned int count2 = 0;
@@ -544,7 +544,7 @@ RuleManagerWindow::on_ruleSymbolEquationsTable_currentItemChanged(QTableWidgetIt
 	int row = ui_->ruleSymbolEquationsTable->row(current);
 	qDebug("on_ruleSymbolEquationsTable_currentItemChanged row=%d", row);
 
-	std::shared_ptr<TRMControlModel::Equation> equation;
+	std::shared_ptr<VTMControlModel::Equation> equation;
 	switch (row) {
 	case 0:
 		equation = selectedRule_->exprSymbolEquations().ruleDuration;
@@ -664,7 +664,7 @@ RuleManagerWindow::on_equationsTree_itemClicked(QTreeWidgetItem* item, int /*col
 	QTableWidgetItem* currentItem = ui_->ruleSymbolEquationsTable->currentItem();
 	if (currentItem == nullptr) return;
 
-	std::shared_ptr<TRMControlModel::Equation>* ruleEquation = nullptr;
+	std::shared_ptr<VTMControlModel::Equation>* ruleEquation = nullptr;
 	int row = currentItem->row();
 	switch (row) {
 	case 0:
@@ -907,7 +907,7 @@ RuleManagerWindow::on_clearSpecialTransitionButton_clicked()
 
 	int row = currentItem->row();
 
-	std::shared_ptr<TRMControlModel::Transition> empty;
+	std::shared_ptr<VTMControlModel::Transition> empty;
 	selectedRule_->setSpecialProfileTransition(row, empty);
 
 	setupRuleSpecialTransitionsTable();
@@ -927,7 +927,7 @@ RuleManagerWindow::on_clearEquationButton_clicked()
 	QTableWidgetItem* currentItem = ui_->ruleSymbolEquationsTable->currentItem();
 	if (currentItem == nullptr) return;
 
-	std::shared_ptr<TRMControlModel::Equation>* ruleEquation = nullptr;
+	std::shared_ptr<VTMControlModel::Equation>* ruleEquation = nullptr;
 	int row = currentItem->row();
 	switch (row) {
 	case 0:

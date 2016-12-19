@@ -32,7 +32,7 @@ QT_FORWARD_DECLARE_CLASS(QTableWidgetItem)
 
 namespace GS {
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 class Posture;
 }
@@ -43,7 +43,7 @@ public:
 	explicit PostureEditorWindow(QWidget* parent=0);
 	~PostureEditorWindow();
 
-	void resetModel(TRMControlModel::Model* model);
+	void resetModel(VTMControlModel::Model* model);
 signals:
 	void postureChanged();
 	void postureCategoryChanged();
@@ -63,12 +63,12 @@ private slots:
 private:
 	void setupPosturesTable();
 	void clearPostureData();
-	void setupCategoriesTable(const TRMControlModel::Posture& posture);
-	void setupParametersTable(const TRMControlModel::Posture& posture);
-	void setupSymbolsTable(const TRMControlModel::Posture& posture);
+	void setupCategoriesTable(const VTMControlModel::Posture& posture);
+	void setupParametersTable(const VTMControlModel::Posture& posture);
+	void setupSymbolsTable(const VTMControlModel::Posture& posture);
 
 	std::unique_ptr<Ui::PostureEditorWindow> ui_;
-	TRMControlModel::Model* model_;
+	VTMControlModel::Model* model_;
 };
 
 } // namespace GS

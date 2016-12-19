@@ -107,7 +107,7 @@ PostureEditorWindow::~PostureEditorWindow()
 }
 
 void
-PostureEditorWindow::resetModel(TRMControlModel::Model* model)
+PostureEditorWindow::resetModel(VTMControlModel::Model* model)
 {
 	model_ = model;
 
@@ -136,12 +136,12 @@ PostureEditorWindow::on_addPostureButton_clicked()
 		return;
 	}
 
-	std::unique_ptr<TRMControlModel::Posture> newPosture(
-				new TRMControlModel::Posture(
+	std::unique_ptr<VTMControlModel::Posture> newPosture(
+				new VTMControlModel::Posture(
 					NEW_ITEM_NAME,
 					model_->parameterList().size(),
 					model_->symbolList().size()));
-	std::shared_ptr<TRMControlModel::Category> cat = model_->findCategory("phone"); // hardcoded
+	std::shared_ptr<VTMControlModel::Category> cat = model_->findCategory("phone"); // hardcoded
 	if (!cat) {
 		QMessageBox::critical(this, tr("Error"), tr("Category not found: phone."));
 		return;
@@ -187,7 +187,7 @@ PostureEditorWindow::on_updatePostureCommentButton_clicked()
 	if (currPostureItem == nullptr) return;
 
 	int currPostureRow = currPostureItem->row();
-	TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
+	VTMControlModel::Posture& posture = model_->postureList()[currPostureRow];
 	posture.setComment(ui_->postureCommentTextEdit->toPlainText().toStdString());
 }
 
@@ -201,7 +201,7 @@ PostureEditorWindow::on_posturesTable_currentItemChanged(QTableWidgetItem* curre
 	}
 
 	unsigned int row = current->row();
-	const TRMControlModel::Posture& posture = model_->postureList()[row];
+	const VTMControlModel::Posture& posture = model_->postureList()[row];
 	ui_->postureCommentTextEdit->setPlainText(posture.comment().c_str());
 	setupCategoriesTable(posture);
 	setupParametersTable(posture);
@@ -231,7 +231,7 @@ PostureEditorWindow::on_posturesTable_itemChanged(QTableWidgetItem* item)
 		}
 	} else {
 		const auto& posture = model_->postureList()[row];
-		std::unique_ptr<TRMControlModel::Posture> newPosture = posture.copy(newName);
+		std::unique_ptr<VTMControlModel::Posture> newPosture = posture.copy(newName);
 		model_->postureList().remove(row);
 		model_->postureList().add(std::move(newPosture));
 
@@ -255,14 +255,14 @@ PostureEditorWindow::on_categoriesTable_itemChanged(QTableWidgetItem* item)
 	int row = item->row();
 	int col = item->column();
 	if (col == 1) {
-		TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
-		std::shared_ptr<TRMControlModel::Category> category = model_->categoryList()[row];
+		VTMControlModel::Posture& posture = model_->postureList()[currPostureRow];
+		std::shared_ptr<VTMControlModel::Category> category = model_->categoryList()[row];
 		if (item->checkState() == Qt::Checked) {
 			posture.categoryList().push_back(category);
 		} else {
 			auto iter = std::find_if(
 					posture.categoryList().begin(), posture.categoryList().end(),
-					[&category](const std::shared_ptr<TRMControlModel::Category>& c) {
+					[&category](const std::shared_ptr<VTMControlModel::Category>& c) {
 						return c->name() == category->name();
 					});
 			if (iter != posture.categoryList().end()) {
@@ -287,8 +287,8 @@ PostureEditorWindow::on_parametersTable_itemChanged(QTableWidgetItem* item)
 	int row = item->row();
 	int col = item->column();
 	if (col == 1) {
-		TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
-		const TRMControlModel::Parameter& parameter = model_->parameterList()[row];
+		VTMControlModel::Posture& posture = model_->postureList()[currPostureRow];
+		const VTMControlModel::Parameter& parameter = model_->parameterList()[row];
 
 		bool ok;
 		float newValue = item->data(Qt::DisplayRole).toFloat(&ok);
@@ -322,12 +322,12 @@ PostureEditorWindow::on_useDefaultParameterValueButton_clicked()
 	QTableWidgetItem* currPostureItem = ui_->posturesTable->currentItem();
 	if (currPostureItem == nullptr) return;
 	int currPostureRow = currPostureItem->row();
-	TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
+	VTMControlModel::Posture& posture = model_->postureList()[currPostureRow];
 
 	QTableWidgetItem* item = ui_->parametersTable->currentItem();
 	if (item == nullptr) return;
 	int row = item->row();
-	const TRMControlModel::Parameter& parameter = model_->parameterList()[row];
+	const VTMControlModel::Parameter& parameter = model_->parameterList()[row];
 
 	posture.setParameterTarget(row, parameter.defaultValue());
 	setupParametersTable(posture);
@@ -347,8 +347,8 @@ PostureEditorWindow::on_symbolsTable_itemChanged(QTableWidgetItem* item)
 	int row = item->row();
 	int col = item->column();
 	if (col == 1) {
-		TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
-		const TRMControlModel::Symbol& symbol = model_->symbolList()[row];
+		VTMControlModel::Posture& posture = model_->postureList()[currPostureRow];
+		const VTMControlModel::Symbol& symbol = model_->symbolList()[row];
 
 		bool ok;
 		float newValue = item->data(Qt::DisplayRole).toFloat(&ok);
@@ -382,12 +382,12 @@ PostureEditorWindow::on_useDefaultSymbolValueButton_clicked()
 	QTableWidgetItem* currPostureItem = ui_->posturesTable->currentItem();
 	if (currPostureItem == nullptr) return;
 	int currPostureRow = currPostureItem->row();
-	TRMControlModel::Posture& posture = model_->postureList()[currPostureRow];
+	VTMControlModel::Posture& posture = model_->postureList()[currPostureRow];
 
 	QTableWidgetItem* item = ui_->symbolsTable->currentItem();
 	if (item == nullptr) return;
 	int row = item->row();
-	const TRMControlModel::Symbol& symbol = model_->symbolList()[row];
+	const VTMControlModel::Symbol& symbol = model_->symbolList()[row];
 
 	posture.setSymbolTarget(row, symbol.defaultValue());
 	setupSymbolsTable(posture);
@@ -424,7 +424,7 @@ PostureEditorWindow::clearPostureData()
 }
 
 void
-PostureEditorWindow::setupCategoriesTable(const TRMControlModel::Posture& posture)
+PostureEditorWindow::setupCategoriesTable(const VTMControlModel::Posture& posture)
 {
 	QTableWidget* table = ui_->categoriesTable;
 	{
@@ -458,7 +458,7 @@ PostureEditorWindow::setupCategoriesTable(const TRMControlModel::Posture& postur
 }
 
 void
-PostureEditorWindow::setupParametersTable(const TRMControlModel::Posture& posture)
+PostureEditorWindow::setupParametersTable(const VTMControlModel::Posture& posture)
 {
 	QTableWidget* table = ui_->parametersTable;
 	{
@@ -513,7 +513,7 @@ PostureEditorWindow::setupParametersTable(const TRMControlModel::Posture& postur
 }
 
 void
-PostureEditorWindow::setupSymbolsTable(const TRMControlModel::Posture& posture)
+PostureEditorWindow::setupSymbolsTable(const VTMControlModel::Posture& posture)
 {
 	QTableWidget* table = ui_->symbolsTable;
 	{

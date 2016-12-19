@@ -30,7 +30,7 @@ class RuleTesterWindow;
 
 namespace GS {
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 }
 
@@ -40,7 +40,7 @@ public:
 	explicit RuleTesterWindow(QWidget* parent=0);
 	~RuleTesterWindow();
 
-	void resetModel(TRMControlModel::Model* model);
+	void resetModel(VTMControlModel::Model* model);
 private slots:
 	void on_shiftButton_clicked();
 	void on_testButton_clicked();
@@ -49,7 +49,7 @@ private:
 
 	std::unique_ptr<Ui::RuleTesterWindow> ui_;
 
-	TRMControlModel::Model* model_;
+	VTMControlModel::Model* model_;
 };
 
 } // namespace GS

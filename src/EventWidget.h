@@ -26,7 +26,7 @@
 
 namespace GS {
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 class EventList;
 }
@@ -37,7 +37,7 @@ public:
 	explicit EventWidget(QWidget* parent=0);
 
 	virtual QSize sizeHint() const;
-	void updateData(TRMControlModel::EventList* eventList, TRMControlModel::Model* model);
+	void updateData(VTMControlModel::EventList* eventList, VTMControlModel::Model* model);
 	void clearParameterSelection();
 	void changeParameterSelection(unsigned int paramIndex, bool special, bool selected);
 signals:
@@ -50,8 +50,8 @@ private:
 		NUM_PARAM = 16
 	};
 
-	const TRMControlModel::EventList* eventList_;
-	const TRMControlModel::Model* model_;
+	const VTMControlModel::EventList* eventList_;
+	const VTMControlModel::Model* model_;
 	double timeScale_;
 	bool modelUpdated_;
 	double textAscent_;

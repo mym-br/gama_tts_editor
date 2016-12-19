@@ -189,7 +189,7 @@ ParameterModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	beginInsertRows(QModelIndex(), row, row);
 	model_->parameterList().insert(
 				model_->parameterList().begin() + row,
-				TRMControlModel::Parameter(NEW_ITEM_NAME, 0.0, 0.0, 0.0, ""));
+				VTMControlModel::Parameter(NEW_ITEM_NAME, 0.0, 0.0, 0.0, ""));
 	endInsertRows();
 
 	emit parameterChanged();
@@ -221,7 +221,7 @@ ParameterModel::removeRows(int row, int count, const QModelIndex& /*parent*/)
 }
 
 void
-ParameterModel::resetModel(TRMControlModel::Model* model)
+ParameterModel::resetModel(VTMControlModel::Model* model)
 {
 	beginResetModel();
 	model_ = model;

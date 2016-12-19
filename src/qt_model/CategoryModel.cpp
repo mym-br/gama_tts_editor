@@ -164,7 +164,7 @@ CategoryModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	}
 
 	beginInsertRows(QModelIndex(), row, row);
-	std::shared_ptr<TRMControlModel::Category> newCategory(new TRMControlModel::Category(NEW_ITEM_NAME));
+	std::shared_ptr<VTMControlModel::Category> newCategory(new VTMControlModel::Category(NEW_ITEM_NAME));
 	model_->categoryList().insert(
 				model_->categoryList().begin() + row,
 				newCategory);
@@ -199,7 +199,7 @@ CategoryModel::removeRows(int row, int count, const QModelIndex& /*parent*/)
 }
 
 void
-CategoryModel::resetModel(TRMControlModel::Model* model)
+CategoryModel::resetModel(VTMControlModel::Model* model)
 {
 	beginResetModel();
 	model_ = model;

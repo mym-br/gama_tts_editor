@@ -25,7 +25,7 @@
 
 namespace GS {
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 }
 
@@ -50,7 +50,7 @@ public:
 	virtual bool insertRows(int row, int count, const QModelIndex& parent=QModelIndex());
 	virtual bool removeRows(int row, int count, const QModelIndex& parent=QModelIndex());
 
-	void resetModel(TRMControlModel::Model* model);
+	void resetModel(VTMControlModel::Model* model);
 	QString getCategoryComment(const QModelIndex& index) const;
 	void setCategoryComment(const QModelIndex& index, const QString& comment) const;
 	QModelIndex incrementCategoryRow(const QModelIndex& index);
@@ -64,7 +64,7 @@ private:
 	CategoryModel(const CategoryModel&) = delete;
 	CategoryModel& operator=(const CategoryModel&) = delete;
 
-	TRMControlModel::Model* model_;
+	VTMControlModel::Model* model_;
 };
 
 } // namespace GS

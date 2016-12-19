@@ -31,7 +31,7 @@
 
 namespace GS {
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class EventList;
 }
 
@@ -41,7 +41,7 @@ public:
 	explicit IntonationWidget(QWidget* parent=0);
 
 	virtual QSize sizeHint() const;
-	void updateData(TRMControlModel::EventList* eventList);
+	void updateData(VTMControlModel::EventList* eventList);
 	void setSelectedPointValue(double value);
 	void setSelectedPointSlope(double slope);
 	void setSelectedPointBeatOffset(double beatOffset);
@@ -67,10 +67,10 @@ private:
 	double xToTime(double x);
 	void drawPointMarker(QPainter& painter, double x, double y);
 	void smoothPoints(QPainter& painter);
-	int addIntonationPoint(TRMControlModel::IntonationPoint& newPoint);
+	int addIntonationPoint(VTMControlModel::IntonationPoint& newPoint);
 	void sendSelectedPointData();
 
-	TRMControlModel::EventList* eventList_;
+	VTMControlModel::EventList* eventList_;
 	double timeScale_;
 	bool modelUpdated_;
 	double textYOffset_;
@@ -81,7 +81,7 @@ private:
 	int totalWidth_;
 	int totalHeight_;
 	int selectedPoint_;
-	std::vector<TRMControlModel::IntonationPoint> intonationPointList_;
+	std::vector<VTMControlModel::IntonationPoint> intonationPointList_;
 	std::vector<int> postureTimeList_;
 };
 

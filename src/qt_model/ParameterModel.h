@@ -25,7 +25,7 @@
 
 namespace GS {
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 }
 
@@ -50,7 +50,7 @@ public:
 	virtual bool insertRows(int row, int count, const QModelIndex& parent=QModelIndex());
 	virtual bool removeRows(int row, int count, const QModelIndex& parent=QModelIndex());
 
-	void resetModel(TRMControlModel::Model* model);
+	void resetModel(VTMControlModel::Model* model);
 	QString getParameterComment(const QModelIndex& index) const;
 	void setParameterComment(const QModelIndex& index, const QString& comment) const;
 	QModelIndex incrementParameterRow(const QModelIndex& index);
@@ -62,7 +62,7 @@ private:
 	ParameterModel(const ParameterModel&) = delete;
 	ParameterModel& operator=(const ParameterModel&) = delete;
 
-	TRMControlModel::Model* model_;
+	VTMControlModel::Model* model_;
 };
 
 } // namespace GS

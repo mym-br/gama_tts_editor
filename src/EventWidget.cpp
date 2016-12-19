@@ -138,12 +138,12 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 
 		double y = MARGIN + 2.0 * TRACK_HEIGHT - 0.5 * (TRACK_HEIGHT - 1.0) + textYOffset_;
 		unsigned int postureIndex = 0;
-		for (const TRMControlModel::Event_ptr& ev : eventList_->list()) {
+		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
 			double x = 2.0 * MARGIN + labelWidth_ + ev->time * timeScale_;
 			if (ev->flag) {
 				postureTimeList_.push_back(ev->time);
 				painter.setPen(Qt::black);
-				const TRMControlModel::Posture* posture = eventList_->getPostureAtIndex(postureIndex++);
+				const VTMControlModel::Posture* posture = eventList_->getPostureAtIndex(postureIndex++);
 				if (posture) {
 					// Posture name.
 					painter.drawText(QPointF(x, y), posture->name().c_str());
@@ -226,7 +226,7 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 		painter.setRenderHint(QPainter::Antialiasing);
 		QPointF prevPoint;
 		const double valueFactor = 1.0 / (currentMax - currentMin);
-		for (const TRMControlModel::Event_ptr& ev : eventList_->list()) {
+		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
 			double x = 0.5 + 2.0 * MARGIN + labelWidth_ + ev->time * timeScale_; // 0.5 added because of antialiasing
 			double value = ev->getValue(paramIndex);
 			if (value != GS_EVENTLIST_INVALID_EVENT_VALUE) {
@@ -296,7 +296,7 @@ EventWidget::sizeHint() const
 }
 
 void
-EventWidget::updateData(TRMControlModel::EventList* eventList, TRMControlModel::Model* model)
+EventWidget::updateData(VTMControlModel::EventList* eventList, VTMControlModel::Model* model)
 {
 	eventList_ = eventList;
 	model_ = model;

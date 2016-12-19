@@ -34,7 +34,7 @@ namespace GS {
 class CategoryModel;
 class ParameterModel;
 class SymbolModel;
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 }
 
@@ -44,7 +44,7 @@ public:
 	explicit DataEntryWindow(QWidget* parent=0);
 	~DataEntryWindow();
 
-	void resetModel(TRMControlModel::Model* model);
+	void resetModel(VTMControlModel::Model* model);
 signals:
 	void categoryChanged();
 	void parameterChanged();

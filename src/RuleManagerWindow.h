@@ -34,7 +34,7 @@ QT_FORWARD_DECLARE_CLASS(QTreeWidgetItem)
 
 namespace GS {
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 class Rule;
 }
@@ -45,7 +45,7 @@ public:
 	explicit RuleManagerWindow(QWidget* parent=0);
 	~RuleManagerWindow();
 
-	void resetModel(TRMControlModel::Model* model);
+	void resetModel(VTMControlModel::Model* model);
 signals:
 	void categoryReferenceChanged();
 	void transitionReferenceChanged();
@@ -79,13 +79,13 @@ private slots:
 private:
 	void setupRulesList();
 	void clearRuleData();
-	void showRuleStatistics(const TRMControlModel::Rule& rule);
+	void showRuleStatistics(const VTMControlModel::Rule& rule);
 	unsigned int numInputExpressions(const QString& exp1, const QString& exp2, const QString& exp3, const QString& exp4);
 
 	std::unique_ptr<Ui::RuleManagerWindow> ui_;
 
-	TRMControlModel::Model* model_;
-	TRMControlModel::Rule* selectedRule_;
+	VTMControlModel::Model* model_;
+	VTMControlModel::Rule* selectedRule_;
 };
 
 } // namespace GS

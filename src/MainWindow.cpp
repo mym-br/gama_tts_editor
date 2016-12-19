@@ -287,7 +287,7 @@ void
 MainWindow::openModel()
 {
 	try {
-		model_.reset(new TRMControlModel::Model);
+		model_.reset(new VTMControlModel::Model);
 		model_->load(config_.projectDir.toStdString().c_str(), config_.origConfigFileName.toStdString().c_str());
 
 		synthesis_->setup(config_.projectDir, model_.get());

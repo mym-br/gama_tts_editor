@@ -27,9 +27,6 @@
 #include "Synthesis.h"
 #include "ui_IntonationWindow.h"
 
-#define TRM_PARAM_FILE_NAME "generated__intonation_trm_param.txt"
-#define SPEECH_FILE_NAME "generated__intonation_speech.wav"
-
 
 
 namespace GS {
@@ -65,7 +62,7 @@ IntonationWindow::setup(Synthesis* synthesis)
 
 	synthesis_ = synthesis;
 
-	ui_->intonationWidget->updateData(&synthesis_->trmController->eventList());
+	ui_->intonationWidget->updateData(&synthesis_->vtmController->eventList());
 }
 
 void

@@ -28,16 +28,16 @@
 
 namespace GS {
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 }
 
 struct TransitionPoint {
-	TRMControlModel::Transition::Point::Type type;
+	VTMControlModel::Transition::Point::Type type;
 	float value;
 
 	// If timeExpression is not empty, time = timeExpression, otherwise time = freeTime.
-	std::weak_ptr<TRMControlModel::Equation> timeExpression;
+	std::weak_ptr<VTMControlModel::Equation> timeExpression;
 	float freeTime; // milliseconds
 	float time;
 
@@ -48,7 +48,7 @@ struct TransitionPoint {
 	float slope;
 
 	TransitionPoint()
-		: type(TRMControlModel::Transition::Point::TYPE_INVALID)
+		: type(VTMControlModel::Transition::Point::TYPE_INVALID)
 		, value(0.0)
 		, timeExpression()
 		, freeTime(0.0)
@@ -57,12 +57,12 @@ struct TransitionPoint {
 		, hasSlope(false)
 		, slope(0.0) {}
 
-	static void copyPointsFromTransition(const TRMControlModel::Transition& transition, std::vector<TransitionPoint>& pointList);
+	static void copyPointsFromTransition(const VTMControlModel::Transition& transition, std::vector<TransitionPoint>& pointList);
 	static void sortPointListByTypeAndTime(std::vector<TransitionPoint>& pointList);
-	static void calculateTimes(const TRMControlModel::Model& model, std::vector<TransitionPoint>& pointList);
+	static void calculateTimes(const VTMControlModel::Model& model, std::vector<TransitionPoint>& pointList);
 	static void adjustValuesInSlopeRatios(std::vector<TransitionPoint>& pointList);
-	static void copyPointsToTransition(TRMControlModel::Transition::Type type, const std::vector<TransitionPoint>& pointList, TRMControlModel::Transition& transition);
-	static std::unique_ptr<TRMControlModel::Transition::Point> makeNewPoint(const TransitionPoint& sourcePoint);
+	static void copyPointsToTransition(VTMControlModel::Transition::Type type, const std::vector<TransitionPoint>& pointList, VTMControlModel::Transition& transition);
+	static std::unique_ptr<VTMControlModel::Transition::Point> makeNewPoint(const TransitionPoint& sourcePoint);
 };
 
 } // namespace GS

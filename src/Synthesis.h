@@ -30,14 +30,14 @@ namespace En {
 class PhoneticStringParser;
 class TextParser;
 }
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Controller;
 class Model;
 }
 
 struct Synthesis {
 	QString projectDir;
-	std::unique_ptr<TRMControlModel::Controller> trmController;
+	std::unique_ptr<VTMControlModel::Controller> vtmController;
 	std::unique_ptr<En::TextParser> textParser;
 	std::unique_ptr<En::PhoneticStringParser> phoneticStringParser;
 
@@ -45,7 +45,7 @@ struct Synthesis {
 	~Synthesis();
 
 	void clear();
-	void setup(const QString& newProjectDir, TRMControlModel::Model* model);
+	void setup(const QString& newProjectDir, VTMControlModel::Model* model);
 };
 
 } // namespace GS

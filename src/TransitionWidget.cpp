@@ -82,7 +82,7 @@ TransitionWidget::TransitionWidget(QWidget* parent)
 		, leftMargin_(0.0)
 		, yStep_(0.0)
 		, graphWidth_(0.0)
-		, transitionType_(TRMControlModel::Transition::TYPE_INVALID)
+		, transitionType_(VTMControlModel::Transition::TYPE_INVALID)
 		, pointList_(nullptr)
 		, ruleDuration_(0.0)
 		, mark1_(0.0)
@@ -99,7 +99,7 @@ TransitionWidget::TransitionWidget(QWidget* parent)
 void
 TransitionWidget::clear()
 {
-	transitionType_ = TRMControlModel::Transition::TYPE_INVALID;
+	transitionType_ = VTMControlModel::Transition::TYPE_INVALID;
 	pointList_ = nullptr;
 	mark1_ = 0.0;
 	mark2_ = 0.0;
@@ -111,7 +111,7 @@ TransitionWidget::clear()
 }
 
 void
-TransitionWidget::updateData(TRMControlModel::Transition::Type transitionType,
+TransitionWidget::updateData(VTMControlModel::Transition::Type transitionType,
 		std::vector<TransitionPoint>* pointList,
 		float ruleDuration,
 		float mark1,
@@ -223,13 +223,13 @@ TransitionWidget::paintEvent(QPaintEvent*)
 			double x = 0.5 + timeToX(point.time);
 			double y = 0.5 + valueToY(point.value);
 			switch (point.type) {
-			case TRMControlModel::Transition::Point::TYPE_DIPHONE:
+			case VTMControlModel::Transition::Point::TYPE_DIPHONE:
 				drawDiPoint(painter, x, y);
 				break;
-			case TRMControlModel::Transition::Point::TYPE_TRIPHONE:
+			case VTMControlModel::Transition::Point::TYPE_TRIPHONE:
 				drawTriPoint(painter, x, y);
 				break;
-			case TRMControlModel::Transition::Point::TYPE_TETRAPHONE:
+			case VTMControlModel::Transition::Point::TYPE_TETRAPHONE:
 				drawTetraPoint(painter, x, y);
 				break;
 			default:
@@ -241,14 +241,14 @@ TransitionWidget::paintEvent(QPaintEvent*)
 	// Posture markers.
 	double yMarker = 0.5 + 0.5 * yStep_ + textYOffset_;
 	switch (transitionType_) {
-	case TRMControlModel::Transition::TYPE_DIPHONE:
+	case VTMControlModel::Transition::TYPE_DIPHONE:
 		drawDiPoint(painter, 0.5 + timeToX(ruleDuration_), yMarker);
 		break;
-	case TRMControlModel::Transition::TYPE_TRIPHONE:
+	case VTMControlModel::Transition::TYPE_TRIPHONE:
 		drawDiPoint( painter, 0.5 + timeToX(mark1_)       , yMarker);
 		drawTriPoint(painter, 0.5 + timeToX(ruleDuration_), yMarker);
 		break;
-	case TRMControlModel::Transition::TYPE_TETRAPHONE:
+	case VTMControlModel::Transition::TYPE_TETRAPHONE:
 		drawDiPoint(   painter, 0.5 + timeToX(mark1_)       , yMarker);
 		drawTriPoint(  painter, 0.5 + timeToX(mark2_)       , yMarker);
 		drawTetraPoint(painter, 0.5 + timeToX(ruleDuration_), yMarker);
@@ -268,17 +268,17 @@ TransitionWidget::paintEvent(QPaintEvent*)
 	painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
 
 	switch (transitionType_) {
-	case TRMControlModel::Transition::TYPE_DIPHONE:
+	case VTMControlModel::Transition::TYPE_DIPHONE:
 		x = timeToX(ruleDuration_);
 		painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
 		break;
-	case TRMControlModel::Transition::TYPE_TRIPHONE:
+	case VTMControlModel::Transition::TYPE_TRIPHONE:
 		x = timeToX(mark1_);
 		painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
 		x = timeToX(ruleDuration_);
 		painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
 		break;
-	case TRMControlModel::Transition::TYPE_TETRAPHONE:
+	case VTMControlModel::Transition::TYPE_TETRAPHONE:
 		x = timeToX(mark1_);
 		painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
 		x = timeToX(mark2_);
@@ -348,17 +348,17 @@ TransitionWidget::mouseDoubleClickEvent(QMouseEvent* event)
 	if (time >= 0.0 && time <= ruleDuration_ && value >= minValue && value <= maxValue) {
 		unsigned int pointType;
 		switch (transitionType_) {
-		case TRMControlModel::Transition::TYPE_DIPHONE:
+		case VTMControlModel::Transition::TYPE_DIPHONE:
 			pointType = 2;
 			break;
-		case TRMControlModel::Transition::TYPE_TRIPHONE:
+		case VTMControlModel::Transition::TYPE_TRIPHONE:
 			if (time <= mark1_) {
 				pointType = 2;
 			} else {
 				pointType = 3;
 			}
 			break;
-		case TRMControlModel::Transition::TYPE_TETRAPHONE:
+		case VTMControlModel::Transition::TYPE_TETRAPHONE:
 			if (time <= mark1_) {
 				pointType = 2;
 			} else if (time <= mark2_) {

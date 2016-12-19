@@ -35,7 +35,7 @@ class PrototypeManagerWindow;
 
 namespace GS {
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Equation;
 class Model;
 class Transition;
@@ -47,7 +47,7 @@ public:
 	explicit PrototypeManagerWindow(QWidget* parent=0);
 	~PrototypeManagerWindow();
 
-	void resetModel(TRMControlModel::Model* model);
+	void resetModel(VTMControlModel::Model* model);
 signals:
 	void editTransitionButtonClicked(unsigned int transitionGroupIndex, unsigned int transitionIndex);
 	void editSpecialTransitionButtonClicked(unsigned int transitionGroupIndex, unsigned int transitionIndex);
@@ -93,10 +93,10 @@ private:
 
 	std::unique_ptr<Ui::PrototypeManagerWindow> ui_;
 
-	TRMControlModel::Model* model_;
-	TRMControlModel::Equation* currentEquation_;
-	TRMControlModel::Transition* currentTransition_;
-	TRMControlModel::Transition* currentSpecialTransition_;
+	VTMControlModel::Model* model_;
+	VTMControlModel::Equation* currentEquation_;
+	VTMControlModel::Transition* currentTransition_;
+	VTMControlModel::Transition* currentSpecialTransition_;
 
 	std::vector<TransitionPoint> pointList_;
 	std::vector<TransitionPoint> specialPointList_;

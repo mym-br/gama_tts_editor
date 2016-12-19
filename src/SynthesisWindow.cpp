@@ -34,7 +34,7 @@
 #include "Synthesis.h"
 #include "ui_SynthesisWindow.h"
 
-#define TRM_PARAM_FILE_NAME "generated__trm_param.txt"
+#define VTM_PARAM_FILE_NAME "generated__vtm_param.txt"
 
 
 
@@ -95,7 +95,7 @@ SynthesisWindow::clear()
 }
 
 void
-SynthesisWindow::setup(TRMControlModel::Model* model, Synthesis* synthesis)
+SynthesisWindow::setup(VTMControlModel::Model* model, Synthesis* synthesis)
 {
 	if (model == nullptr || synthesis == nullptr) {
 		clear();
@@ -111,7 +111,7 @@ SynthesisWindow::setup(TRMControlModel::Model* model, Synthesis* synthesis)
 		model_ = model;
 		synthesis_ = synthesis;
 
-		ui_->eventWidget->updateData(&synthesis_->trmController->eventList(), model_);
+		ui_->eventWidget->updateData(&synthesis_->vtmController->eventList(), model_);
 		ui_->eventWidget->clearParameterSelection();
 
 		setupParameterTable();
@@ -160,22 +160,21 @@ SynthesisWindow::on_synthesizeButton_clicked()
 	disableProcessingButtons();
 
 	try {
-		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
+		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
 
-		TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfiguration();
+		VTMControlModel::Configuration& config = synthesis_->vtmController->vtmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();
 
-		TRM::Configuration& trmConfig = synthesis_->trmController->trmConfiguration();
-		trmConfig.channels = 1;
-		const double sampleRate = trmConfig.outputRate;
+		const ConfigurationData& vtmConfig = synthesis_->vtmController->vtmConfigurationData();
+		const double sampleRate = vtmConfig.value<double>("output_rate");
 
 		{
 			std::lock_guard<std::mutex> lock(AudioPlayer::bufferMutex);
 
-			synthesis_->trmController->synthesizePhoneticString(
+			synthesis_->vtmController->synthesizePhoneticString(
 						*synthesis_->phoneticStringParser,
 						phoneticString.toStdString().c_str(),
-						trmParamFilePath.toStdString().c_str(),
+						vtmParamFilePath.toStdString().c_str(),
 						audioWorker_->player().buffer());
 		}
 
@@ -212,15 +211,15 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 	disableProcessingButtons();
 
 	try {
-		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
+		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
 
-		TRMControlModel::Configuration& config = synthesis_->trmController->trmControlModelConfiguration();
+		VTMControlModel::Configuration& config = synthesis_->vtmController->vtmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();
 
-		synthesis_->trmController->synthesizePhoneticString(
+		synthesis_->vtmController->synthesizePhoneticString(
 					*synthesis_->phoneticStringParser,
 					phoneticString.toStdString().c_str(),
-					trmParamFilePath.toStdString().c_str(),
+					vtmParamFilePath.toStdString().c_str(),
 					filePath.toStdString().c_str());
 
 		ui_->eventWidget->update();
@@ -243,24 +242,23 @@ SynthesisWindow::synthesizeWithManualIntonation()
 	disableProcessingButtons();
 
 	try {
-		auto& eventList = synthesis_->trmController->eventList();
+		auto& eventList = synthesis_->vtmController->eventList();
 		if (eventList.list().empty()) {
 			return;
 		}
 		eventList.clearMacroIntonation();
 		eventList.applyIntonationSmooth();
 
-		TRM::Configuration& trmConfig = synthesis_->trmController->trmConfiguration();
-		trmConfig.channels = 1;
-		const double sampleRate = trmConfig.outputRate;
+		const ConfigurationData& vtmConfig = synthesis_->vtmController->vtmConfigurationData();
+		const double sampleRate = vtmConfig.value<double>("output_rate");
 
-		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
+		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
 
 		{
 			std::lock_guard<std::mutex> lock(AudioPlayer::bufferMutex);
 
-			synthesis_->trmController->synthesizeFromEventList(
-						trmParamFilePath.toStdString().c_str(),
+			synthesis_->vtmController->synthesizeFromEventList(
+						vtmParamFilePath.toStdString().c_str(),
 						audioWorker_->player().buffer());
 		}
 
@@ -286,17 +284,17 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 	disableProcessingButtons();
 
 	try {
-		auto& eventList = synthesis_->trmController->eventList();
+		auto& eventList = synthesis_->vtmController->eventList();
 		if (eventList.list().empty()) {
 			return;
 		}
 		eventList.clearMacroIntonation();
 		eventList.applyIntonationSmooth();
 
-		QString trmParamFilePath = synthesis_->projectDir + TRM_PARAM_FILE_NAME;
+		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
 
-		synthesis_->trmController->synthesizeFromEventList(
-					trmParamFilePath.toStdString().c_str(),
+		synthesis_->vtmController->synthesizeFromEventList(
+					vtmParamFilePath.toStdString().c_str(),
 					filePath.toStdString().c_str());
 
 	} catch (const Exception& exc) {

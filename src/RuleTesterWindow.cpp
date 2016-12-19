@@ -44,7 +44,7 @@ RuleTesterWindow::~RuleTesterWindow()
 }
 
 void
-RuleTesterWindow::resetModel(TRMControlModel::Model* model)
+RuleTesterWindow::resetModel(VTMControlModel::Model* model)
 {
 	model_ = model;
 }
@@ -63,11 +63,11 @@ RuleTesterWindow::on_testButton_clicked()
 {
 	if (model_ == nullptr) return;
 
-	std::vector<const TRMControlModel::Posture*> postureSequence;
+	std::vector<const VTMControlModel::Posture*> postureSequence;
 
 	QString posture1Text = ui_->posture1LineEdit->text().trimmed();
 	if (!posture1Text.isEmpty()) {
-		const TRMControlModel::Posture* posture = model_->postureList().find(posture1Text.toStdString());
+		const VTMControlModel::Posture* posture = model_->postureList().find(posture1Text.toStdString());
 		if (posture == nullptr) {
 			clearResults();
 			QMessageBox::warning(this, tr("Warning"), tr("Posture 1 not found."));
@@ -81,7 +81,7 @@ RuleTesterWindow::on_testButton_clicked()
 
 	QString posture2Text = ui_->posture2LineEdit->text().trimmed();
 	if (!posture2Text.isEmpty()) {
-		const TRMControlModel::Posture* posture = model_->postureList().find(posture2Text.toStdString());
+		const VTMControlModel::Posture* posture = model_->postureList().find(posture2Text.toStdString());
 		if (posture == nullptr) {
 			clearResults();
 			QMessageBox::warning(this, tr("Warning"), tr("Posture 2 not found."));
@@ -95,7 +95,7 @@ RuleTesterWindow::on_testButton_clicked()
 
 	QString posture3Text = ui_->posture3LineEdit->text().trimmed();
 	if (!posture3Text.isEmpty()) {
-		const TRMControlModel::Posture* posture = model_->postureList().find(posture3Text.toStdString());
+		const VTMControlModel::Posture* posture = model_->postureList().find(posture3Text.toStdString());
 		if (posture == nullptr) {
 			clearResults();
 			QMessageBox::warning(this, tr("Warning"), tr("Posture 3 not found."));
@@ -106,7 +106,7 @@ RuleTesterWindow::on_testButton_clicked()
 
 		QString posture4Text = ui_->posture4LineEdit->text().trimmed();
 		if (!posture4Text.isEmpty()) {
-			const TRMControlModel::Posture* posture4 = model_->postureList().find(posture4Text.toStdString());
+			const VTMControlModel::Posture* posture4 = model_->postureList().find(posture4Text.toStdString());
 			if (posture4 == nullptr) {
 				clearResults();
 				QMessageBox::warning(this, tr("Warning"), tr("Posture 4 not found."));
@@ -118,7 +118,7 @@ RuleTesterWindow::on_testButton_clicked()
 	}
 
 	unsigned int ruleIndex;
-	const TRMControlModel::Rule* rule = model_->findFirstMatchingRule(postureSequence, ruleIndex);
+	const VTMControlModel::Rule* rule = model_->findFirstMatchingRule(postureSequence, ruleIndex);
 	if (rule == nullptr) {
 		clearResults();
 		QMessageBox::critical(this, tr("Error"), tr("Could not find a matching rule."));

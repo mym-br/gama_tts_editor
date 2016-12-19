@@ -8,9 +8,9 @@ QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
-    CONFIG += c++11
+    CONFIG += c++14
 } else {
-    QMAKE_CXXFLAGS += -std=c++11
+    QMAKE_CXXFLAGS += -std=c++14
 }
 
 unix {
@@ -88,13 +88,14 @@ INCLUDEPATH += src \
 unix {
     !macx {
         QMAKE_CXXFLAGS += -Wall -Wextra -march=native
+        QMAKE_CXXFLAGS_RELEASE ~= s/-O./-O3
 
         exists(../gama_tts/CMakeLists.txt) {
             message(Using local GamaTTS)
             INCLUDEPATH += \
                 ../gama_tts/src \
-                ../gama_tts/src/trm \
-                ../gama_tts/src/trm_control_model
+                ../gama_tts/src/vtm \
+                ../gama_tts/src/vtm_control_model
             LIBS += -L../gama_tts-build -lgamatts
         } else {
             message(Using system GamaTTS)
@@ -114,8 +115,8 @@ unix {
 win32 {
     INCLUDEPATH += \
         ../gama_tts/src \
-        ../gama_tts/src/trm \
-        ../gama_tts/src/trm_control_model \
+        ../gama_tts/src/vtm \
+        ../gama_tts/src/vtm_control_model \
         ../portaudio/include \
         ../portaudio/bindings/cpp/include
     LIBS += \

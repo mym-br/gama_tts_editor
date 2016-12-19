@@ -36,7 +36,7 @@ public:
 
 	void setSpecial() { special_ = true; }
 	void clear();
-	void updateData(TRMControlModel::Transition::Type transitionType,
+	void updateData(VTMControlModel::Transition::Type transitionType,
 			std::vector<TransitionPoint>* pointList,
 			float ruleDuration,
 			float mark1,
@@ -66,7 +66,7 @@ private:
 	double leftMargin_;
 	double yStep_;
 	double graphWidth_;
-	TRMControlModel::Transition::Type transitionType_;
+	VTMControlModel::Transition::Type transitionType_;
 	const std::vector<TransitionPoint>* pointList_;
 	float ruleDuration_;
 	float mark1_;

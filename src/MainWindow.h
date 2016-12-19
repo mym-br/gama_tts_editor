@@ -43,7 +43,7 @@ class RuleTesterWindow;
 class SynthesisWindow;
 class TransitionEditorWindow;
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 }
 
@@ -76,7 +76,7 @@ private:
 	void saveModel();
 
 	AppConfig config_;
-	std::unique_ptr<TRMControlModel::Model> model_;
+	std::unique_ptr<VTMControlModel::Model> model_;
 	std::unique_ptr<Synthesis> synthesis_;
 
 	std::unique_ptr<Ui::MainWindow> ui_;

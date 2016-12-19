@@ -62,7 +62,7 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 		, special_(false)
 		, model_(nullptr)
 		, transition_(nullptr)
-		, transitionType_(TRMControlModel::Transition::TYPE_INVALID)
+		, transitionType_(VTMControlModel::Transition::TYPE_INVALID)
 {
 	ui_->setupUi(this);
 
@@ -138,7 +138,7 @@ TransitionEditorWindow::clear()
 	ui_->transitionWidget->clear();
 	pointList_.clear();
 	ui_->formulaTextEdit->clear();
-	transitionType_ = TRMControlModel::Transition::TYPE_INVALID;
+	transitionType_ = VTMControlModel::Transition::TYPE_INVALID;
 	transition_ = nullptr;
 
 	ui_->transitionTypeComboBox->setCurrentIndex(0);
@@ -146,7 +146,7 @@ TransitionEditorWindow::clear()
 }
 
 void
-TransitionEditorWindow::resetModel(TRMControlModel::Model* model)
+TransitionEditorWindow::resetModel(VTMControlModel::Model* model)
 {
 	if (model == nullptr) {
 		clear();
@@ -315,7 +315,7 @@ TransitionEditorWindow::on_pointsTable_currentItemChanged(QTableWidgetItem* curr
 
 	ui_->transitionWidget->setSelectedPointIndex(row);
 
-	const std::shared_ptr<TRMControlModel::Equation> timeExpression(pointList_[row].timeExpression.lock());
+	const std::shared_ptr<VTMControlModel::Equation> timeExpression(pointList_[row].timeExpression.lock());
 	if (timeExpression) {
 		unsigned int groupIndex;
 		unsigned int equationIndex;
@@ -493,7 +493,7 @@ TransitionEditorWindow::on_transitionTypeComboBox_currentIndexChanged(int index)
 	if (transition_ == nullptr) return;
 
 	if (index >= 0) {
-		transitionType_ = static_cast<TRMControlModel::Transition::Type>(ui_->transitionTypeComboBox->itemData(index).toInt());
+		transitionType_ = static_cast<VTMControlModel::Transition::Type>(ui_->transitionTypeComboBox->itemData(index).toInt());
 
 		fillDefaultParameters();
 
@@ -513,7 +513,7 @@ TransitionEditorWindow::createPoint(unsigned int pointType, float time, float va
 	}
 
 	TransitionPoint newPoint;
-	newPoint.type = static_cast<TRMControlModel::Transition::Point::Type>(pointType);
+	newPoint.type = static_cast<VTMControlModel::Transition::Point::Type>(pointType);
 	newPoint.value = value;
 	newPoint.freeTime = time;
 
@@ -576,11 +576,11 @@ TransitionEditorWindow::fillDefaultParameters()
 	if (transition_ == nullptr) return;
 
 	model_->setDefaultFormulaSymbols(transitionType_);
-	ui_->ruleDurationSpinBox->setValue(model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_RD));
-	ui_->beatSpinBox->setValue(        model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_BEAT));
-	ui_->mark1SpinBox->setValue(       model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK1));
-	ui_->mark2SpinBox->setValue(       model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK2));
-	ui_->mark3SpinBox->setValue(       model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK3));
+	ui_->ruleDurationSpinBox->setValue(model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RD));
+	ui_->beatSpinBox->setValue(        model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_BEAT));
+	ui_->mark1SpinBox->setValue(       model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1));
+	ui_->mark2SpinBox->setValue(       model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2));
+	ui_->mark3SpinBox->setValue(       model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK3));
 }
 
 void
@@ -590,11 +590,11 @@ TransitionEditorWindow::updatePointTimes()
 	if (transition_ == nullptr) return;
 
 	model_->setDefaultFormulaSymbols(transitionType_);
-	model_->setFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_RD, ui_->ruleDurationSpinBox->value());
-	model_->setFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_BEAT, ui_->beatSpinBox->value());
-	model_->setFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK1, ui_->mark1SpinBox->value());
-	model_->setFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK2, ui_->mark2SpinBox->value());
-	model_->setFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK3, ui_->mark3SpinBox->value());
+	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RD, ui_->ruleDurationSpinBox->value());
+	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_BEAT, ui_->beatSpinBox->value());
+	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1, ui_->mark1SpinBox->value());
+	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2, ui_->mark2SpinBox->value());
+	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK3, ui_->mark3SpinBox->value());
 
 	TransitionPoint::calculateTimes(*model_, pointList_);
 }
@@ -640,7 +640,7 @@ TransitionEditorWindow::updatePointsTable()
 			table->setItem(i, column++, item.release());
 		}
 
-		const std::shared_ptr<TRMControlModel::Equation> timeExpression(point.timeExpression.lock());
+		const std::shared_ptr<VTMControlModel::Equation> timeExpression(point.timeExpression.lock());
 		item.reset(new QTableWidgetItem(timeExpression ? timeExpression->name().c_str() : ""));
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(i, column, item.release());

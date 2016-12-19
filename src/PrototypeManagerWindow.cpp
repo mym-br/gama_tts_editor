@@ -64,7 +64,7 @@ PrototypeManagerWindow::~PrototypeManagerWindow()
 }
 
 void
-PrototypeManagerWindow::resetModel(TRMControlModel::Model* model)
+PrototypeManagerWindow::resetModel(VTMControlModel::Model* model)
 {
 	model_ = model;
 
@@ -100,7 +100,7 @@ PrototypeManagerWindow::on_addEquationButton_clicked()
 			qWarning("Duplicate equation name.");
 			return;
 		}
-		std::shared_ptr<TRMControlModel::Equation> equation(new TRMControlModel::Equation(NEW_ITEM_NAME));
+		std::shared_ptr<VTMControlModel::Equation> equation(new VTMControlModel::Equation(NEW_ITEM_NAME));
 		try {
 			equation->setFormula(NEW_EQUATION_FORMULA);
 		} catch (const Exception& exc) {
@@ -113,7 +113,7 @@ PrototypeManagerWindow::on_addEquationButton_clicked()
 			qWarning("Duplicate equation group name.");
 			return;
 		}
-		TRMControlModel::EquationGroup equationGroup;
+		VTMControlModel::EquationGroup equationGroup;
 		equationGroup.name = NEW_ITEM_NAME;
 		model_->equationGroupList().push_back(std::move(equationGroup));
 	}
@@ -370,15 +370,15 @@ PrototypeManagerWindow::on_addTransitionButton_clicked()
 			return;
 		}
 
-		std::shared_ptr<TRMControlModel::Transition> transition(
-					new TRMControlModel::Transition(NEW_ITEM_NAME, TRMControlModel::Transition::TYPE_DIPHONE, false));
+		std::shared_ptr<VTMControlModel::Transition> transition(
+					new VTMControlModel::Transition(NEW_ITEM_NAME, VTMControlModel::Transition::TYPE_DIPHONE, false));
 		model_->transitionGroupList()[groupIndex].transitionList.push_back(transition);
 	} else {
 		if (model_->findTransitionGroupName(NEW_ITEM_NAME)) {
 			qWarning("Duplicate transition group name.");
 			return;
 		}
-		TRMControlModel::TransitionGroup transitionGroup;
+		VTMControlModel::TransitionGroup transitionGroup;
 		transitionGroup.name = NEW_ITEM_NAME;
 		model_->transitionGroupList().push_back(std::move(transitionGroup));
 	}
@@ -583,10 +583,10 @@ PrototypeManagerWindow::on_transitionsTree_currentItemChanged(QTreeWidgetItem* c
 	ui_->transitionWidget->updateData(
 		transition->type(),
 		&pointList_,
-		model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_RD),
-		model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK1),
-		model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK2),
-		model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK3)
+		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RD),
+		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1),
+		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2),
+		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK3)
 	);
 
 	currentTransition_ = transition.get();
@@ -652,15 +652,15 @@ PrototypeManagerWindow::on_addSpecialTransitionButton_clicked()
 			return;
 		}
 
-		std::shared_ptr<TRMControlModel::Transition> specialTransition(
-					new TRMControlModel::Transition(NEW_ITEM_NAME, TRMControlModel::Transition::TYPE_DIPHONE, true));
+		std::shared_ptr<VTMControlModel::Transition> specialTransition(
+					new VTMControlModel::Transition(NEW_ITEM_NAME, VTMControlModel::Transition::TYPE_DIPHONE, true));
 		model_->specialTransitionGroupList()[groupIndex].transitionList.push_back(specialTransition);
 	} else {
 		if (model_->findSpecialTransitionGroupName(NEW_ITEM_NAME)) {
 			qWarning("Duplicate special transition group name.");
 			return;
 		}
-		TRMControlModel::TransitionGroup specialTransitionGroup;
+		VTMControlModel::TransitionGroup specialTransitionGroup;
 		specialTransitionGroup.name = NEW_ITEM_NAME;
 		model_->specialTransitionGroupList().push_back(std::move(specialTransitionGroup));
 	}
@@ -864,10 +864,10 @@ PrototypeManagerWindow::on_specialTransitionsTree_currentItemChanged(QTreeWidget
 	ui_->specialTransitionWidget->updateData(
 		specialTransition->type(),
 		&specialPointList_,
-		model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_RD),
-		model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK1),
-		model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK2),
-		model_->getFormulaSymbolValue(TRMControlModel::FormulaSymbol::SYMB_MARK3)
+		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RD),
+		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1),
+		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2),
+		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK3)
 	);
 
 	currentSpecialTransition_ = specialTransition.get();

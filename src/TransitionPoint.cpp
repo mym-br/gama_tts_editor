@@ -34,14 +34,14 @@ namespace GS {
 
 void
 TransitionPoint::copyPointsFromTransition(
-		const TRMControlModel::Transition& transition,
+		const VTMControlModel::Transition& transition,
 		std::vector<TransitionPoint>& pointList)
 {
 	pointList.clear();
 
 	for (auto& pointOrSlope : transition.pointOrSlopeList()) {
 		if (pointOrSlope->isSlopeRatio()) {
-			const auto& slopeRatio = dynamic_cast<const TRMControlModel::Transition::SlopeRatio&>(*pointOrSlope);
+			const auto& slopeRatio = dynamic_cast<const VTMControlModel::Transition::SlopeRatio&>(*pointOrSlope);
 
 			for (unsigned int i = 0, size = slopeRatio.pointList.size(); i < size; ++i) {
 				const auto& point = *slopeRatio.pointList[i];
@@ -60,7 +60,7 @@ TransitionPoint::copyPointsFromTransition(
 				pointList.push_back(std::move(tp));
 			}
 		} else {
-			const auto& point = dynamic_cast<const TRMControlModel::Transition::Point&>(*pointOrSlope);
+			const auto& point = dynamic_cast<const VTMControlModel::Transition::Point&>(*pointOrSlope);
 
 			TransitionPoint tp;
 			tp.type = point.type;
@@ -83,10 +83,10 @@ TransitionPoint::sortPointListByTypeAndTime(std::vector<TransitionPoint>& pointL
 }
 
 void
-TransitionPoint::calculateTimes(const TRMControlModel::Model& model, std::vector<TransitionPoint>& pointList)
+TransitionPoint::calculateTimes(const VTMControlModel::Model& model, std::vector<TransitionPoint>& pointList)
 {
 	for (auto& point : pointList) {
-		const std::shared_ptr<TRMControlModel::Equation> timeExpression(point.timeExpression.lock());
+		const std::shared_ptr<VTMControlModel::Equation> timeExpression(point.timeExpression.lock());
 		if (!timeExpression) {
 			point.time = point.freeTime;
 		} else {
@@ -147,13 +147,13 @@ TransitionPoint::adjustValuesInSlopeRatios(std::vector<TransitionPoint>& pointLi
 
 // May throw GS::Exception.
 void
-TransitionPoint::copyPointsToTransition(TRMControlModel::Transition::Type type, const std::vector<TransitionPoint>& pointList, TRMControlModel::Transition& transition)
+TransitionPoint::copyPointsToTransition(VTMControlModel::Transition::Type type, const std::vector<TransitionPoint>& pointList, VTMControlModel::Transition& transition)
 {
 	if (pointList.empty()) {
 		THROW_EXCEPTION(InvalidParameterException, "Empty point list.");
 	}
 
-	TRMControlModel::Transition newTransition(transition.name(), type, false /* special */);
+	VTMControlModel::Transition newTransition(transition.name(), type, false /* special */);
 	newTransition.setComment(transition.comment());
 
 	for (unsigned int i = 0, size = pointList.size(); i < size; ++i) {
@@ -176,13 +176,13 @@ TransitionPoint::copyPointsToTransition(TRMControlModel::Transition::Type type, 
 			}
 
 			// Create slope ratio group.
-			std::unique_ptr<TRMControlModel::Transition::SlopeRatio> newSlopeRatio(new TRMControlModel::Transition::SlopeRatio);
+			std::unique_ptr<VTMControlModel::Transition::SlopeRatio> newSlopeRatio(new VTMControlModel::Transition::SlopeRatio);
 			for (unsigned int k = i; k <= j; ++k) {
 				newSlopeRatio->pointList.push_back(makeNewPoint(pointList[k]));
 			}
 			float slopeSum = 0.0;
 			for (unsigned int k = i; k < j; ++k) {
-				std::unique_ptr<TRMControlModel::Transition::Slope> newSlope(new TRMControlModel::Transition::Slope);
+				std::unique_ptr<VTMControlModel::Transition::Slope> newSlope(new VTMControlModel::Transition::Slope);
 				newSlope->slope = pointList[k].slope;
 				slopeSum += newSlope->slope;
 				newSlopeRatio->slopeList.push_back(std::move(newSlope));
@@ -201,15 +201,15 @@ TransitionPoint::copyPointsToTransition(TRMControlModel::Transition::Type type, 
 	std::swap(transition, newTransition);
 }
 
-std::unique_ptr<TRMControlModel::Transition::Point>
+std::unique_ptr<VTMControlModel::Transition::Point>
 TransitionPoint::makeNewPoint(const TransitionPoint& sourcePoint)
 {
-	std::unique_ptr<TRMControlModel::Transition::Point> newPoint(new TRMControlModel::Transition::Point);
+	std::unique_ptr<VTMControlModel::Transition::Point> newPoint(new VTMControlModel::Transition::Point);
 	newPoint->type = sourcePoint.type;
 	newPoint->value = sourcePoint.value;
 	newPoint->isPhantom = sourcePoint.isPhantom;
 
-	const std::shared_ptr<TRMControlModel::Equation> timeExpression(sourcePoint.timeExpression.lock());
+	const std::shared_ptr<VTMControlModel::Equation> timeExpression(sourcePoint.timeExpression.lock());
 	if (timeExpression) {
 		newPoint->timeExpression = timeExpression;
 	} else {

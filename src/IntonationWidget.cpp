@@ -154,11 +154,11 @@ IntonationWidget::paintEvent(QPaintEvent*)
 
 	double yPosture = MARGIN + 3.0 * TRACK_HEIGHT - 0.5 * (TRACK_HEIGHT - 1.0) + textYOffset_;
 	unsigned int postureIndex = 0;
-	for (const TRMControlModel::Event_ptr& ev : eventList_->list()) {
+	for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
 		double x = timeToX(ev->time);
 		if (ev->flag) {
 			postureTimeList_.push_back(ev->time);
-			const TRMControlModel::Posture* posture = eventList_->getPostureAtIndex(postureIndex++);
+			const VTMControlModel::Posture* posture = eventList_->getPostureAtIndex(postureIndex++);
 			if (posture) {
 				painter.setPen(Qt::black);
 				// Posture name.
@@ -299,7 +299,7 @@ IntonationWidget::mouseDoubleClickEvent(QMouseEvent* event)
 
 	auto* ruleData = eventList_->getRuleAtIndex(ruleIndex);
 
-	TRMControlModel::IntonationPoint newPoint(eventList_);
+	VTMControlModel::IntonationPoint newPoint(eventList_);
 	newPoint.setRuleIndex(ruleIndex);
 	newPoint.setOffsetTime(clickTime - ruleData->beat);
 	newPoint.setSemitone(yToValue(clickPoint.y()));
@@ -406,7 +406,7 @@ IntonationWidget::sizeHint() const
 }
 
 void
-IntonationWidget::updateData(TRMControlModel::EventList* eventList)
+IntonationWidget::updateData(VTMControlModel::EventList* eventList)
 {
 	eventList_ = eventList;
 
@@ -592,7 +592,7 @@ IntonationWidget::smoothPoints(QPainter& painter)
 
 // Returns the insertion index.
 int
-IntonationWidget::addIntonationPoint(TRMControlModel::IntonationPoint& newPoint)
+IntonationWidget::addIntonationPoint(VTMControlModel::IntonationPoint& newPoint)
 {
 	qDebug("eventList_->numberOfRules() = %d ruleIndex = %d", eventList_->numberOfRules(), newPoint.ruleIndex());
 

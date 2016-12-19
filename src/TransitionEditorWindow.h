@@ -35,7 +35,7 @@ class TransitionEditorWindow;
 
 namespace GS {
 
-namespace TRMControlModel {
+namespace VTMControlModel {
 class Model;
 class Transition;
 }
@@ -47,7 +47,7 @@ public:
 	~TransitionEditorWindow();
 
 	void setSpecial();
-	void resetModel(TRMControlModel::Model* model);
+	void resetModel(VTMControlModel::Model* model);
 signals:
 	void equationReferenceChanged();
 	void transitionChanged();
@@ -78,9 +78,9 @@ private:
 
 	std::unique_ptr<Ui::TransitionEditorWindow> ui_;
 	bool special_;
-	TRMControlModel::Model* model_;
-	TRMControlModel::Transition* transition_;
-	TRMControlModel::Transition::Type transitionType_;
+	VTMControlModel::Model* model_;
+	VTMControlModel::Transition* transition_;
+	VTMControlModel::Transition::Type transitionType_;
 	std::vector<TransitionPoint> pointList_;
 };
 
