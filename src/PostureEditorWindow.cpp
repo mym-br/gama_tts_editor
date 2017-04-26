@@ -271,7 +271,6 @@ PostureEditorWindow::on_parametersTable_itemChanged(QTableWidgetItem* item)
 		if (newValue < parameter.minimum()) {
 			newValue = parameter.minimum();
 			acceptValue = false;
-
 		} else if (newValue > parameter.maximum()) {
 			newValue = parameter.maximum();
 			acceptValue = false;
@@ -281,6 +280,13 @@ PostureEditorWindow::on_parametersTable_itemChanged(QTableWidgetItem* item)
 		} else {
 			QSignalBlocker blocker(ui_->parametersTable);
 			item->setData(Qt::DisplayRole, newValue);
+		}
+		if (newValue != parameter.defaultValue()) {
+			QFont boldFont = font();
+			boldFont.setBold(true);
+			item->setData(Qt::FontRole, boldFont);
+		} else {
+			item->setData(Qt::FontRole, font());
 		}
 	}
 }
@@ -331,7 +337,6 @@ PostureEditorWindow::on_symbolsTable_itemChanged(QTableWidgetItem* item)
 		if (newValue < symbol.minimum()) {
 			newValue = symbol.minimum();
 			acceptValue = false;
-
 		} else if (newValue > symbol.maximum()) {
 			newValue = symbol.maximum();
 			acceptValue = false;
@@ -341,6 +346,13 @@ PostureEditorWindow::on_symbolsTable_itemChanged(QTableWidgetItem* item)
 		} else {
 			QSignalBlocker blocker(ui_->symbolsTable);
 			item->setData(Qt::DisplayRole, newValue);
+		}
+		if (newValue != symbol.defaultValue()) {
+			QFont boldFont = font();
+			boldFont.setBold(true);
+			item->setData(Qt::FontRole, boldFont);
+		} else {
+			item->setData(Qt::FontRole, font());
 		}
 	}
 }
@@ -449,34 +461,30 @@ PostureEditorWindow::setupParametersTable(const VTMControlModel::Posture& postur
 			// Name.
 			auto item = std::make_unique<QTableWidgetItem>(parameter.name().c_str());
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			table->setItem(i, 0, item.release());
 
 			// Value.
 			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
-			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
+			if (!usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, value);
 			table->setItem(i, 1, item.release());
 
 			// Min.
 			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, parameter.minimum());
 			table->setItem(i, 2, item.release());
 
 			// Max.
 			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, parameter.maximum());
 			table->setItem(i, 3, item.release());
 
 			// Default.
 			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, defaultValue);
 			table->setItem(i, 4, item.release());
 		}
@@ -504,34 +512,30 @@ PostureEditorWindow::setupSymbolsTable(const VTMControlModel::Posture& posture)
 			// Name.
 			auto item = std::make_unique<QTableWidgetItem>(symbol.name().c_str());
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			table->setItem(i, 0, item.release());
 
 			// Value.
 			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled | Qt::ItemIsEditable);
-			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
+			if (!usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, value);
 			table->setItem(i, 1, item.release());
 
 			// Min.
 			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, symbol.minimum());
 			table->setItem(i, 2, item.release());
 
 			// Max.
 			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, symbol.maximum());
 			table->setItem(i, 3, item.release());
 
 			// Default.
 			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-			if (usingDefaultValue) item->setData(Qt::FontRole, boldFont);
 			item->setData(Qt::DisplayRole, defaultValue);
 			table->setItem(i, 4, item.release());
 		}
