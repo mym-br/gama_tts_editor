@@ -10,7 +10,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets
     CONFIG += c++14
 } else {
-    QMAKE_CXXFLAGS += -std=c++14
+    error(Qt 4 is not supported.)
 }
 
 unix {

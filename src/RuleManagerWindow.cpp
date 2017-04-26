@@ -50,64 +50,32 @@ RuleManagerWindow::RuleManagerWindow(QWidget* parent)
 	int rowHeight = fm.height() + fm.ascent();
 
 	QHeaderView* vHeader = ui_->rulesTable->verticalHeader();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
-#else
-	vHeader->setResizeMode(QHeaderView::Fixed);
-#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->rulesTable->setColumnCount(NUM_RULES_TABLE_COLUMNS);
 	ui_->rulesTable->setHorizontalHeaderLabels(QStringList() << tr("Rule"));
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	ui_->rulesTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-#else
-	ui_->rulesTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-#endif
 
 	vHeader = ui_->ruleTransitionsTable->verticalHeader();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
-#else
-	vHeader->setResizeMode(QHeaderView::Fixed);
-#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->ruleTransitionsTable->setColumnCount(NUM_RULE_TRANSITIONS_TABLE_COLUMNS);
 	ui_->ruleTransitionsTable->setHorizontalHeaderLabels(QStringList() << tr("Parameter") << tr("Rule transition"));
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	ui_->ruleTransitionsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-#else
-	ui_->ruleTransitionsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-#endif
 
 	vHeader = ui_->ruleSpecialTransitionsTable->verticalHeader();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
-#else
-	vHeader->setResizeMode(QHeaderView::Fixed);
-#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->ruleSpecialTransitionsTable->setColumnCount(NUM_RULE_SPECIAL_TRANSITIONS_TABLE_COLUMNS);
 	ui_->ruleSpecialTransitionsTable->setHorizontalHeaderLabels(QStringList() << tr("Parameter") << tr("Rule special transition"));
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	ui_->ruleSpecialTransitionsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-#else
-	ui_->ruleSpecialTransitionsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-#endif
 
 	vHeader = ui_->ruleSymbolEquationsTable->verticalHeader();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
-#else
-	vHeader->setResizeMode(QHeaderView::Fixed);
-#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->ruleSymbolEquationsTable->setColumnCount(NUM_RULE_SYMBOL_EQUATIONS_TABLE_COLUMNS);
 	ui_->ruleSymbolEquationsTable->setHorizontalHeaderLabels(QStringList() << tr("Symbol") << tr("Rule equation"));
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	ui_->ruleSymbolEquationsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-#else
-	ui_->ruleSymbolEquationsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-#endif
 
 	ui_->transitionsTree->setColumnCount(NUM_TRANSITIONS_TREE_COLUMNS);
 	ui_->transitionsTree->setHeaderLabels(QStringList() << tr("Transition"));

@@ -336,11 +336,7 @@ TransitionWidget::mouseDoubleClickEvent(QMouseEvent* event)
 		return;
 	}
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	QPointF pos = event->localPos();
-#else
-	QPointF pos = event->posF();
-#endif
 	double time = xToTime(pos.x());
 	double value = yToValue(pos.y());
 	const double minValue = special_ ? -140.0 : -20.0;

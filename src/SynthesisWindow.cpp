@@ -53,11 +53,7 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 	int rowHeight = fm.height() + fm.ascent();
 
 	QHeaderView* vHeader = ui_->parameterTableWidget->verticalHeader();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
-#else
-	vHeader->setResizeMode(QHeaderView::Fixed);
-#endif
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->parameterTableWidget->setColumnCount(2);
 	ui_->parameterTableWidget->setHorizontalHeaderLabels(QStringList() << tr("Parameter") << tr("Special"));

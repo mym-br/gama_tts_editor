@@ -42,45 +42,21 @@ DataEntryWindow::DataEntryWindow(QWidget* parent)
 	int rowHeight = fm.height() + fm.ascent();
 
 	QHeaderView* vHeader = ui_->categoriesTableView->verticalHeader();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
-#else
-	vHeader->setResizeMode(QHeaderView::Fixed);
-#endif
 	vHeader->setDefaultSectionSize(rowHeight);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	ui_->categoriesTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-#else
-	ui_->categoriesTableView->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-#endif
 	ui_->categoriesTableView->setModel(categoryModel_);
 
 	vHeader = ui_->parametersTableView->verticalHeader();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
-#else
-	vHeader->setResizeMode(QHeaderView::Fixed);
-#endif
 	vHeader->setDefaultSectionSize(rowHeight);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	ui_->parametersTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-#else
-	ui_->parametersTableView->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-#endif
 	ui_->parametersTableView->setModel(parameterModel_);
 
 	vHeader = ui_->symbolsTableView->verticalHeader();
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
-#else
-	vHeader->setResizeMode(QHeaderView::Fixed);
-#endif
 	vHeader->setDefaultSectionSize(rowHeight);
-#if QT_VERSION >= QT_VERSION_CHECK(5, 0, 0)
 	ui_->symbolsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
-#else
-	ui_->symbolsTableView->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-#endif
 	ui_->symbolsTableView->setModel(symbolModel_);
 
 	// QItemSelectionModel
