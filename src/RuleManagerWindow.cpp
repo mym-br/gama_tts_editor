@@ -21,9 +21,9 @@
 #include <utility> /* move, swap */
 
 #include <QMessageBox>
+#include <QSignalBlocker>
 
 #include "Model.h"
-#include "SignalBlocker.h"
 #include "ui_RuleManagerWindow.h"
 
 #define NUM_RULES_TABLE_COLUMNS 1
@@ -380,7 +380,7 @@ RuleManagerWindow::setupRulesList()
 
 	QTableWidget* table = ui_->rulesTable;
 	{
-		SignalBlocker blocker(table);
+		QSignalBlocker blocker(table);
 
 		table->setRowCount(model_->ruleList().size());
 		for (unsigned int i = 0, size = model_->ruleList().size(); i < size; ++i) {
@@ -711,7 +711,7 @@ RuleManagerWindow::setupRuleTransitionsTable()
 
 	QTableWidget* table = ui_->ruleTransitionsTable;
 
-	SignalBlocker blocker(table);
+	QSignalBlocker blocker(table);
 
 	table->setRowCount(model_->parameterList().size());
 	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
@@ -762,7 +762,7 @@ RuleManagerWindow::setupRuleSpecialTransitionsTable()
 
 	QTableWidget* table = ui_->ruleSpecialTransitionsTable;
 
-	SignalBlocker blocker(table);
+	QSignalBlocker blocker(table);
 
 	table->setRowCount(model_->parameterList().size());
 	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
@@ -813,7 +813,7 @@ RuleManagerWindow::setupRuleSymbolEquationsTable()
 
 	QTableWidget* table = ui_->ruleSymbolEquationsTable;
 
-	SignalBlocker blocker(table);
+	QSignalBlocker blocker(table);
 
 	table->setRowCount(5);
 	{

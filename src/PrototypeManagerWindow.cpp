@@ -22,10 +22,10 @@
 #include <utility> /* move, swap */
 
 #include <QMessageBox>
+#include <QSignalBlocker>
 
 #include "Exception.h"
 #include "Model.h"
-#include "SignalBlocker.h"
 #include "ui_PrototypeManagerWindow.h"
 
 #define NUM_EQUATIONS_TREE_COLUMNS 2
@@ -316,7 +316,7 @@ PrototypeManagerWindow::setupEquationsTree()
 
 	QTreeWidget* tree = ui_->equationsTree;
 	{
-		SignalBlocker blocker(tree);
+		QSignalBlocker blocker(tree);
 
 		tree->clear();
 
@@ -544,7 +544,7 @@ PrototypeManagerWindow::on_transitionsTree_itemChanged(QTreeWidgetItem* item, in
 		int parentIndex = ui_->transitionsTree->indexOfTopLevelItem(parent);
 		int index = parent->indexOfChild(item);
 		if (model_->findTransitionName(newText)) {
-			SignalBlocker blocker(ui_->transitionsTree);
+			QSignalBlocker blocker(ui_->transitionsTree);
 			item->setText(0, model_->transitionGroupList()[parentIndex].transitionList[index]->name().c_str());
 			qWarning("Duplicate transition name.");
 			return;
@@ -599,7 +599,7 @@ PrototypeManagerWindow::setupTransitionsTree()
 
 	QTreeWidget* tree = ui_->transitionsTree;
 	{
-		SignalBlocker blocker(tree);
+		QSignalBlocker blocker(tree);
 
 		tree->clear();
 
@@ -879,7 +879,7 @@ PrototypeManagerWindow::setupSpecialTransitionsTree()
 
 	QTreeWidget* tree = ui_->specialTransitionsTree;
 	{
-		SignalBlocker blocker(tree);
+		QSignalBlocker blocker(tree);
 
 		tree->clear();
 

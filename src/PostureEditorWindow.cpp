@@ -23,9 +23,9 @@
 #include <utility> /* move */
 
 #include <QMessageBox>
+#include <QSignalBlocker>
 
 #include "Model.h"
-#include "SignalBlocker.h"
 #include "ui_PostureEditorWindow.h"
 
 #define NUM_POSTURES_TABLE_COLUMNS 1
@@ -219,13 +219,13 @@ PostureEditorWindow::on_posturesTable_itemChanged(QTableWidgetItem* item)
 	if (model_->postureList().find(newName)) {
 		qWarning("Duplicate posture name.");
 		{
-			SignalBlocker blocker(ui_->posturesTable);
+			QSignalBlocker blocker(ui_->posturesTable);
 			item->setText(model_->postureList()[row].name().c_str());
 		}
 	} else if (model_->findCategoryName(newName)) {
 		qWarning("Posture can not have the same name as a category.");
 		{
-			SignalBlocker blocker(ui_->posturesTable);
+			QSignalBlocker blocker(ui_->posturesTable);
 			item->setText(model_->postureList()[row].name().c_str());
 		}
 	} else {
@@ -307,7 +307,7 @@ PostureEditorWindow::on_parametersTable_itemChanged(QTableWidgetItem* item)
 		if (acceptValue) {
 			posture.setParameterTarget(row, newValue);
 		} else {
-			SignalBlocker blocker(ui_->parametersTable);
+			QSignalBlocker blocker(ui_->parametersTable);
 			item->setData(Qt::DisplayRole, newValue);
 		}
 	}
@@ -367,7 +367,7 @@ PostureEditorWindow::on_symbolsTable_itemChanged(QTableWidgetItem* item)
 		if (acceptValue) {
 			posture.setSymbolTarget(row, newValue);
 		} else {
-			SignalBlocker blocker(ui_->symbolsTable);
+			QSignalBlocker blocker(ui_->symbolsTable);
 			item->setData(Qt::DisplayRole, newValue);
 		}
 	}
@@ -399,7 +399,7 @@ PostureEditorWindow::setupPosturesTable()
 
 	QTableWidget* table = ui_->posturesTable;
 	{
-		SignalBlocker blocker(table);
+		QSignalBlocker blocker(table);
 
 		table->setRowCount(model_->postureList().size());
 		for (unsigned int i = 0, size = model_->postureList().size(); i < size; ++i) {
@@ -427,7 +427,7 @@ PostureEditorWindow::setupCategoriesTable(const VTMControlModel::Posture& postur
 {
 	QTableWidget* table = ui_->categoriesTable;
 	{
-		SignalBlocker blocker(table);
+		QSignalBlocker blocker(table);
 
 		table->setRowCount(model_->categoryList().size());
 		for (unsigned int i = 0, size = model_->categoryList().size(); i < size; ++i) {
@@ -461,7 +461,7 @@ PostureEditorWindow::setupParametersTable(const VTMControlModel::Posture& postur
 {
 	QTableWidget* table = ui_->parametersTable;
 	{
-		SignalBlocker blocker(table);
+		QSignalBlocker blocker(table);
 
 		QFont boldFont = font();
 		boldFont.setBold(true);
@@ -516,7 +516,7 @@ PostureEditorWindow::setupSymbolsTable(const VTMControlModel::Posture& posture)
 {
 	QTableWidget* table = ui_->symbolsTable;
 	{
-		SignalBlocker blocker(table);
+		QSignalBlocker blocker(table);
 
 		QFont boldFont = font();
 		boldFont.setBold(true);

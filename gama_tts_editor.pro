@@ -60,7 +60,6 @@ HEADERS += src/MainWindow.h \
     src/TransitionEditorWindow.h \
     src/TransitionWidget.h \
     src/TransitionPoint.h \
-    src/SignalBlocker.h \
     src/PostureEditorWindow.h \
     src/RuleManagerWindow.h \
     src/RuleTesterWindow.h \

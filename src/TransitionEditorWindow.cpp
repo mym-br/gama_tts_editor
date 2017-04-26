@@ -26,11 +26,11 @@
 
 #include <QDoubleValidator>
 #include <QMessageBox>
+#include <QSignalBlocker>
 #include <QTreeWidgetItem>
 
 #include "Exception.h"
 #include "Model.h"
-#include "SignalBlocker.h"
 #include "ui_TransitionEditorWindow.h"
 
 #define NUM_EQUATIONS_TREE_COLUMNS 1
@@ -607,7 +607,7 @@ TransitionEditorWindow::updatePointsTable()
 
 	QTableWidget* table = ui_->pointsTable;
 
-	SignalBlocker blocker(table);
+	QSignalBlocker blocker(table);
 
 	table->setRowCount(pointList_.size());
 	for (unsigned int i = 0, size = pointList_.size(); i < size; ++i) {
