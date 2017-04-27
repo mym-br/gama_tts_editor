@@ -413,7 +413,8 @@ PostureEditorWindow::on_pasteParametersButton_clicked()
 
 	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
 		const auto& parameter = model_->parameterList()[i];
-		auto iter = paramMap.find(parameter.name().c_str());
+		QString name(parameter.name().c_str());
+		auto iter = paramMap.find(name.replace(' ', '_'));
 		if (iter != paramMap.end()) {
 			float value = qBound(parameter.minimum(), iter.value(), parameter.maximum());
 			posture.setParameterTarget(i, value);

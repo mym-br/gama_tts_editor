@@ -34,7 +34,8 @@ putPostureParameters(const QHash<QString, float>& paramMap)
 {
 	QString text(POSTURE_PARAMETERS_HEADER);
 	for (auto iter = paramMap.constBegin(); iter != paramMap.constEnd(); ++iter) {
-		text += QString("%1 = %2\n").arg(iter.key()).arg(iter.value());
+		QString key = iter.key();
+		text += QString("%1 = %2\n").arg(key.replace(' ', '_')).arg(iter.value());
 	}
 
 	QClipboard* clipboard = QApplication::clipboard();
@@ -63,7 +64,6 @@ getPostureParameters()
 		QString separator;
 		float value;
 		lineStream >> name >> separator >> value;
-		qDebug() << "item" << "|" << name << "|" << separator << "|" << value;
 		if (separator != "=") {
 			qDebug() << "Wrong clipboard separator.";
 			return paramMap;
