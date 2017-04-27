@@ -60,6 +60,8 @@ private slots:
 	void on_useDefaultParameterValueButton_clicked();
 	void on_symbolsTable_itemChanged(QTableWidgetItem* item);
 	void on_useDefaultSymbolValueButton_clicked();
+	void on_copyParametersButton_clicked();
+	void on_pasteParametersButton_clicked();
 private:
 	void setupPosturesTable();
 	void clearPostureData();

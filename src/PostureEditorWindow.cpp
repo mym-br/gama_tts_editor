@@ -25,6 +25,7 @@
 #include <QMessageBox>
 #include <QSignalBlocker>
 
+#include "Clipboard.h"
 #include "Model.h"
 #include "ui_PostureEditorWindow.h"
 
@@ -374,6 +375,52 @@ PostureEditorWindow::on_useDefaultSymbolValueButton_clicked()
 
 	posture.setSymbolTarget(row, symbol.defaultValue());
 	setupSymbolsTable(posture);
+}
+
+void
+PostureEditorWindow::on_copyParametersButton_clicked()
+{
+	if (model_ == nullptr) return;
+
+	QTableWidgetItem* currPostureItem = ui_->posturesTable->currentItem();
+	if (currPostureItem == nullptr) return;
+	int currPostureRow = currPostureItem->row();
+	const VTMControlModel::Posture& posture = model_->postureList()[currPostureRow];
+
+	QHash<QString, float> paramMap;
+
+	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
+		const auto& parameter = model_->parameterList()[i];
+		const float value = posture.getParameterTarget(i);
+		paramMap[parameter.name().c_str()] = value;
+	}
+
+	Clipboard::putPostureParameters(paramMap);
+}
+
+void
+PostureEditorWindow::on_pasteParametersButton_clicked()
+{
+	if (model_ == nullptr) return;
+
+	QTableWidgetItem* currPostureItem = ui_->posturesTable->currentItem();
+	if (currPostureItem == nullptr) return;
+	int currPostureRow = currPostureItem->row();
+	VTMControlModel::Posture& posture = model_->postureList()[currPostureRow];
+
+	QHash<QString, float> paramMap = Clipboard::getPostureParameters();
+	if (paramMap.empty()) return;
+
+	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
+		const auto& parameter = model_->parameterList()[i];
+		auto iter = paramMap.find(parameter.name().c_str());
+		if (iter != paramMap.end()) {
+			float value = qBound(parameter.minimum(), iter.value(), parameter.maximum());
+			posture.setParameterTarget(i, value);
+		}
+	}
+
+	setupParametersTable(posture);
 }
 
 void

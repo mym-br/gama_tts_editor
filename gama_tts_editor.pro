@@ -44,7 +44,8 @@ SOURCES += src/main.cpp \
     src/Synthesis.cpp \
     src/IntonationParametersWindow.cpp \
     src/AudioPlayer.cpp \
-    src/AudioWorker.cpp
+    src/AudioWorker.cpp \
+    src/Clipboard.cpp
 
 HEADERS += src/MainWindow.h \
     src/DataEntryWindow.h \
@@ -68,7 +69,8 @@ HEADERS += src/MainWindow.h \
     src/Synthesis.h \
     src/IntonationParametersWindow.h \
     src/AudioPlayer.h \
-    src/AudioWorker.h
+    src/AudioWorker.h \
+    src/Clipboard.h
 
 FORMS += ui/MainWindow.ui \
     ui/DataEntryWindow.ui \
