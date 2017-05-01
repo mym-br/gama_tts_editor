@@ -27,7 +27,7 @@
 
 
 
-QT_FORWARD_DECLARE_CLASS(QTreeWidgetItem)
+class QTreeWidgetItem;
 
 namespace Ui {
 class PrototypeManagerWindow;

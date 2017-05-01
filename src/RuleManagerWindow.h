@@ -24,13 +24,13 @@
 
 
 
+class QString;
+class QTableWidgetItem;
+class QTreeWidgetItem;
+
 namespace Ui {
 class RuleManagerWindow;
 }
-
-QT_FORWARD_DECLARE_CLASS(QString)
-QT_FORWARD_DECLARE_CLASS(QTableWidgetItem)
-QT_FORWARD_DECLARE_CLASS(QTreeWidgetItem)
 
 namespace GS {
 

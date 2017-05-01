@@ -26,8 +26,8 @@
 
 
 
-QT_FORWARD_DECLARE_CLASS(QTableWidgetItem)
-QT_FORWARD_DECLARE_CLASS(QTreeWidgetItem)
+class QTableWidgetItem;
+class QTreeWidgetItem;
 
 namespace Ui {
 class TransitionEditorWindow;
