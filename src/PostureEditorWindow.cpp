@@ -178,6 +178,13 @@ PostureEditorWindow::on_posturesTable_currentItemChanged(QTableWidgetItem* curre
 	setupCategoriesTable(posture);
 	setupParametersTable(posture);
 	setupSymbolsTable(posture);
+
+	// Send the parameters to InteractiveVTMWindow.
+	QHash<QString, float> paramMap;
+	fillParametersMap(paramMap);
+	if (!paramMap.empty()) {
+		emit currentPostureChanged(paramMap);
+	}
 }
 
 void
@@ -378,7 +385,7 @@ PostureEditorWindow::on_useDefaultSymbolValueButton_clicked()
 }
 
 void
-PostureEditorWindow::on_copyParametersButton_clicked()
+PostureEditorWindow::fillParametersMap(QHash<QString, float>& paramMap)
 {
 	if (model_ == nullptr) return;
 
@@ -387,15 +394,21 @@ PostureEditorWindow::on_copyParametersButton_clicked()
 	int currPostureRow = currPostureItem->row();
 	const VTMControlModel::Posture& posture = model_->postureList()[currPostureRow];
 
-	QHash<QString, float> paramMap;
-
 	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
 		const auto& parameter = model_->parameterList()[i];
 		const float value = posture.getParameterTarget(i);
 		paramMap[parameter.name().c_str()] = value;
 	}
+}
 
-	Clipboard::putPostureParameters(paramMap);
+void
+PostureEditorWindow::on_copyParametersButton_clicked()
+{
+	QHash<QString, float> paramMap;
+	fillParametersMap(paramMap);
+	if (!paramMap.empty()) {
+		Clipboard::putPostureParameters(paramMap);
+	}
 }
 
 void

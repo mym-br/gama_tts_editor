@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014 Marcelo Y. Matuda                                       *
+ *  Copyright 2014, 2017 Marcelo Y. Matuda                                 *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -15,6 +15,11 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
+#include <xmmintrin.h> /* SSE */
+#include <pmmintrin.h> /* SSE3 */
+
+#include <iostream>
+
 #include "Application.h"
 #include "Log.h"
 #include "MainWindow.h"
@@ -24,10 +29,25 @@
 int
 main(int argc, char* argv[])
 {
+	// Disable denormals.
+	_MM_SET_FLUSH_ZERO_MODE(_MM_FLUSH_ZERO_ON);         // requires xmmintrin.h
+	_MM_SET_DENORMALS_ZERO_MODE(_MM_DENORMALS_ZERO_ON); // requires pmmintrin.h
+
 	GS::Log::debugEnabled = true;
 
-	Application a(argc, argv);
-	GS::MainWindow w;
-	w.show();
-	return a.exec();
+	try {
+		Application app(argc, argv);
+		GS::MainWindow w;
+		w.show();
+		app.exec();
+
+		return EXIT_SUCCESS;
+
+	} catch (std::exception& e) {
+		std::cerr << "Caught exception: " << e.what() << '.' << std::endl;
+	} catch (...) {
+		std::cerr << "Caught unexpected exception." << std::endl;
+	}
+
+	return EXIT_FAILURE;
 }

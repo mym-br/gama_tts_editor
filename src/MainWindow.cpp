@@ -32,6 +32,7 @@
 #include <QVBoxLayout>
 
 #include "DataEntryWindow.h"
+#include "InteractiveVTMWindow.h"
 #include "IntonationWindow.h"
 #include "IntonationParametersWindow.h"
 #include "LogStreamBuffer.h"
@@ -69,6 +70,7 @@ MainWindow::MainWindow(QWidget* parent)
 		, ruleTesterWindow_ {std::make_unique<RuleTesterWindow>()}
 		, synthesisWindow_ {std::make_unique<SynthesisWindow>()}
 		, transitionEditorWindow_ {std::make_unique<TransitionEditorWindow>()}
+		, interactiveVTMWindow_ {}
 {
 	ui_->setupUi(this);
 
@@ -154,6 +156,8 @@ MainWindow::closeEvent(QCloseEvent* event)
 void
 MainWindow::on_openAction_triggered()
 {
+	interactiveVTMWindow_.reset();
+
 	QString dir = config_.projectDir;
 	if (dir.isNull()) {
 		dir = QDir::currentPath();
@@ -202,11 +206,13 @@ MainWindow::on_saveAsAction_triggered()
 }
 
 void
-MainWindow::on_revertAction_triggered()
+MainWindow::on_reloadAction_triggered()
 {
 	if (config_.projectDir.isEmpty() || config_.origConfigFileName.isEmpty()) {
 		return;
 	}
+
+	interactiveVTMWindow_.reset();
 
 	openModel();
 }
@@ -265,6 +271,22 @@ MainWindow::on_intonationParametersButton_clicked()
 {
 	intonationParametersWindow_->show();
 	intonationParametersWindow_->raise();
+}
+
+void
+MainWindow::on_interactiveVTMButton_clicked()
+{
+	if (model_.get() == nullptr || config_.origConfigFileName.isNull()) {
+		return;
+	}
+
+	if (!interactiveVTMWindow_) {
+		interactiveVTMWindow_ = std::make_unique<InteractiveVTMWindow>(config_.projectDir.toStdString().c_str(), false);
+		connect(postureEditorWindow_.get(), SIGNAL(currentPostureChanged(const QHash<QString, float>&)),
+			interactiveVTMWindow_.get(), SLOT(setDynamicParameters(const QHash<QString, float>&)));
+	}
+	interactiveVTMWindow_->show();
+	interactiveVTMWindow_->raise();
 }
 
 bool
@@ -416,7 +438,7 @@ MainWindow::about()
 	connect(buttonBox, SIGNAL(accepted()), &aboutDialog, SLOT(accept()));
 
 	aboutDialog.setWindowTitle(tr("About ") + PROGRAM_NAME);
-	aboutDialog.resize(600, 550);
+	aboutDialog.resize(900, 550);
 	aboutDialog.exec();
 }
 

@@ -24,11 +24,13 @@
 
 
 
+class QString;
+class QTableWidgetItem;
+template<typename T, typename U> class QHash;
+
 namespace Ui {
 class PostureEditorWindow;
 }
-
-QT_FORWARD_DECLARE_CLASS(QTableWidgetItem)
 
 namespace GS {
 
@@ -47,6 +49,7 @@ public:
 signals:
 	void postureChanged();
 	void postureCategoryChanged();
+	void currentPostureChanged(const QHash<QString, float>& paramMap);
 public slots:
 	void unselectPosture();
 private slots:
@@ -68,6 +71,7 @@ private:
 	void setupCategoriesTable(const VTMControlModel::Posture& posture);
 	void setupParametersTable(const VTMControlModel::Posture& posture);
 	void setupSymbolsTable(const VTMControlModel::Posture& posture);
+	void fillParametersMap(QHash<QString, float>& paramMap);
 
 	std::unique_ptr<Ui::PostureEditorWindow> ui_;
 	VTMControlModel::Model* model_;

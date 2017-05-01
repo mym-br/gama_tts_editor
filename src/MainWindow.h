@@ -33,6 +33,7 @@ namespace GS {
 struct Synthesis;
 
 class DataEntryWindow;
+class InteractiveVTMWindow;
 class IntonationWindow;
 class IntonationParametersWindow;
 class LogStreamBuffer;
@@ -58,7 +59,7 @@ private slots:
 	void on_openAction_triggered();
 	void on_saveAction_triggered();
 	void on_saveAsAction_triggered();
-	void on_revertAction_triggered();
+	void on_reloadAction_triggered();
 
 	void on_dataEntryButton_clicked();
 	void on_ruleManagerButton_clicked();
@@ -68,6 +69,7 @@ private slots:
 	void on_ruleTesterButton_clicked();
 	void on_synthesisWindowButton_clicked();
 	void on_intonationParametersButton_clicked();
+	void on_interactiveVTMButton_clicked();
 
 	void about();
 private:
@@ -90,6 +92,7 @@ private:
 	std::unique_ptr<RuleTesterWindow> ruleTesterWindow_;
 	std::unique_ptr<SynthesisWindow> synthesisWindow_;
 	std::unique_ptr<TransitionEditorWindow> transitionEditorWindow_;
+	std::unique_ptr<InteractiveVTMWindow> interactiveVTMWindow_;
 	std::unique_ptr<LogStreamBuffer> coutStreamBuffer_;
 	std::unique_ptr<LogStreamBuffer> cerrStreamBuffer_;
 };

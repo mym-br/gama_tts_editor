@@ -1,13 +1,9 @@
-#-------------------------------------------------
-#
-# Project created by QtCreator 2014-12-13T12:47:12
-#
-#-------------------------------------------------
-
+TEMPLATE = app
+TARGET = gama_tts_editor
 QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4) {
-    QT += widgets
+    QT += widgets printsupport
     CONFIG += c++14
 } else {
     error(Qt 4 is not supported.)
@@ -16,75 +12,102 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 unix {
     !macx {
         CONFIG += link_pkgconfig
-        PKGCONFIG += portaudiocpp
+        PKGCONFIG += portaudiocpp jack fftw3f
     }
 }
 
-TARGET = gama_tts_editor
-TEMPLATE = app
-
-SOURCES += src/main.cpp \
-    src/MainWindow.cpp \
-    src/DataEntryWindow.cpp \
-    src/qt_model/CategoryModel.cpp \
-    src/Application.cpp \
-    src/qt_model/ParameterModel.cpp \
-    src/qt_model/SymbolModel.cpp \
-    src/SynthesisWindow.cpp \
-    src/EventWidget.cpp \
-    src/PrototypeManagerWindow.cpp \
-    src/TransitionEditorWindow.cpp \
-    src/TransitionWidget.cpp \
-    src/TransitionPoint.cpp \
-    src/PostureEditorWindow.cpp \
-    src/RuleManagerWindow.cpp \
-    src/RuleTesterWindow.cpp \
-    src/IntonationWindow.cpp \
-    src/IntonationWidget.cpp \
-    src/Synthesis.cpp \
-    src/IntonationParametersWindow.cpp \
-    src/AudioPlayer.cpp \
-    src/AudioWorker.cpp \
-    src/Clipboard.cpp
-
-HEADERS += src/MainWindow.h \
-    src/DataEntryWindow.h \
-    src/qt_model/CategoryModel.h \
-    src/Application.h \
+HEADERS += \
     src/AppConfig.h \
-    src/qt_model/ParameterModel.h \
-    src/qt_model/SymbolModel.h \
-    src/LogStreamBuffer.h \
-    src/SynthesisWindow.h \
-    src/EventWidget.h \
-    src/PrototypeManagerWindow.h \
-    src/TransitionEditorWindow.h \
-    src/TransitionWidget.h \
-    src/TransitionPoint.h \
-    src/PostureEditorWindow.h \
-    src/RuleManagerWindow.h \
-    src/RuleTesterWindow.h \
-    src/IntonationWindow.h \
-    src/IntonationWidget.h \
-    src/Synthesis.h \
-    src/IntonationParametersWindow.h \
+    src/Application.h \
     src/AudioPlayer.h \
     src/AudioWorker.h \
-    src/Clipboard.h
+    src/Clipboard.h \
+    src/DataEntryWindow.h \
+    src/EventWidget.h \
+    src/IntonationParametersWindow.h \
+    src/IntonationWidget.h \
+    src/IntonationWindow.h \
+    src/LogStreamBuffer.h \
+    src/MainWindow.h \
+    src/PostureEditorWindow.h \
+    src/PrototypeManagerWindow.h \
+    src/qt_model/CategoryModel.h \
+    src/qt_model/ParameterModel.h \
+    src/qt_model/SymbolModel.h \
+    src/RuleManagerWindow.h \
+    src/RuleTesterWindow.h \
+    src/Synthesis.h \
+    src/SynthesisWindow.h \
+    src/TransitionEditorWindow.h \
+    src/TransitionPoint.h \
+    src/TransitionWidget.h \
+    ../gama_tts_interactive/src/AnalysisWindow.h \
+    ../gama_tts_interactive/src/Audio.h \
+    ../gama_tts_interactive/src/FFTW.h \
+    ../gama_tts_interactive/src/global.h \
+    ../gama_tts_interactive/src/InteractiveVTMWindow.h \
+    ../gama_tts_interactive/src/JackClient.h \
+    ../gama_tts_interactive/src/JackRingbuffer.h \
+    ../gama_tts_interactive/src/ParameterLineEdit.h \
+    ../gama_tts_interactive/src/ParameterSlider.h \
+    ../gama_tts_interactive/src/ProgramConfiguration.h \
+    ../gama_tts_interactive/src/qcustomplot/qcustomplot.h \
+    ../gama_tts_interactive/src/SignalDFT.h
 
-FORMS += ui/MainWindow.ui \
+SOURCES += \
+    src/Application.cpp \
+    src/AudioPlayer.cpp \
+    src/AudioWorker.cpp \
+    src/Clipboard.cpp \
+    src/DataEntryWindow.cpp \
+    src/EventWidget.cpp \
+    src/IntonationParametersWindow.cpp \
+    src/IntonationWidget.cpp \
+    src/IntonationWindow.cpp \
+    src/main.cpp \
+    src/MainWindow.cpp \
+    src/PostureEditorWindow.cpp \
+    src/PrototypeManagerWindow.cpp \
+    src/qt_model/CategoryModel.cpp \
+    src/qt_model/ParameterModel.cpp \
+    src/qt_model/SymbolModel.cpp \
+    src/RuleManagerWindow.cpp \
+    src/RuleTesterWindow.cpp \
+    src/Synthesis.cpp \
+    src/SynthesisWindow.cpp \
+    src/TransitionEditorWindow.cpp \
+    src/TransitionPoint.cpp \
+    src/TransitionWidget.cpp \
+    ../gama_tts_interactive/src/AnalysisWindow.cpp \
+    ../gama_tts_interactive/src/Audio.cpp \
+    ../gama_tts_interactive/src/FFTW.cpp \
+    ../gama_tts_interactive/src/InteractiveVTMWindow.cpp \
+    ../gama_tts_interactive/src/JackClient.cpp \
+    ../gama_tts_interactive/src/JackRingbuffer.cpp \
+    ../gama_tts_interactive/src/ParameterLineEdit.cpp \
+    ../gama_tts_interactive/src/ParameterSlider.cpp \
+    ../gama_tts_interactive/src/ProgramConfiguration.cpp \
+    ../gama_tts_interactive/src/qcustomplot/qcustomplot.cpp \
+    ../gama_tts_interactive/src/SignalDFT.cpp
+
+FORMS += \
     ui/DataEntryWindow.ui \
-    ui/SynthesisWindow.ui \
-    ui/PrototypeManagerWindow.ui \
-    ui/TransitionEditorWindow.ui \
+    ui/IntonationParametersWindow.ui \
+    ui/IntonationWindow.ui \
+    ui/MainWindow.ui \
     ui/PostureEditorWindow.ui \
+    ui/PrototypeManagerWindow.ui \
     ui/RuleManagerWindow.ui \
     ui/RuleTesterWindow.ui \
-    ui/IntonationWindow.ui \
-    ui/IntonationParametersWindow.ui
+    ui/SynthesisWindow.ui \
+    ui/TransitionEditorWindow.ui \
+    ../gama_tts_interactive/ui/AnalysisWindow.ui
 
-INCLUDEPATH += src \
-    src/qt_model
+INCLUDEPATH += \
+    src \
+    src/qt_model \
+    ../gama_tts_interactive/src \
+    ../gama_tts_interactive/src/qcustomplot
 
 unix {
     !macx {

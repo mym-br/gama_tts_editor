@@ -9,7 +9,14 @@
 
   - PortAudio with C++ binding (tested with version v19_20140130).
 
+  - JACK Audio Connection Kit (tested with version 1.9.10).
+
+  - FFTW - single precision (tested with version 3.3.4).
+
   - GamaTTS (use the latest version).
+
+  - GamaTTS:Interactive (use the latest version).
+    The source must be in ../gama_tts_interactive.
 
 - Generate the Makefile:
 
