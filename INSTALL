@@ -32,3 +32,8 @@
   make install
   # or
   make install INSTALL_ROOT=/tmp/install
+
+- Note:
+
+  - The sampling rate in JACK must be equal to the value of the parameter
+    "output_rate" in the file vtm.config (default: 44100).
