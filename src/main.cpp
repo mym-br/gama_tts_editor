@@ -19,6 +19,9 @@
 #include <pmmintrin.h> /* SSE3 */
 
 #include <iostream>
+#include <locale>
+
+#include <QLocale>
 
 #include "Application.h"
 #include "Log.h"
@@ -37,6 +40,11 @@ main(int argc, char* argv[])
 
 	try {
 		Application app(argc, argv);
+
+		// Force "C" locale.
+		QLocale::setDefault(QLocale::c());
+		std::locale::global(std::locale::classic());
+
 		GS::MainWindow w;
 		w.show();
 		app.exec();
