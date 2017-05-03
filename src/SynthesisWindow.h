@@ -54,6 +54,7 @@ signals:
 	void audioStarted();
 	void synthesisFinished();
 public slots:
+	void setupParameterTable();
 	void synthesizeWithManualIntonation();
 	void synthesizeToFileWithManualIntonation(QString filePath);
 private slots:
@@ -61,7 +62,6 @@ private slots:
 	void on_synthesizeButton_clicked();
 	void on_synthesizeToFileButton_clicked();
 	void on_parameterTableWidget_cellChanged(int row, int column);
-	void setupParameterTable();
 	void updateMouseTracking(double time, double value);
 	void handleAudioError(QString msg);
 	void handleAudioFinished();

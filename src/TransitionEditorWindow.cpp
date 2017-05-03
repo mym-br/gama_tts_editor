@@ -106,7 +106,7 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 	ui_->mark3SpinBox->setRange(PARAMETERS_MIN, PARAMETERS_MAX);
 	ui_->mark3SpinBox->setDecimals(PARAMETERS_DECIMALS);
 
-	connect(ui_->transitionWidget, SIGNAL(pointCreationRequested(unsigned int, float, float)), this, SLOT(createPoint(unsigned int, float, float)));
+	connect(ui_->transitionWidget, &TransitionWidget::pointCreationRequested, this, &TransitionEditorWindow::createPoint);
 }
 
 TransitionEditorWindow::~TransitionEditorWindow()

@@ -38,8 +38,7 @@ IntonationWindow::IntonationWindow(QWidget* parent)
 {
 	ui_->setupUi(this);
 
-	connect(ui_->intonationWidget, SIGNAL(pointSelected(double, double, double, double, double)),
-		this, SLOT(setPointData(double, double, double, double, double)));
+	connect(ui_->intonationWidget, &IntonationWidget::pointSelected, this, &IntonationWindow::setPointData);
 }
 
 IntonationWindow::~IntonationWindow()

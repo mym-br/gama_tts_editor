@@ -63,17 +63,23 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 	ui_->tempoSpinBox->setDecimals(1);
 	ui_->tempoSpinBox->setValue(1.0);
 
-	connect(ui_->textLineEdit, SIGNAL(returnPressed()), ui_->parseButton, SLOT(click()));
-	connect(ui_->eventWidget, SIGNAL(mouseMoved(double, double)), this, SLOT(updateMouseTracking(double, double)));
+	connect(ui_->textLineEdit, &QLineEdit::returnPressed, ui_->parseButton, &QPushButton::click);
+	connect(ui_->eventWidget , &EventWidget::mouseMoved , this            , &SynthesisWindow::updateMouseTracking);
 
 	audioWorker_ = new AudioWorker;
 	audioWorker_->moveToThread(&audioThread_);
-	connect(&audioThread_, SIGNAL(finished()), audioWorker_, SLOT(deleteLater()));
-	connect(this, SIGNAL(playAudioRequested(double, int)), audioWorker_, SLOT(playAudio(double, int)));
-	connect(audioWorker_, SIGNAL(finished()), this, SLOT(handleAudioFinished()));
-	connect(audioWorker_, SIGNAL(errorOccurred(QString)), this, SLOT(handleAudioError(QString)));
-	connect(this, SIGNAL(updateAudioDeviceComboBoxRequested()), audioWorker_, SLOT(sendOutputDeviceList()));
-	connect(audioWorker_, SIGNAL(audioOutputDeviceListSent(QStringList, int)), this, SLOT(updateAudioDeviceComboBox(QStringList, int)));
+	connect(&audioThread_, &QThread::finished,
+			audioWorker_, &AudioWorker::deleteLater);
+	connect(this         , &SynthesisWindow::playAudioRequested,
+			audioWorker_, &AudioWorker::playAudio);
+	connect(audioWorker_ , &AudioWorker::finished,
+			this        , &SynthesisWindow::handleAudioFinished);
+	connect(audioWorker_ , &AudioWorker::errorOccurred,
+			this        , &SynthesisWindow::handleAudioError);
+	connect(this         , &SynthesisWindow::updateAudioDeviceComboBoxRequested,
+			audioWorker_, &AudioWorker::sendOutputDeviceList);
+	connect(audioWorker_ , &AudioWorker::audioOutputDeviceListSent,
+			this        , &SynthesisWindow::updateAudioDeviceComboBox);
 	audioThread_.start();
 }
 

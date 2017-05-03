@@ -59,22 +59,21 @@ DataEntryWindow::DataEntryWindow(QWidget* parent)
 	ui_->symbolsTableView->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 	ui_->symbolsTableView->setModel(symbolModel_);
 
-	// QItemSelectionModel
-	connect(ui_->categoriesTableView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)),
-		this, SLOT(showCategoryData(const QModelIndex&, const QModelIndex&)));
-	connect(ui_->parametersTableView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)),
-		this, SLOT(showParameterData(const QModelIndex&, const QModelIndex&)));
-	connect(ui_->symbolsTableView->selectionModel(), SIGNAL(currentRowChanged(const QModelIndex&, const QModelIndex&)),
-		this, SLOT(showSymbolData(const QModelIndex&, const QModelIndex&)));
+	connect(ui_->categoriesTableView->selectionModel(), &QItemSelectionModel::currentRowChanged,
+			this, &DataEntryWindow::showCategoryData);
+	connect(ui_->parametersTableView->selectionModel(), &QItemSelectionModel::currentRowChanged,
+			this, &DataEntryWindow::showParameterData);
+	connect(ui_->symbolsTableView->selectionModel()   , &QItemSelectionModel::currentRowChanged,
+			this, &DataEntryWindow::showSymbolData);
 
-	connect(categoryModel_, SIGNAL(categoryChanged()), this, SIGNAL(categoryChanged()));
-	connect(categoryModel_, SIGNAL(errorOccurred(QString)), this, SLOT(showError(QString)));
+	connect(categoryModel_, &CategoryModel::categoryChanged, this, &DataEntryWindow::categoryChanged);
+	connect(categoryModel_, &CategoryModel::errorOccurred  , this, &DataEntryWindow::showError);
 
-	connect(parameterModel_, SIGNAL(parameterChanged()), this, SIGNAL(parameterChanged()));
-	connect(parameterModel_, SIGNAL(errorOccurred(QString)), this, SLOT(showError(QString)));
+	connect(parameterModel_, &ParameterModel::parameterChanged, this, &DataEntryWindow::parameterChanged);
+	connect(parameterModel_, &ParameterModel::errorOccurred   , this, &DataEntryWindow::showError);
 
-	connect(symbolModel_, SIGNAL(symbolChanged()), this, SIGNAL(symbolChanged()));
-	connect(symbolModel_, SIGNAL(errorOccurred(QString)), this, SLOT(showError(QString)));
+	connect(symbolModel_, &SymbolModel::symbolChanged, this, &DataEntryWindow::symbolChanged);
+	connect(symbolModel_, &SymbolModel::errorOccurred, this, &DataEntryWindow::showError);
 }
 
 DataEntryWindow::~DataEntryWindow()

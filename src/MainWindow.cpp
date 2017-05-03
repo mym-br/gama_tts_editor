@@ -77,62 +77,95 @@ MainWindow::MainWindow(QWidget* parent)
 	ui_->logTextEdit->setMaximumBlockCount(MAX_LOG_BLOCK_COUNT);
 	specialTransitionEditorWindow_->setSpecial();
 
-	connect(ui_->quitAction, SIGNAL(triggered()), qApp, SLOT(closeAllWindows()));
-	connect(ui_->aboutAction, SIGNAL(triggered()), this, SLOT(about()));
+	connect(ui_->quitAction , &QAction::triggered, qApp, &QApplication::closeAllWindows);
+	connect(ui_->aboutAction, &QAction::triggered, this, &MainWindow::about);
 
 	coutStreamBuffer_ = std::make_unique<LogStreamBuffer>(std::cout, false, ui_->logTextEdit);
 	cerrStreamBuffer_ = std::make_unique<LogStreamBuffer>(std::cerr, true, ui_->logTextEdit);
 	LogStreamBuffer::registerQDebugMessageHandler();
 
-	connect(prototypeManagerWindow_.get(), SIGNAL(editTransitionButtonClicked(unsigned int, unsigned int)),
-		transitionEditorWindow_.get(), SLOT(handleEditTransitionButtonClicked(unsigned int, unsigned int)));
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::editTransitionButtonClicked,
+			transitionEditorWindow_.get(), &TransitionEditorWindow::handleEditTransitionButtonClicked);
 
-	connect(prototypeManagerWindow_.get(), SIGNAL(editSpecialTransitionButtonClicked(unsigned int, unsigned int)),
-		specialTransitionEditorWindow_.get(), SLOT(handleEditTransitionButtonClicked(unsigned int, unsigned int)));
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::editSpecialTransitionButtonClicked,
+			specialTransitionEditorWindow_.get(), &TransitionEditorWindow::handleEditTransitionButtonClicked);
 
-	connect(dataEntryWindow_.get(), SIGNAL(categoryChanged()) , postureEditorWindow_.get(), SLOT(unselectPosture()));
-	connect(dataEntryWindow_.get(), SIGNAL(parameterChanged()), postureEditorWindow_.get(), SLOT(unselectPosture()));
-	connect(dataEntryWindow_.get(), SIGNAL(symbolChanged())   , postureEditorWindow_.get(), SLOT(unselectPosture()));
+	connect(dataEntryWindow_.get(), &DataEntryWindow::categoryChanged,
+			postureEditorWindow_.get(), &PostureEditorWindow::unselectPosture);
+	connect(dataEntryWindow_.get(), &DataEntryWindow::parameterChanged,
+			postureEditorWindow_.get(), &PostureEditorWindow::unselectPosture);
+	connect(dataEntryWindow_.get(), &DataEntryWindow::symbolChanged,
+			postureEditorWindow_.get(), &PostureEditorWindow::unselectPosture);
 
-	connect(dataEntryWindow_.get(), SIGNAL(parameterChanged()), ruleManagerWindow_.get(), SLOT(loadRuleData()));
-	connect(dataEntryWindow_.get(), SIGNAL(parameterChanged()), synthesisWindow_.get(), SLOT(setupParameterTable()));
+	connect(dataEntryWindow_.get(), &DataEntryWindow::parameterChanged,
+			ruleManagerWindow_.get(), &RuleManagerWindow::loadRuleData);
+	connect(dataEntryWindow_.get(), &DataEntryWindow::parameterChanged,
+			synthesisWindow_.get()  , &SynthesisWindow::setupParameterTable);
 
-	connect(postureEditorWindow_.get(), SIGNAL(postureChanged()), ruleManagerWindow_.get(), SLOT(unselectRule()));
-	connect(postureEditorWindow_.get(), SIGNAL(postureCategoryChanged()), dataEntryWindow_.get(), SLOT(updateCategoriesTable()));
+	connect(postureEditorWindow_.get(), &PostureEditorWindow::postureChanged,
+			ruleManagerWindow_.get(), &RuleManagerWindow::unselectRule);
+	connect(postureEditorWindow_.get(), &PostureEditorWindow::postureCategoryChanged,
+			dataEntryWindow_.get()  , &DataEntryWindow::updateCategoriesTable);
 
-	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), transitionEditorWindow_.get(), SLOT(updateEquationsTree()));
-	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), transitionEditorWindow_.get(), SLOT(updateTransition()));
-	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), specialTransitionEditorWindow_.get(), SLOT(updateEquationsTree()));
-	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), specialTransitionEditorWindow_.get(), SLOT(updateTransition()));
-	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), ruleManagerWindow_.get(), SLOT(setupRuleSymbolEquationsTable()));
-	connect(prototypeManagerWindow_.get(), SIGNAL(equationChanged()), ruleManagerWindow_.get(), SLOT(setupEquationsTree()));
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::equationChanged,
+			transitionEditorWindow_.get()       , &TransitionEditorWindow::updateEquationsTree);
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::equationChanged,
+			transitionEditorWindow_.get()       , &TransitionEditorWindow::updateTransition);
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::equationChanged,
+			specialTransitionEditorWindow_.get(), &TransitionEditorWindow::updateEquationsTree);
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::equationChanged,
+			specialTransitionEditorWindow_.get(), &TransitionEditorWindow::updateTransition);
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::equationChanged,
+			ruleManagerWindow_.get()            , &RuleManagerWindow::setupRuleSymbolEquationsTable);
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::equationChanged,
+			ruleManagerWindow_.get()            , &RuleManagerWindow::setupEquationsTree);
 
-	connect(prototypeManagerWindow_.get(), SIGNAL(transitionChanged()), transitionEditorWindow_.get(), SLOT(clear()));
-	connect(prototypeManagerWindow_.get(), SIGNAL(transitionChanged()), ruleManagerWindow_.get(), SLOT(setupRuleTransitionsTable()));
-	connect(prototypeManagerWindow_.get(), SIGNAL(transitionChanged()), ruleManagerWindow_.get(), SLOT(setupTransitionsTree()));
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::transitionChanged,
+			transitionEditorWindow_.get(), &TransitionEditorWindow::clear);
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::transitionChanged,
+			ruleManagerWindow_.get()     , &RuleManagerWindow::setupRuleTransitionsTable);
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::transitionChanged,
+			ruleManagerWindow_.get()     , &RuleManagerWindow::setupTransitionsTree);
 
-	connect(prototypeManagerWindow_.get(), SIGNAL(specialTransitionChanged()), specialTransitionEditorWindow_.get(), SLOT(clear()));
-	connect(prototypeManagerWindow_.get(), SIGNAL(specialTransitionChanged()), ruleManagerWindow_.get(), SLOT(setupRuleSpecialTransitionsTable()));
-	connect(prototypeManagerWindow_.get(), SIGNAL(specialTransitionChanged()), ruleManagerWindow_.get(), SLOT(setupSpecialTransitionsTree()));
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::specialTransitionChanged,
+			specialTransitionEditorWindow_.get(), &TransitionEditorWindow::clear);
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::specialTransitionChanged,
+			ruleManagerWindow_.get()            , &RuleManagerWindow::setupRuleSpecialTransitionsTable);
+	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::specialTransitionChanged,
+			ruleManagerWindow_.get()            , &RuleManagerWindow::setupSpecialTransitionsTree);
 
-	connect(transitionEditorWindow_.get(), SIGNAL(equationReferenceChanged()), prototypeManagerWindow_.get(), SLOT(setupEquationsTree()));
-	connect(transitionEditorWindow_.get(), SIGNAL(transitionChanged()),        prototypeManagerWindow_.get(), SLOT(unselectTransition()));
+	connect(transitionEditorWindow_.get(), &TransitionEditorWindow::equationReferenceChanged,
+			prototypeManagerWindow_.get(), &PrototypeManagerWindow::setupEquationsTree);
+	connect(transitionEditorWindow_.get(), &TransitionEditorWindow::transitionChanged,
+			prototypeManagerWindow_.get(), &PrototypeManagerWindow::unselectTransition);
 
-	connect(specialTransitionEditorWindow_.get(), SIGNAL(equationReferenceChanged()), prototypeManagerWindow_.get(), SLOT(setupEquationsTree()));
-	connect(specialTransitionEditorWindow_.get(), SIGNAL(transitionChanged()),        prototypeManagerWindow_.get(), SLOT(unselectSpecialTransition()));
+	connect(specialTransitionEditorWindow_.get(), &TransitionEditorWindow::equationReferenceChanged,
+			prototypeManagerWindow_.get(), &PrototypeManagerWindow::setupEquationsTree);
+	connect(specialTransitionEditorWindow_.get(), &TransitionEditorWindow::transitionChanged,
+			prototypeManagerWindow_.get(), &PrototypeManagerWindow::unselectSpecialTransition);
 
-	connect(ruleManagerWindow_.get(), SIGNAL(categoryReferenceChanged()), dataEntryWindow_.get(), SLOT(updateCategoriesTable()));
+	connect(ruleManagerWindow_.get(), &RuleManagerWindow::categoryReferenceChanged,
+			dataEntryWindow_.get(), &DataEntryWindow::updateCategoriesTable);
 
-	connect(ruleManagerWindow_.get(), SIGNAL(transitionReferenceChanged())       , prototypeManagerWindow_.get(), SLOT(setupTransitionsTree()));
-	connect(ruleManagerWindow_.get(), SIGNAL(specialTransitionReferenceChanged()), prototypeManagerWindow_.get(), SLOT(setupSpecialTransitionsTree()));
-	connect(ruleManagerWindow_.get(), SIGNAL(equationReferenceChanged())         , prototypeManagerWindow_.get(), SLOT(setupEquationsTree()));
+	connect(ruleManagerWindow_.get(), &RuleManagerWindow::transitionReferenceChanged,
+			prototypeManagerWindow_.get(), &PrototypeManagerWindow::setupTransitionsTree);
+	connect(ruleManagerWindow_.get(), &RuleManagerWindow::specialTransitionReferenceChanged,
+			prototypeManagerWindow_.get(), &PrototypeManagerWindow::setupSpecialTransitionsTree);
+	connect(ruleManagerWindow_.get(), &RuleManagerWindow::equationReferenceChanged,
+			prototypeManagerWindow_.get(), &PrototypeManagerWindow::setupEquationsTree);
 
-	connect(synthesisWindow_.get(), SIGNAL(textSynthesized()), intonationWindow_.get(), SLOT(loadIntonationFromEventList()));
-	connect(synthesisWindow_.get(), SIGNAL(audioStarted()), intonationWindow_.get(), SLOT(handleAudioStarted()));
-	connect(synthesisWindow_.get(), SIGNAL(audioFinished()), intonationWindow_.get(), SLOT(handleAudioFinished()));
-	connect(synthesisWindow_.get(), SIGNAL(synthesisFinished()), intonationWindow_.get(), SLOT(handleSynthesisFinished()));
-	connect(intonationWindow_.get(), SIGNAL(synthesisRequested()), synthesisWindow_.get(), SLOT(synthesizeWithManualIntonation()));
-	connect(intonationWindow_.get(), SIGNAL(synthesisToFileRequested(QString)), synthesisWindow_.get(), SLOT(synthesizeToFileWithManualIntonation(QString)));
+	connect(synthesisWindow_.get() , &SynthesisWindow::textSynthesized,
+			intonationWindow_.get(), &IntonationWindow::loadIntonationFromEventList);
+	connect(synthesisWindow_.get() , &SynthesisWindow::audioStarted,
+			intonationWindow_.get(), &IntonationWindow::handleAudioStarted);
+	connect(synthesisWindow_.get() , &SynthesisWindow::audioFinished,
+			intonationWindow_.get(), &IntonationWindow::handleAudioFinished);
+	connect(synthesisWindow_.get() , &SynthesisWindow::synthesisFinished,
+			intonationWindow_.get(), &IntonationWindow::handleSynthesisFinished);
+	connect(intonationWindow_.get(), &IntonationWindow::synthesisRequested,
+			synthesisWindow_.get() , &SynthesisWindow::synthesizeWithManualIntonation);
+	connect(intonationWindow_.get(), &IntonationWindow::synthesisToFileRequested,
+			synthesisWindow_.get() , &SynthesisWindow::synthesizeToFileWithManualIntonation);
 }
 
 MainWindow::~MainWindow()
@@ -282,8 +315,8 @@ MainWindow::on_interactiveVTMButton_clicked()
 
 	if (!interactiveVTMWindow_) {
 		interactiveVTMWindow_ = std::make_unique<InteractiveVTMWindow>(config_.projectDir.toStdString().c_str(), false);
-		connect(postureEditorWindow_.get(), SIGNAL(currentPostureChanged(const QHash<QString, float>&)),
-			interactiveVTMWindow_.get(), SLOT(setDynamicParameters(const QHash<QString, float>&)));
+		connect(postureEditorWindow_.get(), &PostureEditorWindow::currentPostureChanged,
+				interactiveVTMWindow_.get(), &InteractiveVTMWindow::setDynamicParameters);
 	}
 	interactiveVTMWindow_->show();
 	interactiveVTMWindow_->raise();
@@ -435,7 +468,7 @@ MainWindow::about()
 	QDialogButtonBox* buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok, Qt::Horizontal, &aboutDialog);
 	layout->addWidget(buttonBox);
 
-	connect(buttonBox, SIGNAL(accepted()), &aboutDialog, SLOT(accept()));
+	connect(buttonBox, &QDialogButtonBox::accepted, &aboutDialog, &QDialog::accept);
 
 	aboutDialog.setWindowTitle(tr("About ") + PROGRAM_NAME);
 	aboutDialog.resize(900, 550);
