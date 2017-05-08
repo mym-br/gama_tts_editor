@@ -228,8 +228,8 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 		const double valueFactor = 1.0 / (currentMax - currentMin);
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
 			double x = 0.5 + 2.0 * MARGIN + labelWidth_ + ev->time * timeScale_; // 0.5 added because of antialiasing
-			double value = ev->getValue(paramIndex);
-			if (value != GS_EVENTLIST_INVALID_EVENT_VALUE) {
+			double value = ev->getParameter(paramIndex);
+			if (value != VTMControlModel::Event::EMPTY_PARAMETER) {
 				double y = 0.5 + yBase - (value - currentMin) * valueFactor * GRAPH_HEIGHT; // 0.5 added because of antialiasing
 				if (!prevPoint.isNull()) {
 					painter.drawLine(prevPoint, QPointF(x, y));
