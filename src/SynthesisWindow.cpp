@@ -249,7 +249,7 @@ SynthesisWindow::synthesizeWithManualIntonation()
 			return;
 		}
 		eventList.clearMacroIntonation();
-		eventList.applyIntonationSmooth();
+		eventList.prepareMacroIntonationInterpolation();
 
 		const ConfigurationData& vtmConfig = synthesis_->vtmController->vtmConfigurationData();
 		const double sampleRate = vtmConfig.value<double>("output_rate");
@@ -291,7 +291,7 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 			return;
 		}
 		eventList.clearMacroIntonation();
-		eventList.applyIntonationSmooth();
+		eventList.prepareMacroIntonationInterpolation();
 
 		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
 
