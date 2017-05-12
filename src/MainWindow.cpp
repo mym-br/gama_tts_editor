@@ -28,6 +28,7 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
+#include <QSettings>
 #include <QTextEdit>
 #include <QVBoxLayout>
 
@@ -47,6 +48,7 @@
 
 #define PROGRAM_NAME "GamaTTS:Editor"
 #define PROGRAM_VERSION "0.1.7"
+#define SETTINGS_KEY_DEFAULT_WORK_DIR "default/work_directory"
 
 
 
@@ -172,6 +174,12 @@ MainWindow::closeEvent(QCloseEvent* event)
 	ret = QMessageBox::warning(this, tr("Quit"), tr("Do you want to quit the application?"),
 					QMessageBox::Yes | QMessageBox::No, QMessageBox::No);
 	if (ret == QMessageBox::Yes) {
+		QString dir = config_.projectDir;
+		if (!dir.isNull()) {
+			QSettings settings;
+			settings.setValue(SETTINGS_KEY_DEFAULT_WORK_DIR, dir);
+		}
+
 		event->accept();
 		qApp->closeAllWindows();
 	} else {
@@ -186,7 +194,8 @@ MainWindow::on_openAction_triggered()
 
 	QString dir = config_.projectDir;
 	if (dir.isNull()) {
-		dir = QDir::currentPath();
+		QSettings settings;
+		dir = settings.value(SETTINGS_KEY_DEFAULT_WORK_DIR, QDir::currentPath()).toString();
 	}
 	QString filePath = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("XML files (*.xml)"));
 	if (filePath.isEmpty()) {

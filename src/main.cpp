@@ -41,6 +41,10 @@ main(int argc, char* argv[])
 	try {
 		QApplication app(argc, argv);
 
+		QCoreApplication::setOrganizationName("GamaTTS");
+		QCoreApplication::setOrganizationDomain("gamatts.org");
+		QCoreApplication::setApplicationName("GamaTTS_Editor");
+
 		// Force "C" locale.
 		QLocale::setDefault(QLocale::c());
 		std::locale::global(std::locale::classic());
