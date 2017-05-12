@@ -49,6 +49,7 @@
 #define PROGRAM_NAME "GamaTTS:Editor"
 #define PROGRAM_VERSION "0.1.7"
 #define SETTINGS_KEY_DEFAULT_WORK_DIR "default/work_directory"
+#define STATUSBAR_TIMEOUT_MS (5000)
 
 
 
@@ -208,6 +209,8 @@ MainWindow::on_openAction_triggered()
 	config_.newConfigFileName = QString();
 
 	openModel();
+
+	ui_->statusBar->showMessage(tr("Model opened."), STATUSBAR_TIMEOUT_MS);
 }
 
 void
@@ -223,6 +226,7 @@ MainWindow::on_saveAction_triggered()
 
 	if (!config_.newConfigFileName.isEmpty()) {
 		saveModel();
+		ui_->statusBar->showMessage(tr("Model saved."), STATUSBAR_TIMEOUT_MS);
 	}
 }
 
@@ -237,6 +241,7 @@ MainWindow::on_saveAsAction_triggered()
 
 	if (!config_.newConfigFileName.isEmpty()) {
 		saveModel();
+		ui_->statusBar->showMessage(tr("Model saved."), STATUSBAR_TIMEOUT_MS);
 	}
 }
 
@@ -250,6 +255,8 @@ MainWindow::on_reloadAction_triggered()
 	interactiveVTMWindow_.reset();
 
 	openModel();
+
+	ui_->statusBar->showMessage(tr("Model reloaded."), STATUSBAR_TIMEOUT_MS);
 }
 
 void
