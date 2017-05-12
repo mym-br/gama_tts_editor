@@ -18,7 +18,6 @@ unix {
 
 HEADERS += \
     src/AppConfig.h \
-    src/Application.h \
     src/AudioPlayer.h \
     src/AudioWorker.h \
     src/Clipboard.h \
@@ -27,7 +26,6 @@ HEADERS += \
     src/IntonationParametersWindow.h \
     src/IntonationWidget.h \
     src/IntonationWindow.h \
-    src/LogStreamBuffer.h \
     src/MainWindow.h \
     src/PostureEditorWindow.h \
     src/PrototypeManagerWindow.h \
@@ -55,7 +53,6 @@ HEADERS += \
     ../gama_tts_interactive/src/SignalDFT.h
 
 SOURCES += \
-    src/Application.cpp \
     src/AudioPlayer.cpp \
     src/AudioWorker.cpp \
     src/Clipboard.cpp \

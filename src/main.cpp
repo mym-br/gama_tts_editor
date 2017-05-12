@@ -21,9 +21,9 @@
 #include <iostream>
 #include <locale>
 
+#include <QApplication>
 #include <QLocale>
 
-#include "Application.h"
 #include "Log.h"
 #include "MainWindow.h"
 
@@ -39,7 +39,7 @@ main(int argc, char* argv[])
 	GS::Log::debugEnabled = true;
 
 	try {
-		Application app(argc, argv);
+		QApplication app(argc, argv);
 
 		// Force "C" locale.
 		QLocale::setDefault(QLocale::c());

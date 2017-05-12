@@ -35,7 +35,6 @@
 #include "InteractiveVTMWindow.h"
 #include "IntonationWindow.h"
 #include "IntonationParametersWindow.h"
-#include "LogStreamBuffer.h"
 #include "Model.h"
 #include "PostureEditorWindow.h"
 #include "PrototypeManagerWindow.h"
@@ -48,7 +47,6 @@
 
 #define PROGRAM_NAME "GamaTTS:Editor"
 #define PROGRAM_VERSION "0.1.7"
-#define MAX_LOG_BLOCK_COUNT 500
 
 
 
@@ -74,15 +72,10 @@ MainWindow::MainWindow(QWidget* parent)
 {
 	ui_->setupUi(this);
 
-	ui_->logTextEdit->setMaximumBlockCount(MAX_LOG_BLOCK_COUNT);
 	specialTransitionEditorWindow_->setSpecial();
 
 	connect(ui_->quitAction , &QAction::triggered, qApp, &QApplication::closeAllWindows);
 	connect(ui_->aboutAction, &QAction::triggered, this, &MainWindow::about);
-
-	coutStreamBuffer_ = std::make_unique<LogStreamBuffer>(std::cout, false, ui_->logTextEdit);
-	cerrStreamBuffer_ = std::make_unique<LogStreamBuffer>(std::cerr, true, ui_->logTextEdit);
-	LogStreamBuffer::registerQDebugMessageHandler();
 
 	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::editTransitionButtonClicked,
 			transitionEditorWindow_.get(), &TransitionEditorWindow::handleEditTransitionButtonClicked);

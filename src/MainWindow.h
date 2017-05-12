@@ -36,7 +36,6 @@ class DataEntryWindow;
 class InteractiveVTMWindow;
 class IntonationWindow;
 class IntonationParametersWindow;
-class LogStreamBuffer;
 class PostureEditorWindow;
 class PrototypeManagerWindow;
 class RuleManagerWindow;
@@ -93,8 +92,6 @@ private:
 	std::unique_ptr<SynthesisWindow> synthesisWindow_;
 	std::unique_ptr<TransitionEditorWindow> transitionEditorWindow_;
 	std::unique_ptr<InteractiveVTMWindow> interactiveVTMWindow_;
-	std::unique_ptr<LogStreamBuffer> coutStreamBuffer_;
-	std::unique_ptr<LogStreamBuffer> cerrStreamBuffer_;
 };
 
 } // namespace GS
