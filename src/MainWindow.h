@@ -72,7 +72,6 @@ private slots:
 
 	void about();
 private:
-	bool selectNewConfigFileName();
 	void openModel();
 	void saveModel();
 

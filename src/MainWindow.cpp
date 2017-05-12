@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2014, 2015, 2017 Marcelo Y. Matuda                           *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -22,6 +22,7 @@
 #include <utility> /* move */
 
 #include <QCloseEvent>
+#include <QDebug>
 #include <QDialog>
 #include <QDialogButtonBox>
 #include <QDir>
@@ -205,50 +206,60 @@ MainWindow::on_openAction_triggered()
 
 	QFileInfo fileInfo(filePath);
 	config_.projectDir = fileInfo.absolutePath() + '/';
-	config_.origConfigFileName = fileInfo.fileName();
-	config_.newConfigFileName = QString();
+	config_.dataFileName = fileInfo.fileName();
 
 	openModel();
 
+	ui_->fileNameLabel->setText(fileInfo.fileName());
 	ui_->statusBar->showMessage(tr("Model opened."), STATUSBAR_TIMEOUT_MS);
 }
 
 void
 MainWindow::on_saveAction_triggered()
 {
-	if (model_.get() == nullptr || config_.origConfigFileName.isNull()) {
+	if (model_.get() == nullptr || config_.dataFileName.isNull()) {
 		return;
 	}
 
-	if (config_.newConfigFileName.isNull()) {
-		while (!selectNewConfigFileName()) {}
-	}
+	saveModel();
 
-	if (!config_.newConfigFileName.isEmpty()) {
-		saveModel();
-		ui_->statusBar->showMessage(tr("Model saved."), STATUSBAR_TIMEOUT_MS);
-	}
+	ui_->statusBar->showMessage(tr("Model saved."), STATUSBAR_TIMEOUT_MS);
 }
 
 void
 MainWindow::on_saveAsAction_triggered()
 {
-	if (model_.get() == nullptr || config_.origConfigFileName.isNull()) {
+	if (model_.get() == nullptr || config_.dataFileName.isNull()) {
 		return;
 	}
 
-	while (!selectNewConfigFileName()) {}
+	bool done = false;
+	do {
+		QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), config_.projectDir + "new_" + config_.dataFileName, tr("XML files (*.xml)"));
+		if (filePath.isEmpty()) {
+			return;
+		}
 
-	if (!config_.newConfigFileName.isEmpty()) {
-		saveModel();
-		ui_->statusBar->showMessage(tr("Model saved."), STATUSBAR_TIMEOUT_MS);
-	}
+		QFileInfo fileInfo(filePath);
+		QString dir = fileInfo.absolutePath() + '/';
+		if (dir != config_.projectDir) {
+			QMessageBox::critical(this, tr("Error"), tr("The directory must be the same of the original file."));
+			continue;
+		}
+		config_.dataFileName = fileInfo.fileName();
+		ui_->fileNameLabel->setText(fileInfo.fileName());
+		done = true;
+	} while (!done);
+
+	saveModel();
+
+	ui_->statusBar->showMessage(tr("Model saved."), STATUSBAR_TIMEOUT_MS);
 }
 
 void
 MainWindow::on_reloadAction_triggered()
 {
-	if (config_.projectDir.isEmpty() || config_.origConfigFileName.isEmpty()) {
+	if (config_.projectDir.isEmpty() || config_.dataFileName.isEmpty()) {
 		return;
 	}
 
@@ -318,7 +329,7 @@ MainWindow::on_intonationParametersButton_clicked()
 void
 MainWindow::on_interactiveVTMButton_clicked()
 {
-	if (model_.get() == nullptr || config_.origConfigFileName.isNull()) {
+	if (model_.get() == nullptr || config_.dataFileName.isNull()) {
 		return;
 	}
 
@@ -331,28 +342,12 @@ MainWindow::on_interactiveVTMButton_clicked()
 	interactiveVTMWindow_->raise();
 }
 
-bool
-MainWindow::selectNewConfigFileName()
-{
-	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), config_.projectDir + "new_" + config_.origConfigFileName, tr("XML files (*.xml)"));
-	if (!filePath.isEmpty()) {
-		QFileInfo fileInfo(filePath);
-		QString dir = fileInfo.absolutePath() + '/';
-		if (dir != config_.projectDir) {
-			QMessageBox::critical(this, tr("Error"), tr("The directory must be the same of the original file."));
-			return false;
-		}
-		config_.newConfigFileName = fileInfo.fileName();
-	}
-	return true;
-}
-
 void
 MainWindow::openModel()
 {
 	try {
 		model_ = std::make_unique<VTMControlModel::Model>();
-		model_->load(config_.projectDir.toStdString().c_str(), config_.origConfigFileName.toStdString().c_str());
+		model_->load(config_.projectDir.toStdString().c_str(), config_.dataFileName.toStdString().c_str());
 
 		synthesis_->setup(config_.projectDir, model_.get());
 
@@ -367,7 +362,7 @@ MainWindow::openModel()
 		intonationWindow_->setup(synthesis_.get());
 		intonationParametersWindow_->setup(synthesis_.get());
 
-		qDebug("### Model opened.");
+		qDebug() << "### Model opened from" << config_.projectDir.toStdString().c_str() << config_.dataFileName.toStdString().c_str();
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 
@@ -392,9 +387,9 @@ void
 MainWindow::saveModel()
 {
 	try {
-		model_->save(config_.projectDir.toStdString().c_str(), config_.newConfigFileName.toStdString().c_str());
+		model_->save(config_.projectDir.toStdString().c_str(), config_.dataFileName.toStdString().c_str());
 
-		qDebug("### Model saved.");
+		qDebug() << "### Model saved to" << config_.projectDir.toStdString().c_str() << config_.dataFileName.toStdString().c_str();
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}

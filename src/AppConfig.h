@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2014, 2015, 2017 Marcelo Y. Matuda                           *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -24,8 +24,7 @@ namespace GS {
 
 struct AppConfig {
 	QString projectDir;
-	QString origConfigFileName;
-	QString newConfigFileName;
+	QString dataFileName;
 };
 
 } //namespace GS
