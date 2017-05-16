@@ -18,7 +18,7 @@
 #include "Synthesis.h"
 
 #include "Controller.h"
-#include "en/phonetic_string_parser/PhoneticStringParser.h"
+#include "PhoneticStringParser.h"
 #include "en/text_parser/TextParser.h"
 
 
@@ -58,7 +58,7 @@ Synthesis::setup(const QString& newProjectDir, VTMControlModel::Model* model)
 							vtmControlConfig.dictionary1File,
 							vtmControlConfig.dictionary2File,
 							vtmControlConfig.dictionary3File);
-		phoneticStringParser = std::make_unique<En::PhoneticStringParser>(configDirPath.c_str(), *vtmController);
+		phoneticStringParser = std::make_unique<VTMControlModel::PhoneticStringParser>(configDirPath.c_str(), *vtmController);
 	} catch (...) {
 		clear();
 		throw;

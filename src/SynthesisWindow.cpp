@@ -28,7 +28,7 @@
 
 #include "AudioWorker.h"
 #include "Controller.h"
-#include "en/phonetic_string_parser/PhoneticStringParser.h"
+#include "PhoneticStringParser.h"
 #include "en/text_parser/TextParser.h"
 #include "Model.h"
 #include "Synthesis.h"
