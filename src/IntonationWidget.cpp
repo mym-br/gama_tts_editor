@@ -486,7 +486,7 @@ IntonationWidget::saveIntonationToEventList()
 void
 IntonationWidget::loadIntonationFromEventList()
 {
-	if (eventList_ == nullptr) return;
+	if (eventList_ == nullptr || eventList_->list().empty()) return;
 
 	qDebug("IntonationWidget::loadIntonationFromEventList");
 
