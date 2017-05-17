@@ -138,7 +138,7 @@ SynthesisWindow::on_parseButton_clicked()
 	disableProcessingButtons();
 
 	try {
-		std::string phoneticString = synthesis_->textParser->parseText(text.toUtf8().constData());
+		std::string phoneticString = synthesis_->textParser->parse(text.toUtf8().constData());
 		ui_->phoneticStringTextEdit->setPlainText(phoneticString.c_str());
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
