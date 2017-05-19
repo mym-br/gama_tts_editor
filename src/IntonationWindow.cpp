@@ -48,6 +48,7 @@ IntonationWindow::~IntonationWindow()
 void
 IntonationWindow::clear()
 {
+	ui_->intonationWidget->updateData(nullptr);
 	synthesis_ = nullptr;
 }
 

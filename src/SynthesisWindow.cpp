@@ -92,6 +92,8 @@ SynthesisWindow::~SynthesisWindow()
 void
 SynthesisWindow::clear()
 {
+	ui_->parameterTableWidget->setRowCount(0);
+	ui_->eventWidget->updateData(nullptr, nullptr);
 	synthesis_ = nullptr;
 	model_ = nullptr;
 }
