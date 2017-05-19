@@ -74,6 +74,7 @@ private slots:
 private:
 	void openModel();
 	void saveModel();
+	void updateSynthesis();
 
 	AppConfig config_;
 	std::unique_ptr<VTMControlModel::Model> model_;

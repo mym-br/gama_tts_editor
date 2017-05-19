@@ -68,7 +68,7 @@ private slots:
 	void updateAudioDeviceComboBox(QStringList deviceNameList, int defaultDeviceIndex);
 private:
 	enum {
-		NUM_PARAM = 16
+		NUM_PARAM = 16 // hardcoded
 	};
 
 	void enableProcessingButtons();

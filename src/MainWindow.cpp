@@ -57,22 +57,22 @@
 namespace GS {
 
 MainWindow::MainWindow(QWidget* parent)
-		: QMainWindow {parent}
-		, config_ {}
-		, model_ {}
-		, synthesis_ {std::make_unique<Synthesis>()}
-		, ui_ {std::make_unique<Ui::MainWindow>()}
-		, dataEntryWindow_ {std::make_unique<DataEntryWindow>()}
-		, intonationWindow_ {std::make_unique<IntonationWindow>()}
-		, intonationParametersWindow_ {std::make_unique<IntonationParametersWindow>()}
-		, postureEditorWindow_ {std::make_unique<PostureEditorWindow>()}
-		, prototypeManagerWindow_ {std::make_unique<PrototypeManagerWindow>()}
-		, specialTransitionEditorWindow_ {std::make_unique<TransitionEditorWindow>()}
-		, ruleManagerWindow_ {std::make_unique<RuleManagerWindow>()}
-		, ruleTesterWindow_ {std::make_unique<RuleTesterWindow>()}
-		, synthesisWindow_ {std::make_unique<SynthesisWindow>()}
-		, transitionEditorWindow_ {std::make_unique<TransitionEditorWindow>()}
-		, interactiveVTMWindow_ {}
+		: QMainWindow{parent}
+		, config_{}
+		, model_{}
+		, synthesis_{std::make_unique<Synthesis>()}
+		, ui_{std::make_unique<Ui::MainWindow>()}
+		, dataEntryWindow_{std::make_unique<DataEntryWindow>()}
+		, intonationWindow_{std::make_unique<IntonationWindow>()}
+		, intonationParametersWindow_{std::make_unique<IntonationParametersWindow>()}
+		, postureEditorWindow_{std::make_unique<PostureEditorWindow>()}
+		, prototypeManagerWindow_{std::make_unique<PrototypeManagerWindow>()}
+		, specialTransitionEditorWindow_{std::make_unique<TransitionEditorWindow>()}
+		, ruleManagerWindow_{std::make_unique<RuleManagerWindow>()}
+		, ruleTesterWindow_{std::make_unique<RuleTesterWindow>()}
+		, synthesisWindow_{std::make_unique<SynthesisWindow>()}
+		, transitionEditorWindow_{std::make_unique<TransitionEditorWindow>()}
+		, interactiveVTMWindow_{}
 {
 	ui_->setupUi(this);
 
@@ -89,6 +89,8 @@ MainWindow::MainWindow(QWidget* parent)
 
 	connect(dataEntryWindow_.get(), &DataEntryWindow::categoryChanged,
 			postureEditorWindow_.get(), &PostureEditorWindow::unselectPosture);
+	connect(dataEntryWindow_.get(), &DataEntryWindow::categoryChanged,
+			this                      , &MainWindow::updateSynthesis);
 	connect(dataEntryWindow_.get(), &DataEntryWindow::parameterChanged,
 			postureEditorWindow_.get(), &PostureEditorWindow::unselectPosture);
 	connect(dataEntryWindow_.get(), &DataEntryWindow::symbolChanged,
@@ -101,6 +103,8 @@ MainWindow::MainWindow(QWidget* parent)
 
 	connect(postureEditorWindow_.get(), &PostureEditorWindow::postureChanged,
 			ruleManagerWindow_.get(), &RuleManagerWindow::unselectRule);
+	connect(postureEditorWindow_.get(), &PostureEditorWindow::postureChanged,
+			this                    , &MainWindow::updateSynthesis);
 	connect(postureEditorWindow_.get(), &PostureEditorWindow::postureCategoryChanged,
 			dataEntryWindow_.get()  , &DataEntryWindow::updateCategoriesTable);
 
@@ -392,6 +396,28 @@ MainWindow::saveModel()
 		qDebug() << "### Model saved to" << config_.projectDir.toStdString().c_str() << config_.dataFileName.toStdString().c_str();
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
+	}
+}
+
+void
+MainWindow::updateSynthesis()
+{
+	if (config_.projectDir.isEmpty() || !model_) {
+		return;
+	}
+
+	try {
+		synthesis_->setup(config_.projectDir, model_.get());
+
+		synthesisWindow_->setup(model_.get(), synthesis_.get());
+		intonationWindow_->setup(synthesis_.get());
+		intonationParametersWindow_->setup(synthesis_.get());
+	} catch (const std::exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
+
+		intonationParametersWindow_->setup(nullptr);
+		intonationWindow_->setup(nullptr);
+		synthesisWindow_->setup(nullptr, nullptr);
 	}
 }
 
