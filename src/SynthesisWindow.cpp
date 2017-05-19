@@ -174,7 +174,6 @@ SynthesisWindow::on_synthesizeButton_clicked()
 			std::lock_guard<std::mutex> lock(AudioPlayer::bufferMutex);
 
 			synthesis_->vtmController->synthesizePhoneticString(
-						*synthesis_->phoneticStringParser,
 						phoneticString.toStdString().c_str(),
 						vtmParamFilePath.toStdString().c_str(),
 						audioWorker_->player().buffer());
@@ -219,7 +218,6 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 		config.tempo = ui_->tempoSpinBox->value();
 
 		synthesis_->vtmController->synthesizePhoneticString(
-					*synthesis_->phoneticStringParser,
 					phoneticString.toStdString().c_str(),
 					vtmParamFilePath.toStdString().c_str(),
 					filePath.toStdString().c_str());

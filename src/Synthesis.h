@@ -32,14 +32,12 @@ class TextParser;
 namespace VTMControlModel {
 class Controller;
 class Model;
-class PhoneticStringParser;
 }
 
 struct Synthesis {
 	QString projectDir;
 	std::unique_ptr<VTMControlModel::Controller> vtmController;
 	std::unique_ptr<En::TextParser> textParser;
-	std::unique_ptr<VTMControlModel::PhoneticStringParser> phoneticStringParser;
 
 	Synthesis();
 	~Synthesis();
