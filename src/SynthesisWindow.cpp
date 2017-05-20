@@ -28,10 +28,10 @@
 
 #include "AudioWorker.h"
 #include "Controller.h"
-#include "PhoneticStringParser.h"
-#include "en/text_parser/TextParser.h"
 #include "Model.h"
+#include "PhoneticStringParser.h"
 #include "Synthesis.h"
+#include "TextParser.h"
 #include "ui_SynthesisWindow.h"
 
 #define VTM_PARAM_FILE_NAME "generated__vtm_param.txt"

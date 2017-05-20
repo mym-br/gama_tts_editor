@@ -26,18 +26,16 @@
 
 namespace GS {
 
-namespace En {
-class TextParser;
-}
 namespace VTMControlModel {
 class Controller;
 class Model;
+class TextParser;
 }
 
 struct Synthesis {
 	QString projectDir;
 	std::unique_ptr<VTMControlModel::Controller> vtmController;
-	std::unique_ptr<En::TextParser> textParser;
+	std::unique_ptr<VTMControlModel::TextParser> textParser;
 
 	Synthesis();
 	~Synthesis();
