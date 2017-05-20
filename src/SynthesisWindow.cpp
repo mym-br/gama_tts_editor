@@ -41,11 +41,11 @@
 namespace GS {
 
 SynthesisWindow::SynthesisWindow(QWidget* parent)
-		: QWidget {parent}
-		, ui_ {std::make_unique<Ui::SynthesisWindow>()}
-		, model_ {}
-		, synthesis_ {}
-		, audioWorker_ {}
+		: QWidget{parent}
+		, ui_{std::make_unique<Ui::SynthesisWindow>()}
+		, model_{}
+		, synthesis_{}
+		, audioWorker_{}
 {
 	ui_->setupUi(this);
 

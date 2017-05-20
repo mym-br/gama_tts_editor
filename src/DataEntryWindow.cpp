@@ -31,10 +31,10 @@ namespace GS {
 
 DataEntryWindow::DataEntryWindow(QWidget* parent)
 		: QWidget(parent)
-		, ui_ {std::make_unique<Ui::DataEntryWindow>()}
-		, categoryModel_ {new CategoryModel(this)}
-		, parameterModel_ {new ParameterModel(this)}
-		, symbolModel_ {new SymbolModel(this)}
+		, ui_{std::make_unique<Ui::DataEntryWindow>()}
+		, categoryModel_{new CategoryModel(this)}
+		, parameterModel_{new ParameterModel(this)}
+		, symbolModel_{new SymbolModel(this)}
 {
 	ui_->setupUi(this);
 

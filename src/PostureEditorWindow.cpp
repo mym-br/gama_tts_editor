@@ -41,8 +41,8 @@ namespace GS {
 
 PostureEditorWindow::PostureEditorWindow(QWidget* parent)
 		: QWidget(parent)
-		, ui_ {std::make_unique<Ui::PostureEditorWindow>()}
-		, model_ {}
+		, ui_{std::make_unique<Ui::PostureEditorWindow>()}
+		, model_{}
 {
 	ui_->setupUi(this);
 

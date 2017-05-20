@@ -41,7 +41,7 @@ namespace GS {
 
 IntonationParametersWindow::IntonationParametersWindow(QWidget *parent)
 		: QWidget(parent)
-		, ui_ {std::make_unique<Ui::IntonationParametersWindow>()}
+		, ui_{std::make_unique<Ui::IntonationParametersWindow>()}
 {
 	ui_->setupUi(this);
 
