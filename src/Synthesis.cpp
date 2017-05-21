@@ -52,11 +52,7 @@ Synthesis::setup(const QString& newProjectDir, VTMControlModel::Model* model)
 		const std::string configDirPath = projectDir.toStdString();
 		vtmController = std::make_unique<VTMControlModel::Controller>(configDirPath.c_str(), *model);
 		const VTMControlModel::Configuration& vtmControlConfig = vtmController->vtmControlModelConfiguration();
-		textParser = VTMControlModel::TextParser::getInstance(vtmControlConfig.language,
-								configDirPath.c_str(),
-								vtmControlConfig.dictionary1File,
-								vtmControlConfig.dictionary2File,
-								vtmControlConfig.dictionary3File);
+		textParser = VTMControlModel::TextParser::getInstance(configDirPath.c_str(), vtmControlConfig);
 	} catch (...) {
 		clear();
 		throw;
