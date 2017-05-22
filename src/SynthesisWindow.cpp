@@ -57,7 +57,6 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->parameterTableWidget->setColumnCount(1);
 	ui_->parameterTableWidget->setHorizontalHeaderLabels(QStringList() << tr("Parameter"));
-	ui_->eventWidget->setContentsMargins(0, 0, 0, 0);
 
 	ui_->tempoSpinBox->setRange(0.1, 10.0);
 	ui_->tempoSpinBox->setSingleStep(0.1);
