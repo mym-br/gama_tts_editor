@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2014, 2015, 2017 Marcelo Y. Matuda                           *
  *  Copyright 1991, 1992, 1993, 1994, 1995, 1996, 2001, 2002               *
  *    David R. Hill, Leonard Manzara, Craig Schock                         *
  *                                                                         *
@@ -36,12 +36,12 @@
 
 #define MARGIN 10.0
 #define TRACK_HEIGHT 20.0
-#define GRAPH_HEIGHT 120.0
-#define SPECIAL_STRING "(special)"
+#define DEFAULT_GRAPH_HEIGHT 120.0
 #define MININUM_WIDTH 1024
 #define MININUM_HEIGHT 768
 #define TEXT_MARGIN 5.0
 #define DEFAULT_TIME_SCALE 0.7
+#define POINT_RADIUS 2.0
 
 
 
@@ -52,6 +52,7 @@ EventWidget::EventWidget(QWidget* parent)
 		, eventList_(nullptr)
 		, model_(nullptr)
 		, timeScale_(DEFAULT_TIME_SCALE)
+		, graphHeight_(DEFAULT_GRAPH_HEIGHT)
 		, modelUpdated_(false)
 		, textAscent_(0.0)
 		, textYOffset_(0.0)
@@ -100,14 +101,6 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 				maxWidth = width;
 			}
 		}
-		unsigned int labelSize = std::strlen(SPECIAL_STRING);
-		if (labelSize > maxLabelSize_) {
-			maxLabelSize_ = labelSize;
-		}
-		int width = fm.width(SPECIAL_STRING);
-		if (width > maxWidth) {
-			maxWidth = width;
-		}
 		labelWidth_ = maxWidth;
 
 		modelUpdated_ = false;
@@ -115,11 +108,11 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 
 	double xEnd, yEnd;
 	if (selectedParamList_.empty()) {
-		xEnd = 1024.0;
-		yEnd = 768.0;
+		xEnd = MININUM_WIDTH;
+		yEnd = MININUM_HEIGHT;
 	} else {
 		xEnd = 2.0 * MARGIN + labelWidth_ + eventList_->list().back()->time * timeScale_;
-		yEnd = 2.0 * TRACK_HEIGHT + (MARGIN + GRAPH_HEIGHT) * selectedParamList_.size();
+		yEnd = 2.0 * TRACK_HEIGHT + (MARGIN + graphHeight_) * selectedParamList_.size();
 	}
 	totalWidth_ = std::ceil(xEnd + 3.0 * MARGIN);
 	if (totalWidth_ < MININUM_WIDTH) {
@@ -148,12 +141,12 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 					// Posture name.
 					painter.drawText(QPointF(x, y), posture->name().c_str());
 				}
-				// Event vertical line.
-				painter.drawLine(QPointF(x, MARGIN + 2.0 * TRACK_HEIGHT), QPointF(x, yEnd));
-			} else {
-				painter.setPen(Qt::lightGray);
-				// Event vertical line.
-				painter.drawLine(QPointF(x, MARGIN + 2.0 * TRACK_HEIGHT), QPointF(x, yEnd));
+				// Event vertical lines.
+				for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
+					double yBase = 2.0 * TRACK_HEIGHT + (MARGIN + graphHeight_) * (i + 1U);
+					double yBottom = yBase - graphHeight_;
+					painter.drawLine(QPointF(x, yBottom), QPointF(x, yBase));
+				}
 			}
 		}
 		painter.setPen(Qt::black);
@@ -179,12 +172,14 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 					postureTime2 = postureTime1 + ruleData->duration;
 				}
 
+				double xPost1 = xRule + postureTime1 * timeScale_;
+				double xPost2 = xRule + postureTime2 * timeScale_;
 				// Rule frame.
 				painter.drawRect(QRectF(
-						QPointF(xRule + postureTime1 * timeScale_, MARGIN),
-						QPointF(xRule + postureTime2 * timeScale_, MARGIN + TRACK_HEIGHT)));
+						QPointF(xPost1, MARGIN),
+						QPointF(xPost2, MARGIN + TRACK_HEIGHT)));
 				// Rule number.
-				painter.drawText(QPointF(xRule + postureTime1 * timeScale_ + TEXT_MARGIN, yRuleText), QString::number(ruleData->number));
+				painter.drawText(QPointF(xPost1 + TEXT_MARGIN, yRuleText), QString::number(ruleData->number));
 			}
 		}
 	}
@@ -193,51 +188,70 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 	QPen pen2;
 	pen2.setWidth(2);
 
+	const unsigned int numParameters = model_->parameterList().size();
+
 	for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
 		unsigned int paramIndex = selectedParamList_[i];
-		unsigned int modelParamIndex;
-		if (paramIndex >= NUM_PARAM) { // special
-			modelParamIndex = paramIndex - NUM_PARAM;
-		} else {
-			modelParamIndex = paramIndex;
-		}
-		double currentMin = model_->parameterList()[modelParamIndex].minimum();
-		double currentMax = model_->parameterList()[modelParamIndex].maximum();
+		double currentMin = model_->parameterList()[paramIndex].minimum();
+		double currentMax = model_->parameterList()[paramIndex].maximum();
 
-		double yBase = 2.0 * TRACK_HEIGHT + (MARGIN + GRAPH_HEIGHT) * (i + 1U);
+		double yBase = 2.0 * TRACK_HEIGHT + (MARGIN + graphHeight_) * (i + 1U);
 
 		// Label.
-		painter.drawText(QPointF(MARGIN, yBase - 0.5 * GRAPH_HEIGHT + textYOffset_), model_->parameterList()[modelParamIndex].name().c_str());
-		if (paramIndex >= NUM_PARAM) {
-			painter.drawText(QPointF(MARGIN, yBase - 0.5 * GRAPH_HEIGHT + textYOffset_ + TRACK_HEIGHT), SPECIAL_STRING);
-		}
+		painter.drawText(QPointF(MARGIN, yBase - 0.5 * graphHeight_ + textYOffset_), model_->parameterList()[paramIndex].name().c_str());
 		// Limits.
 		painter.drawText(QPointF(MARGIN, yBase), QString("%1").arg(currentMin, maxLabelSize_));
-		painter.drawText(QPointF(MARGIN, yBase - GRAPH_HEIGHT + textAscent_), QString("%1").arg(currentMax, maxLabelSize_));
+		painter.drawText(QPointF(MARGIN, yBase - graphHeight_ + textAscent_), QString("%1").arg(currentMax, maxLabelSize_));
 
 		// Graph frame.
-		painter.drawLine(QPointF(2.0 * MARGIN + labelWidth_, yBase - GRAPH_HEIGHT), QPointF(xEnd, yBase - GRAPH_HEIGHT));
-		painter.drawLine(QPointF(2.0 * MARGIN + labelWidth_, yBase)               , QPointF(xEnd, yBase));
-		painter.drawLine(QPointF(2.0 * MARGIN + labelWidth_, yBase - GRAPH_HEIGHT), QPointF(2.0 * MARGIN + labelWidth_, yBase));
-		painter.drawLine(QPointF(xEnd, yBase - GRAPH_HEIGHT)                      , QPointF(xEnd, yBase));
+		double xBase = 2.0 * MARGIN + labelWidth_;
+		double yBottom = yBase - graphHeight_;
+		painter.drawLine(QPointF(xBase, yBottom), QPointF(xEnd, yBottom));
+		painter.drawLine(QPointF(xBase, yBase)  , QPointF(xEnd, yBase));
+		painter.drawLine(QPointF(xBase, yBottom), QPointF(xBase, yBase));
+		painter.drawLine(QPointF(xEnd, yBottom) , QPointF(xEnd, yBase));
 
 		// Graph curve.
 		painter.setPen(pen2);
 		painter.setRenderHint(QPainter::Antialiasing);
 		QPointF prevPoint;
 		const double valueFactor = 1.0 / (currentMax - currentMin);
+		// Normal events.
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
 			double x = 0.5 + 2.0 * MARGIN + labelWidth_ + ev->time * timeScale_; // 0.5 added because of antialiasing
 			double value = ev->getParameter(paramIndex);
 			if (value != VTMControlModel::Event::EMPTY_PARAMETER) {
-				double y = 0.5 + yBase - (value - currentMin) * valueFactor * GRAPH_HEIGHT; // 0.5 added because of antialiasing
+				double y = 0.5 + yBase - (value - currentMin) * valueFactor * graphHeight_; // 0.5 added because of antialiasing
+				QPointF point(x, y);
 				if (!prevPoint.isNull()) {
-					painter.drawLine(prevPoint, QPointF(x, y));
+					painter.drawLine(prevPoint, point);
 				}
+				painter.drawEllipse(point, POINT_RADIUS, POINT_RADIUS);
 				prevPoint.setX(x);
 				prevPoint.setY(y);
 			}
 		}
+		prevPoint.setX(0.0); prevPoint.setY(0.0);
+		// Special events.
+		pen2.setColor(Qt::red);
+		painter.setPen(pen2);
+		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
+			double x = 0.5 + 2.0 * MARGIN + labelWidth_ + ev->time * timeScale_; // 0.5 added because of antialiasing
+			double value = ev->getParameter(paramIndex + numParameters);
+			if (value != VTMControlModel::Event::EMPTY_PARAMETER) {
+				double y = 0.5 + yBase - (value - currentMin) * valueFactor * graphHeight_; // 0.5 added because of antialiasing
+				QPointF point(x, y);
+				if (!prevPoint.isNull()) {
+					painter.drawLine(prevPoint, point);
+				}
+				painter.drawEllipse(point, POINT_RADIUS, POINT_RADIUS);
+				prevPoint.setX(x);
+				prevPoint.setY(y);
+			}
+		}
+		pen2.setColor(Qt::black);
+		painter.setPen(pen2);
+
 		painter.setRenderHint(QPainter::Antialiasing, false);
 		painter.setPen(pen);
 	}
@@ -265,8 +279,8 @@ EventWidget::mouseMoveEvent(QMouseEvent* event)
 	}
 
 	for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
-		double yStart = 2.0 * TRACK_HEIGHT + (MARGIN + GRAPH_HEIGHT) * (i + 1U);
-		double yEnd = yStart - GRAPH_HEIGHT;
+		double yStart = 2.0 * TRACK_HEIGHT + (MARGIN + graphHeight_) * (i + 1U);
+		double yEnd = yStart - graphHeight_;
 		if (yEnd <= y && y <= yStart) {
 			unsigned int paramIndex = selectedParamList_[i];
 			unsigned int modelParamIndex;
@@ -277,7 +291,7 @@ EventWidget::mouseMoveEvent(QMouseEvent* event)
 			}
 			double currentMin = model_->parameterList()[modelParamIndex].minimum();
 			double currentMax = model_->parameterList()[modelParamIndex].maximum();
-			value = ((yStart - y) / GRAPH_HEIGHT) * (currentMax - currentMin) + currentMin;
+			value = ((yStart - y) / graphHeight_) * (currentMax - currentMin) + currentMin;
 
 			time = (x - xStart) / timeScale_;
 
@@ -287,6 +301,18 @@ EventWidget::mouseMoveEvent(QMouseEvent* event)
 	}
 
 	emit mouseMoved(time, value);
+}
+
+void
+EventWidget::mouseDoubleClickEvent(QMouseEvent* /*event*/)
+{
+	// Reset zoom.
+	timeScale_ = DEFAULT_TIME_SCALE;
+	graphHeight_ = DEFAULT_GRAPH_HEIGHT;
+
+	update();
+
+	emit zoomReset();
 }
 
 QSize
@@ -302,7 +328,8 @@ EventWidget::updateData(VTMControlModel::EventList* eventList, VTMControlModel::
 	model_ = model;
 
 	if (model_ && model_->parameterList().size() != NUM_PARAM) {
-		qWarning("[EventWidget::updateData] Wrong number of parameters: %lu (should be %d).", model_->parameterList().size(), NUM_PARAM);
+		THROW_EXCEPTION(InvalidValueException, "[EventWidget::updateData] Wrong number of parameters: " <<
+				model_->parameterList().size() << " (should be " << NUM_PARAM << ").");
 		model_ = nullptr;
 		eventList_ = nullptr;
 		return;
@@ -310,25 +337,18 @@ EventWidget::updateData(VTMControlModel::EventList* eventList, VTMControlModel::
 
 	modelUpdated_ = true;
 
-	update();
-}
-
-void
-EventWidget::clearParameterSelection()
-{
 	selectedParamList_.clear();
+
 	update();
 }
 
 void
-EventWidget::changeParameterSelection(unsigned int paramIndex, bool special, bool selected)
+EventWidget::changeParameterSelection(unsigned int paramIndex, bool selected)
 {
-	if (special) {
-		paramIndex += NUM_PARAM;
-	}
-
 	if (selected) {
-		selectedParamList_.push_back(paramIndex);
+		if (paramIndex < model_->parameterList().size()) {
+			selectedParamList_.push_back(paramIndex);
+		}
 	} else {
 		for (auto iter = selectedParamList_.begin(); iter != selectedParamList_.end(); ++iter) {
 			if (*iter == paramIndex) {
@@ -338,6 +358,24 @@ EventWidget::changeParameterSelection(unsigned int paramIndex, bool special, boo
 		}
 	}
 	emit mouseMoved(-1.0, 0.0);
+	update();
+}
+
+void
+EventWidget::changeXZoom(double zoom)
+{
+	zoom = qBound(xZoomMin(), zoom, xZoomMax());
+	timeScale_ = DEFAULT_TIME_SCALE * zoom;
+
+	update();
+}
+
+void
+EventWidget::changeYZoom(double zoom)
+{
+	zoom = qBound(yZoomMin(), zoom, yZoomMax());
+	graphHeight_ = DEFAULT_GRAPH_HEIGHT * zoom;
+
 	update();
 }
 

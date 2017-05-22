@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2014, 2015, 2017 Marcelo Y. Matuda                           *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -62,10 +62,13 @@ private slots:
 	void on_synthesizeButton_clicked();
 	void on_synthesizeToFileButton_clicked();
 	void on_parameterTableWidget_cellChanged(int row, int column);
+	void on_xZoomSpinBox_valueChanged(double d);
+	void on_yZoomSpinBox_valueChanged(double d);
 	void updateMouseTracking(double time, double value);
 	void handleAudioError(QString msg);
 	void handleAudioFinished();
 	void updateAudioDeviceComboBox(QStringList deviceNameList, int defaultDeviceIndex);
+	void resetZoom();
 private:
 	enum {
 		NUM_PARAM = 16 // hardcoded

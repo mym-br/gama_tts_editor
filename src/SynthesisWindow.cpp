@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2014, 2015, 2017 Marcelo Y. Matuda                           *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -55,16 +55,26 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 	QHeaderView* vHeader = ui_->parameterTableWidget->verticalHeader();
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
 	vHeader->setDefaultSectionSize(rowHeight);
-	ui_->parameterTableWidget->setColumnCount(2);
-	ui_->parameterTableWidget->setHorizontalHeaderLabels(QStringList() << tr("Parameter") << tr("Special"));
+	ui_->parameterTableWidget->setColumnCount(1);
+	ui_->parameterTableWidget->setHorizontalHeaderLabels(QStringList() << tr("Parameter"));
+	ui_->eventWidget->setContentsMargins(0, 0, 0, 0);
 
 	ui_->tempoSpinBox->setRange(0.1, 10.0);
 	ui_->tempoSpinBox->setSingleStep(0.1);
 	ui_->tempoSpinBox->setDecimals(1);
 	ui_->tempoSpinBox->setValue(1.0);
 
+	ui_->xZoomSpinBox->setRange(ui_->eventWidget->xZoomMin(), ui_->eventWidget->xZoomMax());
+	ui_->xZoomSpinBox->setSingleStep(0.1);
+	ui_->xZoomSpinBox->setValue(1.0);
+
+	ui_->yZoomSpinBox->setRange(ui_->eventWidget->yZoomMin(), ui_->eventWidget->yZoomMax());
+	ui_->yZoomSpinBox->setSingleStep(0.1);
+	ui_->yZoomSpinBox->setValue(1.0);
+
 	connect(ui_->textLineEdit, &QLineEdit::returnPressed, ui_->parseButton, &QPushButton::click);
 	connect(ui_->eventWidget , &EventWidget::mouseMoved , this            , &SynthesisWindow::updateMouseTracking);
+	connect(ui_->eventWidget , &EventWidget::zoomReset  , this            , &SynthesisWindow::resetZoom);
 
 	audioWorker_ = new AudioWorker;
 	audioWorker_->moveToThread(&audioThread_);
@@ -116,7 +126,6 @@ SynthesisWindow::setup(VTMControlModel::Model* model, Synthesis* synthesis)
 		synthesis_ = synthesis;
 
 		ui_->eventWidget->updateData(&synthesis_->vtmController->eventList(), model_);
-		ui_->eventWidget->clearParameterSelection();
 
 		setupParameterTable();
 	} catch (...) {
@@ -310,7 +319,19 @@ void
 SynthesisWindow::on_parameterTableWidget_cellChanged(int row, int column)
 {
 	bool selected = ui_->parameterTableWidget->item(row, column)->checkState() == Qt::Checked;
-	ui_->eventWidget->changeParameterSelection(row, column == 1, selected);
+	ui_->eventWidget->changeParameterSelection(row, selected);
+}
+
+void
+SynthesisWindow::on_xZoomSpinBox_valueChanged(double d)
+{
+	ui_->eventWidget->changeXZoom(d);
+}
+
+void
+SynthesisWindow::on_yZoomSpinBox_valueChanged(double d)
+{
+	ui_->eventWidget->changeYZoom(d);
 }
 
 // Slot.
@@ -326,11 +347,6 @@ SynthesisWindow::setupParameterTable()
 		item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
 		item->setCheckState(Qt::Unchecked);
 		table->setItem(i, 0, item.release());
-
-		item = std::make_unique<QTableWidgetItem>();
-		item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-		item->setCheckState(Qt::Unchecked);
-		table->setItem(i, 1, item.release());
 	}
 	table->resizeColumnsToContents();
 }
@@ -391,6 +407,13 @@ SynthesisWindow::updateAudioDeviceComboBox(QStringList deviceNameList, int defau
 	} else {
 		ui_->audioDeviceComboBox->setCurrentIndex(oldIndex);
 	}
+}
+
+void
+SynthesisWindow::resetZoom()
+{
+	ui_->xZoomSpinBox->setValue(1.0);
+	ui_->yZoomSpinBox->setValue(1.0);
 }
 
 void

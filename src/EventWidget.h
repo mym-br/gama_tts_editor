@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2014, 2015, 2017 Marcelo Y. Matuda                           *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -38,21 +38,29 @@ public:
 
 	virtual QSize sizeHint() const;
 	void updateData(VTMControlModel::EventList* eventList, VTMControlModel::Model* model);
-	void clearParameterSelection();
-	void changeParameterSelection(unsigned int paramIndex, bool special, bool selected);
+	void changeParameterSelection(unsigned int paramIndex, bool selected);
+	double xZoomMin() const { return 0.1; }
+	double xZoomMax() const { return 10.0; }
+	double yZoomMin() const { return 0.1; }
+	double yZoomMax() const { return 10.0; }
+	void changeXZoom(double zoom);
+	void changeYZoom(double zoom);
 signals:
 	void mouseMoved(double time, double value);
+	void zoomReset();
 protected:
 	virtual void paintEvent(QPaintEvent* event);
 	virtual void mouseMoveEvent(QMouseEvent* event);
+	virtual void mouseDoubleClickEvent(QMouseEvent *event);
 private:
 	enum {
-		NUM_PARAM = 16
+		NUM_PARAM = 16 // hardcoded
 	};
 
 	const VTMControlModel::EventList* eventList_;
 	const VTMControlModel::Model* model_;
 	double timeScale_;
+	double graphHeight_;
 	bool modelUpdated_;
 	double textAscent_;
 	double textYOffset_;
