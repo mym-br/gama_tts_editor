@@ -48,7 +48,7 @@
 #include "ui_MainWindow.h"
 
 #define PROGRAM_NAME "GamaTTS:Editor"
-#define PROGRAM_VERSION "0.1.7"
+#define PROGRAM_VERSION "0.1.8"
 #define SETTINGS_KEY_DEFAULT_WORK_DIR "default/work_directory"
 #define STATUSBAR_TIMEOUT_MS (5000)
 
