@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2014, 2015, 2017 Marcelo Y. Matuda                           *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -33,7 +33,7 @@
 #define NUM_CATEGORIES_TABLE_COLUMNS 2
 #define NUM_PARAMETERS_TABLE_COLUMNS 5
 #define NUM_SYMBOLS_TABLE_COLUMNS 5
-#define NEW_ITEM_NAME "___new___"
+#define NEW_ITEM_NAME "###new###"
 
 
 
@@ -43,6 +43,7 @@ PostureEditorWindow::PostureEditorWindow(QWidget* parent)
 		: QWidget(parent)
 		, ui_{std::make_unique<Ui::PostureEditorWindow>()}
 		, model_{}
+		, postureNameRegExp_{"[A-Za-z^#']+"}
 {
 	ui_->setupUi(this);
 
@@ -195,19 +196,21 @@ PostureEditorWindow::on_posturesTable_itemChanged(QTableWidgetItem* item)
 	if (model_ == nullptr) return;
 
 	int row = item->row();
+	auto restoreName = [&]() {
+		QSignalBlocker blocker(ui_->posturesTable);
+		item->setText(model_->postureList()[row].name().c_str());
+	};
+
 	const std::string newName = item->text().toStdString();
-	if (model_->postureList().find(newName)) {
-		qWarning("Duplicate posture name.");
-		{
-			QSignalBlocker blocker(ui_->posturesTable);
-			item->setText(model_->postureList()[row].name().c_str());
-		}
+	if (!postureNameRegExp_.exactMatch(newName.c_str())) {
+		QMessageBox::critical(this, tr("Error"), tr("Invalid posture name."));
+		restoreName();
+	} else if (model_->postureList().find(newName)) {
+		QMessageBox::critical(this, tr("Error"), tr("Duplicate posture name."));
+		restoreName();
 	} else if (model_->findCategoryName(newName)) {
-		qWarning("Posture can not have the same name as a category.");
-		{
-			QSignalBlocker blocker(ui_->posturesTable);
-			item->setText(model_->postureList()[row].name().c_str());
-		}
+		QMessageBox::critical(this, tr("Error"), tr("Postures can not have the name of a category."));
+		restoreName();
 	} else {
 		const auto& posture = model_->postureList()[row];
 		std::unique_ptr<VTMControlModel::Posture> newPosture = posture.copy(newName);

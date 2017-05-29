@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2014, 2015, 2017 Marcelo Y. Matuda                           *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -20,6 +20,7 @@
 
 #include <memory>
 
+#include <QRegExp>
 #include <QWidget>
 
 
@@ -75,6 +76,7 @@ private:
 
 	std::unique_ptr<Ui::PostureEditorWindow> ui_;
 	VTMControlModel::Model* model_;
+	QRegExp postureNameRegExp_;
 };
 
 } // namespace GS
