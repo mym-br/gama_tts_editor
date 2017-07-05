@@ -108,8 +108,7 @@ INCLUDEPATH += \
 
 unix {
     !macx {
-        QMAKE_CXXFLAGS += -Wall -Wextra -march=native
-        QMAKE_CXXFLAGS_RELEASE ~= s/-O./-O3
+        QMAKE_CXXFLAGS += -Wall -Wextra
 
         exists(../gama_tts/CMakeLists.txt) {
             message(Using local GamaTTS)
@@ -127,13 +126,9 @@ unix {
             INSTALL_PREFIX = /usr/local
         }
         target.path = $${INSTALL_PREFIX}/bin
-        dataset.path = $${INSTALL_PREFIX}/share/gama_tts_editor
-        dataset.files = data
-        INSTALLS = target dataset
+        INSTALLS = target
     }
 }
-
-DEPENDPATH += $${INCLUDEPATH}
 
 MOC_DIR = tmp
 OBJECTS_DIR = tmp
