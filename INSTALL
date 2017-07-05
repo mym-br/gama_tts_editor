@@ -2,8 +2,9 @@
 - Requirements:
 
   - A C++ compiler with C++14 support.
-    The following compiler has been tested:
-    - GCC 5.4.0 (Linux x86_64).
+    The following compilers have been tested:
+    - GCC 5.4 (Linux+GNU x86_64).
+    - GCC 7.1 (Linux+GNU x86_64).
 
   - Qt 5 (tested with version 5.7.1).
 
@@ -14,24 +15,29 @@
   - FFTW - single precision (tested with version 3.3.4).
 
   - GamaTTS (use the latest version).
+    For local install, the source must be in ../gama_tts and the build directory
+    must be ../gama_tts-build.
 
   - GamaTTS:Interactive (use the latest version).
     The source must be in ../gama_tts_interactive.
 
-- Generate the Makefile:
+- Local install:
 
   qmake
-  # or
-  qmake "INSTALL_PREFIX=/usr"
-
-- Build:
-
   make
 
-  # Optional (Linux):
+  # Test.
+  LD_LIBRARY_PATH=../gama_tts-build ./gama_tts_editor
+
+- System install:
+
+  qmake
+  make
   make install
-  # or
-  make install INSTALL_ROOT=/tmp/install
+  #make install INSTALL_ROOT=/tmp/install
+
+  # Test.
+  gama_tts_editor
 
 - Note:
 
