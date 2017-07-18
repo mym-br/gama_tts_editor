@@ -22,10 +22,22 @@ HEADERS += \
     src/AudioWorker.h \
     src/Clipboard.h \
     src/DataEntryWindow.h \
+    src/editor_global.h \
     src/EventWidget.h \
+    src/interactive/AnalysisWindow.h \
+    src/interactive/Audio.h \
+    src/interactive/FFTW.h \
+    src/interactive/InteractiveVTMWindow.h \
+    src/interactive/JackRingbuffer.h \
+    src/interactive/ParameterLineEdit.h \
+    src/interactive/ParameterSlider.h \
+    src/interactive/ProgramConfiguration.h \
+    src/interactive/qcustomplot/qcustomplot.h \
+    src/interactive/SignalDFT.h \
     src/IntonationParametersWindow.h \
     src/IntonationWidget.h \
     src/IntonationWindow.h \
+    src/JackClient.h \
     src/MainWindow.h \
     src/PostureEditorWindow.h \
     src/PrototypeManagerWindow.h \
@@ -38,19 +50,7 @@ HEADERS += \
     src/SynthesisWindow.h \
     src/TransitionEditorWindow.h \
     src/TransitionPoint.h \
-    src/TransitionWidget.h \
-    ../gama_tts_interactive/src/AnalysisWindow.h \
-    ../gama_tts_interactive/src/Audio.h \
-    ../gama_tts_interactive/src/FFTW.h \
-    ../gama_tts_interactive/src/global.h \
-    ../gama_tts_interactive/src/InteractiveVTMWindow.h \
-    ../gama_tts_interactive/src/JackClient.h \
-    ../gama_tts_interactive/src/JackRingbuffer.h \
-    ../gama_tts_interactive/src/ParameterLineEdit.h \
-    ../gama_tts_interactive/src/ParameterSlider.h \
-    ../gama_tts_interactive/src/ProgramConfiguration.h \
-    ../gama_tts_interactive/src/qcustomplot/qcustomplot.h \
-    ../gama_tts_interactive/src/SignalDFT.h
+    src/TransitionWidget.h
 
 SOURCES += \
     src/AudioPlayer.cpp \
@@ -58,9 +58,20 @@ SOURCES += \
     src/Clipboard.cpp \
     src/DataEntryWindow.cpp \
     src/EventWidget.cpp \
+    src/interactive/AnalysisWindow.cpp \
+    src/interactive/Audio.cpp \
+    src/interactive/FFTW.cpp \
+    src/interactive/InteractiveVTMWindow.cpp \
+    src/interactive/JackRingbuffer.cpp \
+    src/interactive/ParameterLineEdit.cpp \
+    src/interactive/ParameterSlider.cpp \
+    src/interactive/ProgramConfiguration.cpp \
+    src/interactive/qcustomplot/qcustomplot.cpp \
+    src/interactive/SignalDFT.cpp \
     src/IntonationParametersWindow.cpp \
     src/IntonationWidget.cpp \
     src/IntonationWindow.cpp \
+    src/JackClient.cpp \
     src/main.cpp \
     src/MainWindow.cpp \
     src/PostureEditorWindow.cpp \
@@ -74,21 +85,11 @@ SOURCES += \
     src/SynthesisWindow.cpp \
     src/TransitionEditorWindow.cpp \
     src/TransitionPoint.cpp \
-    src/TransitionWidget.cpp \
-    ../gama_tts_interactive/src/AnalysisWindow.cpp \
-    ../gama_tts_interactive/src/Audio.cpp \
-    ../gama_tts_interactive/src/FFTW.cpp \
-    ../gama_tts_interactive/src/InteractiveVTMWindow.cpp \
-    ../gama_tts_interactive/src/JackClient.cpp \
-    ../gama_tts_interactive/src/JackRingbuffer.cpp \
-    ../gama_tts_interactive/src/ParameterLineEdit.cpp \
-    ../gama_tts_interactive/src/ParameterSlider.cpp \
-    ../gama_tts_interactive/src/ProgramConfiguration.cpp \
-    ../gama_tts_interactive/src/qcustomplot/qcustomplot.cpp \
-    ../gama_tts_interactive/src/SignalDFT.cpp
+    src/TransitionWidget.cpp
 
 FORMS += \
     ui/DataEntryWindow.ui \
+    ui/interactive/AnalysisWindow.ui \
     ui/IntonationParametersWindow.ui \
     ui/IntonationWindow.ui \
     ui/MainWindow.ui \
@@ -97,14 +98,13 @@ FORMS += \
     ui/RuleManagerWindow.ui \
     ui/RuleTesterWindow.ui \
     ui/SynthesisWindow.ui \
-    ui/TransitionEditorWindow.ui \
-    ../gama_tts_interactive/ui/AnalysisWindow.ui
+    ui/TransitionEditorWindow.ui
 
 INCLUDEPATH += \
     src \
-    src/qt_model \
-    ../gama_tts_interactive/src \
-    ../gama_tts_interactive/src/qcustomplot
+    src/interactive/ \
+    src/interactive/qcustomplot \
+    src/qt_model
 
 unix {
     !macx {

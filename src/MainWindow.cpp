@@ -33,6 +33,8 @@
 #include <QTextEdit>
 #include <QVBoxLayout>
 
+#include "editor_global.h"
+
 #include "DataEntryWindow.h"
 #include "InteractiveVTMWindow.h"
 #include "IntonationWindow.h"
@@ -47,8 +49,6 @@
 #include "TransitionEditorWindow.h"
 #include "ui_MainWindow.h"
 
-#define PROGRAM_NAME "GamaTTS:Editor"
-#define PROGRAM_VERSION "0.1.8"
 #define SETTINGS_KEY_DEFAULT_WORK_DIR "default/work_directory"
 #define STATUSBAR_TIMEOUT_MS (5000)
 
@@ -432,7 +432,7 @@ MainWindow::about()
 	textEdit->setReadOnly(true);
 	textEdit->setHtml(
 		"<pre>"
-		PROGRAM_NAME " " PROGRAM_VERSION "\n\n"
+		EDITOR_NAME " " EDITOR_VERSION "\n\n"
 
 		"This program is free software: you can redistribute it and/or modify\n"
 		"it under the terms of the GNU General Public License as published by\n"
@@ -491,6 +491,15 @@ MainWindow::about()
 		"  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n"
 		"  USE OR OTHER DEALINGS IN THE SOFTWARE.\"\n\n"
 
+		"- JACK Audio Connection Kit (http://jackaudio.org/).\n\n"
+
+		"  Provided by Paul Davis, Stephane Letz, Jack O'Quinn, Torben Hohn and others.\n\n"
+
+		"  The JACK library is free software; you can redistribute it and/or modify\n"
+		"  it under the terms of the GNU Lesser General Public License as published by\n"
+		"  the Free Software Foundation; either version 2.1 of the License, or\n"
+		"  (at your option) any later version.\n\n"
+
 		"</pre>"
 	);
 	layout->addWidget(textEdit);
@@ -500,7 +509,7 @@ MainWindow::about()
 
 	connect(buttonBox, &QDialogButtonBox::accepted, &aboutDialog, &QDialog::accept);
 
-	aboutDialog.setWindowTitle(tr("About ") + PROGRAM_NAME);
+	aboutDialog.setWindowTitle(tr("About ") + EDITOR_NAME);
 	aboutDialog.resize(900, 550);
 	aboutDialog.exec();
 }

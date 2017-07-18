@@ -1,0 +1,9 @@
+Tips
+----
+
+- If you change the configuration file, click on the button
+  "Reload Configuration", and the vocal tract model will use the new values.
+
+- The volume may decrease over time, to avoid clipping. To normalize
+  the volume, using the current parameter values, click on the button
+  "(Re)start".

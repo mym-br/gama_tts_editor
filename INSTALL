@@ -18,9 +18,6 @@
     For local install, the source must be in ../gama_tts and the build directory
     must be ../gama_tts-build.
 
-  - GamaTTS:Interactive (use the latest version).
-    The source must be in ../gama_tts_interactive.
-
 - Local install:
 
   qmake
