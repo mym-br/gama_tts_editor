@@ -20,7 +20,6 @@
 
 #include <QObject>
 #include <QString>
-#include <QStringList>
 
 #include "AudioPlayer.h"
 
@@ -36,12 +35,10 @@ public:
 
 	AudioPlayer& player() { return player_; }
 signals:
-	void audioOutputDeviceListSent(QStringList deviceNameList, int defaultDeviceIndex);
 	void finished();
 	void errorOccurred(QString);
 public slots:
-	void sendOutputDeviceList();
-	void playAudio(double sampleRate, int outputDeviceIndex);
+	void playAudio(double sampleRate);
 private:
 	AudioWorker(const AudioWorker&) = delete;
 	AudioWorker& operator=(const AudioWorker&) = delete;

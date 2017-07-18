@@ -8,8 +8,6 @@
 
   - Qt 5 (tested with version 5.7.1).
 
-  - PortAudio with C++ binding (tested with version v19_20140130).
-
   - JACK Audio Connection Kit (tested with version 1.9.10).
 
   - FFTW - single precision (tested with version 3.3.4).
@@ -23,6 +21,8 @@
   qmake
   make
 
+  - Start the JACK server using QjackCtl.
+
   # Test.
   LD_LIBRARY_PATH=../gama_tts-build ./gama_tts_editor
 
@@ -32,6 +32,8 @@
   make
   make install
   #make install INSTALL_ROOT=/tmp/install
+
+  - Start the JACK server using QjackCtl.
 
   # Test.
   gama_tts_editor

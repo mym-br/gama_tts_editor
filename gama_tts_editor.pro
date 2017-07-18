@@ -12,7 +12,7 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 unix {
     !macx {
         CONFIG += link_pkgconfig
-        PKGCONFIG += portaudiocpp jack fftw3f
+        PKGCONFIG += jack fftw3f
     }
 }
 

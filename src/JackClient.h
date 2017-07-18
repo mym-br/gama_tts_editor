@@ -24,9 +24,13 @@
 
 #include <jack/jack.h>
 
+#include "Exception.h"
+
 
 
 namespace GS {
+
+struct JackClientException : public virtual Exception {};
 
 struct JackPorts {
 public:

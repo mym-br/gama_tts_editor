@@ -468,29 +468,6 @@ MainWindow::about()
 		"  Qt Free Edition is distributed under the terms of the GNU LGPLv2.1 or LGPLv3,\n"
 		"  depending on the library (see http://www.qt.io/faq/).\n\n"
 
-		"- PortAudio Portable Real-Time Audio Library (http://www.portaudio.com/).\n\n"
-
-		"  Provided by Ross Bencina and Phil Burk.\n\n"
-
-		"  PortAudio is distributed under these terms:\n"
-		"  \"Permission is hereby granted, free of charge, to any person obtaining a copy\n"
-		"  of this software and associated documentation files (the \"Software\"), to\n"
-		"  deal in the Software without restriction, including without limitation the\n"
-		"  rights to use, copy, modify, merge, publish, distribute, sublicense, and/or\n"
-		"  sell copies of the Software, and to permit persons to whom the Software is\n"
-		"  furnished to do so, subject to the following conditions:\n\n"
-
-		"  The above copyright notice and this permission notice shall be included in\n"
-		"  all copies or substantial portions of the Software.\n\n"
-
-		"  THE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\n"
-		"  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,\n"
-		"  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.\n"
-		"  IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,\n"
-		"  DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR\n"
-		"  OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE\n"
-		"  USE OR OTHER DEALINGS IN THE SOFTWARE.\"\n\n"
-
 		"- JACK Audio Connection Kit (http://jackaudio.org/).\n\n"
 
 		"  Provided by Paul Davis, Stephane Letz, Jack O'Quinn, Torben Hohn and others.\n\n"

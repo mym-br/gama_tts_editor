@@ -18,8 +18,6 @@
 #include "AudioWorker.h"
 
 #include <exception>
-#include <string>
-#include <vector>
 
 
 
@@ -36,25 +34,10 @@ AudioWorker::~AudioWorker()
 
 // Slot.
 void
-AudioWorker::sendOutputDeviceList()
-{
-	std::vector<std::string> deviceNameList;
-	int defaultDeviceIndex;
-	player_.getOutputDeviceList(deviceNameList, defaultDeviceIndex);
-
-	QStringList list;
-	for (const auto& name : deviceNameList) {
-		list.append(name.c_str());
-	}
-	emit audioOutputDeviceListSent(list, defaultDeviceIndex);
-}
-
-// Slot.
-void
-AudioWorker::playAudio(double sampleRate, int outputDeviceIndex)
+AudioWorker::playAudio(double sampleRate)
 {
 	try {
-		player_.play(sampleRate, outputDeviceIndex);
+		player_.play(sampleRate);
 	} catch (const std::exception& exc) {
 		emit errorOccurred(QString(exc.what()));
 	}

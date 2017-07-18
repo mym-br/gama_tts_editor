@@ -25,13 +25,9 @@
 #include <iostream>
 #include <sstream>
 
-#include "Exception.h"
-
 
 
 namespace GS {
-
-struct JackClientException : public virtual Exception {};
 
 JackClient::JackClient(const char* clientName)
 		: client_(nullptr)

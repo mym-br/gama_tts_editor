@@ -88,10 +88,6 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 			this        , &SynthesisWindow::handleAudioFinished);
 	connect(audioWorker_ , &AudioWorker::errorOccurred,
 			this        , &SynthesisWindow::handleAudioError);
-	connect(this         , &SynthesisWindow::updateAudioDeviceComboBoxRequested,
-			audioWorker_, &AudioWorker::sendOutputDeviceList);
-	connect(audioWorker_ , &AudioWorker::audioOutputDeviceListSent,
-			this        , &SynthesisWindow::updateAudioDeviceComboBox);
 	audioThread_.start();
 }
 
@@ -134,8 +130,6 @@ SynthesisWindow::setup(VTMControlModel::Model* model, Synthesis* synthesis)
 		clear();
 		throw;
 	}
-
-	emit updateAudioDeviceComboBoxRequested();
 }
 
 void
@@ -183,23 +177,17 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		const ConfigurationData& vtmConfig = synthesis_->vtmController->vtmConfigurationData();
 		const double sampleRate = vtmConfig.value<double>("output_rate");
 
-		{
-			std::lock_guard<std::mutex> lock(AudioPlayer::bufferMutex);
-
+		audioWorker_->player().fillBuffer([&](std::vector<float>& buffer) {
 			synthesis_->vtmController->synthesizePhoneticString(
 						phoneticString.toStdString().c_str(),
 						vtmParamFilePath.toStdString().c_str(),
-						audioWorker_->player().buffer());
-		}
+						buffer);
+		});
 
 		ui_->eventWidget->update();
 
-		int audioDeviceIndex = ui_->audioDeviceComboBox->currentIndex();
-		if (audioDeviceIndex == -1) {
-			audioDeviceIndex = 0;
-		}
 		emit audioStarted();
-		emit playAudioRequested(sampleRate, audioDeviceIndex);
+		emit playAudioRequested(sampleRate);
 
 		emit textSynthesized();
 	} catch (const Exception& exc) {
@@ -267,20 +255,14 @@ SynthesisWindow::synthesizeWithManualIntonation()
 
 		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
 
-		{
-			std::lock_guard<std::mutex> lock(AudioPlayer::bufferMutex);
-
+		audioWorker_->player().fillBuffer([&](std::vector<float>& buffer) {
 			synthesis_->vtmController->synthesizeFromEventList(
 						vtmParamFilePath.toStdString().c_str(),
-						audioWorker_->player().buffer());
-		}
+						buffer);
+		});
 
-		int audioDeviceIndex = ui_->audioDeviceComboBox->currentIndex();
-		if (audioDeviceIndex == -1) {
-			audioDeviceIndex = 0;
-		}
 		emit audioStarted();
-		emit playAudioRequested(sampleRate, audioDeviceIndex);
+		emit playAudioRequested(sampleRate);
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 		enableProcessingButtons();
@@ -374,7 +356,6 @@ SynthesisWindow::handleAudioError(QString msg)
 
 	enableProcessingButtons();
 
-	emit updateAudioDeviceComboBoxRequested();
 	emit audioFinished();
 }
 
@@ -384,31 +365,7 @@ SynthesisWindow::handleAudioFinished()
 {
 	enableProcessingButtons();
 
-	emit updateAudioDeviceComboBoxRequested();
 	emit audioFinished();
-}
-
-// Slot.
-void
-SynthesisWindow::updateAudioDeviceComboBox(QStringList deviceNameList, int defaultDeviceIndex)
-{
-	int oldIndex = ui_->audioDeviceComboBox->currentIndex();
-	int oldCount = ui_->audioDeviceComboBox->count();
-
-	ui_->audioDeviceComboBox->clear();
-
-	if (deviceNameList.empty()) {
-		ui_->audioDeviceComboBox->setCurrentIndex(-1);
-		return;
-	}
-
-	ui_->audioDeviceComboBox->addItems(deviceNameList);
-
-	if (oldIndex == -1 || oldCount != ui_->audioDeviceComboBox->count()) {
-		ui_->audioDeviceComboBox->setCurrentIndex(defaultDeviceIndex);
-	} else {
-		ui_->audioDeviceComboBox->setCurrentIndex(oldIndex);
-	}
 }
 
 void

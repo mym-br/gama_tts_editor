@@ -50,7 +50,7 @@ jack_process_callback(jack_nframes_t nframes, void* arg)
 		Audio::Processor* p = static_cast<Audio::Processor*>(arg);
 		return p->process(nframes);
 	} catch (std::exception& exc) {
-		std::cerr << "[jack_process_callback] Caught exception: " << exc.what() << '.' << std::endl;
+		std::cerr << "[Audio/jack_process_callback] Caught exception: " << exc.what() << '.' << std::endl;
 		return 1;
 	}
 }
@@ -62,7 +62,7 @@ jack_process_callback(jack_nframes_t nframes, void* arg)
 void
 jack_shutdown_callback(void* /*arg*/)
 {
-	std::cout << "jack_shutdown_callback()" << std::endl;
+	std::cout << "[Audio] jack_shutdown_callback()" << std::endl;
 }
 
 } /* extern "C" */
@@ -212,7 +212,7 @@ Audio::start()
 
 	newJackClient->setProcessCallback(jack_process_callback, &processor_);
 
-	newJackClient->setShutdownCallback(jack_shutdown_callback, 0);
+	newJackClient->setShutdownCallback(jack_shutdown_callback, nullptr);
 
 	jack_port_t* outputPort = newJackClient->registerPort("output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 

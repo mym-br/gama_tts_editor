@@ -48,8 +48,7 @@ public:
 	void setup(VTMControlModel::Model* model, Synthesis* synthesis);
 signals:
 	void textSynthesized();
-	void playAudioRequested(double sampleRate, int outputDeviceIndex);
-	void updateAudioDeviceComboBoxRequested();
+	void playAudioRequested(double sampleRate);
 	void audioFinished();
 	void audioStarted();
 	void synthesisFinished();
@@ -67,7 +66,6 @@ private slots:
 	void updateMouseTracking(double time, double value);
 	void handleAudioError(QString msg);
 	void handleAudioFinished();
-	void updateAudioDeviceComboBox(QStringList deviceNameList, int defaultDeviceIndex);
 	void resetZoom();
 private:
 	enum {

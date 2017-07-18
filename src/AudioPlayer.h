@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2015 Marcelo Y. Matuda                                       *
+ *  Copyright 2015, 2017 Marcelo Y. Matuda                                 *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -18,13 +18,11 @@
 #ifndef AUDIO_PLAYER_H
 #define AUDIO_PLAYER_H
 
-#include <cstdint>
+#include <cstddef> /* std::size_t */
 #include <mutex>
-#include <string>
 #include <vector>
 
-#include "portaudio.h"
-#include "portaudiocpp/AutoSystem.hxx"
+#include <jack/jack.h>
 
 
 
@@ -34,21 +32,27 @@ class AudioPlayer {
 public:
 	AudioPlayer();
 
-	std::vector<float>& buffer() { return buffer_; }
-	void getOutputDeviceList(std::vector<std::string>& deviceNameList, int& defaultDeviceIndex);
-	void play(double sampleRate, int outputDeviceIndex);
-
-	static std::mutex bufferMutex;
+	template<typename T> void fillBuffer(T f);
+	void play(double sampleRate);
+	int callback(jack_nframes_t nframes);
 private:
 	AudioPlayer(const AudioPlayer&) = delete;
 	AudioPlayer& operator=(const AudioPlayer&) = delete;
 
-	int callback(const void* inputBuffer, void* outputBuffer, unsigned long framesPerBuffer,
-			const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags);
-
 	std::vector<float> buffer_;
-	unsigned int bufferIndex_;
+	std::size_t bufferIndex_;
+	std::mutex bufferMutex_;
+	jack_port_t* jackOutputPort_;
 };
+
+template<typename T>
+void
+AudioPlayer::fillBuffer(T f)
+{
+	std::lock_guard<std::mutex> lock(bufferMutex_);
+
+	f(buffer_);
+}
 
 } // namespace GS
 

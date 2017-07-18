@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2015 Marcelo Y. Matuda                                       *
+ *  Copyright 2015, 2017 Marcelo Y. Matuda                                 *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -17,106 +17,124 @@
 
 #include "AudioPlayer.h"
 
-#include <sstream>
-
-#include "portaudiocpp/PortAudioCpp.hxx"
+#include <chrono>
+#include <iostream>
+#include <memory>
+#include <thread>
 
 #include "Exception.h"
+#include "JackClient.h"
 
 
+
+namespace {
+
+using namespace GS;
+
+const char* CLIENT_NAME = "gama_tts_editor";
+
+
+
+extern "C" {
+
+/*******************************************************************************
+ * The process callback for this JACK application is called in a
+ * special realtime thread once for each audio cycle.
+ */
+int
+player_jack_process_callback(jack_nframes_t nframes, void* arg)
+{
+	return static_cast<AudioPlayer*>(arg)->callback(nframes);
+}
+
+/*******************************************************************************
+ * JACK calls this function if the server ever shuts down or
+ * decides to disconnect the client.
+ */
+void
+player_jack_shutdown_callback(void* /*arg*/)
+{
+	std::cout << "[AudioPlayer] player_jack_shutdown_callback()" << std::endl;
+}
+
+} /* extern "C" */
+
+} /* namespace */
+
+//==============================================================================
 
 namespace GS {
 
-std::mutex AudioPlayer::bufferMutex;
-
 AudioPlayer::AudioPlayer()
-		: bufferIndex_(0)
+		: bufferIndex_{}
+		, jackOutputPort_{}
 {
 }
 
 void
-AudioPlayer::getOutputDeviceList(std::vector<std::string>& deviceNameList, int& defaultDeviceIndex)
+AudioPlayer::play(double sampleRate)
 {
-	portaudio::AutoSystem portaudio;
+	std::lock_guard<std::mutex> lock(bufferMutex_);
 
-	deviceNameList.clear();
-	defaultDeviceIndex = -1;
-
-	portaudio::System& sys = portaudio::System::instance();
-
-	int i = 0;
-	for (auto iter = sys.devicesBegin(); iter != sys.devicesEnd(); ++iter, ++i) {
-		std::ostringstream name;
-		name << '[' << iter->hostApi().name() << "] " << iter->name();
-		deviceNameList.push_back(name.str());
-
-		if (iter->hostApi().typeId() == paJACK && iter->isHostApiDefaultOutputDevice()) {
-			defaultDeviceIndex = i;
-		}
-	}
-	if (defaultDeviceIndex < 0) {
-		defaultDeviceIndex = sys.defaultOutputDevice().index();
-	}
-}
-
-void
-AudioPlayer::play(double sampleRate, int outputDeviceIndex)
-{
-	std::lock_guard<std::mutex> lock(bufferMutex);
-
-	portaudio::AutoSystem portaudio;
 	bufferIndex_ = 0;
 
-	//---------------------------------------------------------------------
-	// Play the audio.
+	auto jackClient = std::make_unique<JackClient>(CLIENT_NAME);
 
-	portaudio::System& sys = portaudio::System::instance();
+	jackClient->setProcessCallback(player_jack_process_callback, this);
 
-	if (outputDeviceIndex >= sys.deviceCount()) {
-		THROW_EXCEPTION(IOException, "Invalid device index: " << outputDeviceIndex << '.');
+	jackClient->setShutdownCallback(player_jack_shutdown_callback, nullptr);
+
+	jackOutputPort_ = jackClient->registerPort("output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
+
+	jack_nframes_t jackSampleRate = jackClient->getSampleRate();
+	if (jackSampleRate != static_cast<jack_nframes_t>(sampleRate + 0.5)) {
+		THROW_EXCEPTION(JackClientException, "Sampling rate mismatch (JACK: " << jackSampleRate
+				<< " GamaTTS: " << sampleRate << ").");
 	}
-	portaudio::Device& dev = sys.deviceByIndex(outputDeviceIndex);
 
-	portaudio::DirectionSpecificStreamParameters outParams(dev, 2 /* channels */, portaudio::FLOAT32,
-						true /* interleaved */, dev.defaultHighOutputLatency(), NULL);
+	jackClient->activate();
 
-	portaudio::StreamParameters params(portaudio::DirectionSpecificStreamParameters::null(), outParams, sampleRate,
-						paFramesPerBufferUnspecified, paClipOff);
-
-	portaudio::MemFunCallbackStream<AudioPlayer> stream(params, *this, &AudioPlayer::callback);
-
-	stream.start();
-	while (stream.isActive()) {
-		sys.sleep(100 /* ms */);
+	// Connect the ports. You can't do this before the client is
+	// activated, because we can't make connections to clients
+	// that aren't running. Note the confusing (but necessary)
+	// orientation of the driver backend ports: playback ports are
+	// "input" to the backend, and capture ports are "output" from it.
+	JackPorts ports;
+	jackClient->getPorts(NULL, NULL, JackPortIsPhysical | JackPortIsInput, ports);
+	if (ports.list == NULL) {
+		THROW_EXCEPTION(JackClientException, "No physical playback ports.");
 	}
-	stream.stop();
-	stream.close();
+	for (std::size_t i = 0; i < 2 && ports.list[i]; ++i) {
+		jackClient->connect(JackClient::portName(jackOutputPort_), ports.list[i]);
+	}
+
+	do {
+		std::this_thread::sleep_for(std::chrono::milliseconds(200));
+	} while (jack_port_connected(jackOutputPort_) > 0);
 }
 
 int
-AudioPlayer::callback(const void* /*inputBuffer*/, void* outputBuffer, unsigned long framesPerBuffer,
-			const PaStreamCallbackTimeInfo* /*timeInfo*/, PaStreamCallbackFlags /*statusFlags*/)
+AudioPlayer::callback(jack_nframes_t nframes)
 {
-	float* out = static_cast<float*>(outputBuffer);
-	const unsigned int framesAvailable = buffer_.size() - bufferIndex_;
-	const unsigned int numFrames = (framesAvailable > framesPerBuffer) ? framesPerBuffer : framesAvailable;
-	for (unsigned int i = 0; i < numFrames; ++i) {
-		unsigned int baseIndex = i * 2;
-		const float* src = &buffer_[bufferIndex_ + i];
-		out[baseIndex]     = *src;
-		out[baseIndex + 1] = *src;
+	jack_default_audio_sample_t* out =
+		static_cast<jack_default_audio_sample_t*>(jack_port_get_buffer(jackOutputPort_, nframes));
+
+	std::size_t outIndex = 0;
+	const std::size_t bufferSize = buffer_.size();
+	while (bufferIndex_ < bufferSize && outIndex < nframes) {
+		out[outIndex] = buffer_[bufferIndex_];
+		++bufferIndex_;
+		++outIndex;
 	}
-	bufferIndex_ += numFrames;
-	for (unsigned int i = numFrames; i < framesPerBuffer; ++i) {
-		const unsigned int baseIndex = i * 2;
-		out[baseIndex]     = 0;
-		out[baseIndex + 1] = 0;
+	while (outIndex < nframes) {
+		out[outIndex] = 0.0;
+		++outIndex;
 	}
-	if (bufferIndex_ == buffer_.size()) {
-		return paComplete;
-	} else {
-		return paContinue;
+	if (bufferIndex_ == bufferSize) {
+		return 1; // end: the port will be disconnected
 	}
+
+	return 0;
 }
 
 } // namespace GS
