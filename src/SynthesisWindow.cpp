@@ -74,6 +74,8 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 	ui_->yZoomSpinBox->setSingleStep(0.1);
 	ui_->yZoomSpinBox->setValue(1.0);
 
+	ui_->eventScrollArea->setBackgroundRole(QPalette::Base);
+
 	connect(ui_->textLineEdit, &QLineEdit::returnPressed, ui_->parseButton, &QPushButton::click);
 	connect(ui_->eventWidget , &EventWidget::mouseMoved , this            , &SynthesisWindow::updateMouseTracking);
 	connect(ui_->eventWidget , &EventWidget::zoomReset  , this            , &SynthesisWindow::resetZoom);

@@ -61,15 +61,8 @@ EventWidget::EventWidget(QWidget* parent)
 		, totalWidth_(MININUM_WIDTH)
 		, totalHeight_(MININUM_HEIGHT)
 {
-	//setSizePolicy(QSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed));
-	setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 	setMinimumWidth(totalWidth_);
 	setMinimumHeight(totalHeight_);
-
-	QPalette pal;
-	pal.setColor(QPalette::Window, Qt::white);
-	setPalette(pal);
-	setAutoFillBackground(true);
 
 	setMouseTracking(true);
 }

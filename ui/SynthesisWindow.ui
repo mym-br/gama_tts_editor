@@ -363,17 +363,20 @@
        </widget>
       </item>
       <item>
-       <widget class="QScrollArea" name="scrollArea">
+       <widget class="QScrollArea" name="eventScrollArea">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>10</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
+        <property name="cursor" stdset="0">
+         <cursorShape>CrossCursor</cursorShape>
+        </property>
         <property name="widgetResizable">
          <bool>true</bool>
         </property>
-        <widget class="QWidget" name="scrollAreaWidgetContents">
+        <widget class="GS::EventWidget" name="eventWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -395,13 +398,6 @@
           <property name="bottomMargin">
            <number>0</number>
           </property>
-          <item>
-           <widget class="GS::EventWidget" name="eventWidget" native="true">
-            <property name="cursor">
-             <cursorShape>CrossCursor</cursorShape>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </widget>
