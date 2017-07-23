@@ -38,6 +38,8 @@ IntonationWindow::IntonationWindow(QWidget* parent)
 {
 	ui_->setupUi(this);
 
+	ui_->intonationScrollArea->setBackgroundRole(QPalette::Base);
+
 	connect(ui_->intonationWidget, &IntonationWidget::pointSelected, this, &IntonationWindow::setPointData);
 }
 

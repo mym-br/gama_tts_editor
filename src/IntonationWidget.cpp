@@ -90,14 +90,8 @@ IntonationWidget::IntonationWidget(QWidget* parent)
 		, totalHeight_(MININUM_HEIGHT)
 		, selectedPoint_(-1)
 {
-	setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
 	setMinimumWidth(totalWidth_);
 	setMinimumHeight(totalHeight_);
-
-	QPalette pal;
-	pal.setColor(QPalette::Window, Qt::white);
-	setPalette(pal);
-	setAutoFillBackground(true);
 
 	setFocusPolicy(Qt::StrongFocus); // enable key events
 }
