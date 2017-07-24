@@ -45,6 +45,8 @@ public:
 	double yZoomMax() const { return 10.0; }
 	void changeXZoom(double zoom);
 	void changeYZoom(double zoom);
+public slots:
+	void getScrollbarValue(int value);
 signals:
 	void mouseMoved(double time, double value);
 	void zoomReset();
@@ -57,17 +59,19 @@ private:
 		NUM_PARAM = 16 // hardcoded
 	};
 
+	double getGraphBaseY(unsigned int index);
+
 	const VTMControlModel::EventList* eventList_;
 	const VTMControlModel::Model* model_;
 	double timeScale_;
 	double graphHeight_;
 	bool modelUpdated_;
-	double textAscent_;
-	double textYOffset_;
 	double labelWidth_;
 	unsigned int maxLabelSize_;
 	int totalWidth_;
 	int totalHeight_;
+	int scrollbarValue_;
+	int textTotalHeight_;
 	std::vector<unsigned int> selectedParamList_;
 	std::vector<int> postureTimeList_;
 };

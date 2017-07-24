@@ -35,7 +35,6 @@
 #include "Model.h"
 
 #define MARGIN 10.0
-#define TRACK_HEIGHT 20.0
 #define DEFAULT_GRAPH_HEIGHT 120.0
 #define MININUM_WIDTH 1024
 #define MININUM_HEIGHT 768
@@ -48,18 +47,18 @@
 namespace GS {
 
 EventWidget::EventWidget(QWidget* parent)
-		: QWidget(parent)
-		, eventList_(nullptr)
-		, model_(nullptr)
-		, timeScale_(DEFAULT_TIME_SCALE)
-		, graphHeight_(DEFAULT_GRAPH_HEIGHT)
-		, modelUpdated_(false)
-		, textAscent_(0.0)
-		, textYOffset_(0.0)
-		, labelWidth_(0.0)
-		, maxLabelSize_(0)
-		, totalWidth_(MININUM_WIDTH)
-		, totalHeight_(MININUM_HEIGHT)
+		: QWidget{parent}
+		, eventList_{}
+		, model_{}
+		, timeScale_{DEFAULT_TIME_SCALE}
+		, graphHeight_{DEFAULT_GRAPH_HEIGHT}
+		, modelUpdated_{}
+		, labelWidth_{}
+		, maxLabelSize_{}
+		, totalWidth_{MININUM_WIDTH}
+		, totalHeight_{MININUM_HEIGHT}
+		, scrollbarValue_{}
+		, textTotalHeight_{}
 {
 	setMinimumWidth(totalWidth_);
 	setMinimumHeight(totalHeight_);
@@ -77,12 +76,13 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 
 	QPainter painter(this);
 	painter.setFont(QFont("monospace"));
+	QFontMetrics fm = painter.fontMetrics();
+	const int fontAscent = fm.ascent();
+	const int fontLeading = fm.leading();
+	const int textYOffset = fontAscent + fontLeading + 1;
+	textTotalHeight_ = fm.lineSpacing() + fontLeading + 1;
 
 	if (modelUpdated_) {
-		QFontMetrics fm = painter.fontMetrics();
-		textAscent_ = fm.ascent();
-		textYOffset_ = 0.5 * textAscent_;
-
 		int maxWidth = 0;
 		for (unsigned int i = 0; i < model_->parameterList().size(); ++i) {
 			unsigned int labelSize = model_->parameterList()[i].name().size();
@@ -105,7 +105,7 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 		yEnd = MININUM_HEIGHT;
 	} else {
 		xEnd = 2.0 * MARGIN + labelWidth_ + eventList_->list().back()->time * timeScale_;
-		yEnd = 2.0 * TRACK_HEIGHT + (MARGIN + graphHeight_) * selectedParamList_.size();
+		yEnd = getGraphBaseY(selectedParamList_.size() - 1U);
 	}
 	totalWidth_ = std::ceil(xEnd + 3.0 * MARGIN);
 	if (totalWidth_ < MININUM_WIDTH) {
@@ -118,34 +118,39 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 	setMinimumWidth(totalWidth_);
 	setMinimumHeight(totalHeight_);
 
+	const double headerBottomY = 2.0 * textTotalHeight_ + MARGIN;
+
 	if (!selectedParamList_.empty()) {
 
 		postureTimeList_.clear();
 
-		double y = MARGIN + 2.0 * TRACK_HEIGHT - 0.5 * (TRACK_HEIGHT - 1.0) + textYOffset_;
+		painter.setPen(Qt::black);
+
+		double yPosture = MARGIN + textTotalHeight_ + textYOffset + scrollbarValue_;
 		unsigned int postureIndex = 0;
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
 			double x = 2.0 * MARGIN + labelWidth_ + ev->time * timeScale_;
 			if (ev->flag) {
 				postureTimeList_.push_back(ev->time);
-				painter.setPen(Qt::black);
 				const VTMControlModel::Posture* posture = eventList_->getPostureAtIndex(postureIndex++);
 				if (posture) {
 					// Posture name.
-					painter.drawText(QPointF(x, y), posture->name().c_str());
+					painter.drawText(QPointF(x, yPosture), posture->name().c_str());
 				}
 				// Event vertical lines.
 				for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
-					double yBase = 2.0 * TRACK_HEIGHT + (MARGIN + graphHeight_) * (i + 1U);
-					double yBottom = yBase - graphHeight_;
-					painter.drawLine(QPointF(x, yBottom), QPointF(x, yBase));
+					double yBase = getGraphBaseY(i);
+					double yTop = yBase - graphHeight_;
+					if (yTop - scrollbarValue_ < headerBottomY) {
+						continue;
+					}
+					painter.drawLine(QPointF(x, yTop), QPointF(x, yBase));
 				}
 			}
 		}
-		painter.setPen(Qt::black);
 
 		double xRule = 2.0 * MARGIN + labelWidth_;
-		double yRuleText = MARGIN + TRACK_HEIGHT - 0.5 * (TRACK_HEIGHT - 1.0) + textYOffset_;
+		double yRuleText = MARGIN + textYOffset + scrollbarValue_;
 		painter.drawText(QPointF(MARGIN, yRuleText), tr("Rule"));
 		for (int i = 0; i < eventList_->numberOfRules(); ++i) {
 			auto* ruleData = eventList_->getRuleAtIndex(i);
@@ -169,8 +174,8 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 				double xPost2 = xRule + postureTime2 * timeScale_;
 				// Rule frame.
 				painter.drawRect(QRectF(
-						QPointF(xPost1, MARGIN),
-						QPointF(xPost2, MARGIN + TRACK_HEIGHT)));
+						QPointF(xPost1, MARGIN + scrollbarValue_),
+						QPointF(xPost2, MARGIN + textTotalHeight_ + scrollbarValue_)));
 				// Rule number.
 				painter.drawText(QPointF(xPost1 + TEXT_MARGIN, yRuleText), QString::number(ruleData->number));
 			}
@@ -184,25 +189,28 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 	const unsigned int numParameters = model_->parameterList().size();
 
 	for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
+		double yBase = getGraphBaseY(i);
+		double yTop = yBase - graphHeight_;
+		if (yTop - scrollbarValue_ < headerBottomY) {
+			continue;
+		}
+
 		unsigned int paramIndex = selectedParamList_[i];
 		double currentMin = model_->parameterList()[paramIndex].minimum();
 		double currentMax = model_->parameterList()[paramIndex].maximum();
 
-		double yBase = 2.0 * TRACK_HEIGHT + (MARGIN + graphHeight_) * (i + 1U);
-
 		// Label.
-		painter.drawText(QPointF(MARGIN, yBase - 0.5 * graphHeight_ + textYOffset_), model_->parameterList()[paramIndex].name().c_str());
+		painter.drawText(QPointF(MARGIN, yBase - 0.5 * graphHeight_), model_->parameterList()[paramIndex].name().c_str());
 		// Limits.
 		painter.drawText(QPointF(MARGIN, yBase), QString("%1").arg(currentMin, maxLabelSize_));
-		painter.drawText(QPointF(MARGIN, yBase - graphHeight_ + textAscent_), QString("%1").arg(currentMax, maxLabelSize_));
+		painter.drawText(QPointF(MARGIN, yBase - graphHeight_ + fontAscent), QString("%1").arg(currentMax, maxLabelSize_));
 
 		// Graph frame.
 		double xBase = 2.0 * MARGIN + labelWidth_;
-		double yBottom = yBase - graphHeight_;
-		painter.drawLine(QPointF(xBase, yBottom), QPointF(xEnd, yBottom));
+		painter.drawLine(QPointF(xBase, yTop), QPointF(xEnd, yTop));
 		painter.drawLine(QPointF(xBase, yBase)  , QPointF(xEnd, yBase));
-		painter.drawLine(QPointF(xBase, yBottom), QPointF(xBase, yBase));
-		painter.drawLine(QPointF(xEnd, yBottom) , QPointF(xEnd, yBase));
+		painter.drawLine(QPointF(xBase, yTop), QPointF(xBase, yBase));
+		painter.drawLine(QPointF(xEnd, yTop) , QPointF(xEnd, yBase));
 
 		// Graph curve.
 		painter.setPen(pen2);
@@ -272,7 +280,7 @@ EventWidget::mouseMoveEvent(QMouseEvent* event)
 	}
 
 	for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
-		double yStart = 2.0 * TRACK_HEIGHT + (MARGIN + graphHeight_) * (i + 1U);
+		double yStart = getGraphBaseY(i);
 		double yEnd = yStart - graphHeight_;
 		if (yEnd <= y && y <= yStart) {
 			unsigned int paramIndex = selectedParamList_[i];
@@ -306,6 +314,12 @@ EventWidget::mouseDoubleClickEvent(QMouseEvent* /*event*/)
 	update();
 
 	emit zoomReset();
+}
+
+double
+EventWidget::getGraphBaseY(unsigned int index)
+{
+	return 2.0 * textTotalHeight_ + (MARGIN + graphHeight_) * (index + 1U);
 }
 
 QSize
@@ -370,6 +384,12 @@ EventWidget::changeYZoom(double zoom)
 	graphHeight_ = DEFAULT_GRAPH_HEIGHT * zoom;
 
 	update();
+}
+
+void
+EventWidget::getScrollbarValue(int value)
+{
+	scrollbarValue_ = value;
 }
 
 } // namespace GS

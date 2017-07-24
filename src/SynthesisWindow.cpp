@@ -23,6 +23,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
+#include <QScrollBar>
 #include <QString>
 #include <QStringList>
 
@@ -79,6 +80,7 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 	connect(ui_->textLineEdit, &QLineEdit::returnPressed, ui_->parseButton, &QPushButton::click);
 	connect(ui_->eventWidget , &EventWidget::mouseMoved , this            , &SynthesisWindow::updateMouseTracking);
 	connect(ui_->eventWidget , &EventWidget::zoomReset  , this            , &SynthesisWindow::resetZoom);
+	connect(ui_->eventScrollArea->verticalScrollBar(), &QScrollBar::valueChanged, ui_->eventWidget, &EventWidget::getScrollbarValue);
 
 	audioWorker_ = new AudioWorker;
 	audioWorker_->moveToThread(&audioThread_);
