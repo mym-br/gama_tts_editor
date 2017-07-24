@@ -333,7 +333,7 @@ SynthesisWindow::setupParameterTable()
 	for (unsigned int i = 0; i < model_->parameterList().size(); ++i) {
 		auto item = std::make_unique<QTableWidgetItem>(model_->parameterList()[i].name().c_str());
 		item->setFlags(Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-		item->setCheckState(Qt::Unchecked);
+		item->setCheckState(Qt::Checked);
 		table->setItem(i, 0, item.release());
 	}
 	table->resizeColumnsToContents();
