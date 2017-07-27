@@ -15,8 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef EVENT_WIDGET_H
-#define EVENT_WIDGET_H
+#ifndef PARAMETER_WIDGET_H
+#define PARAMETER_WIDGET_H
 
 #include <vector>
 
@@ -31,10 +31,10 @@ class Model;
 class EventList;
 }
 
-class EventWidget : public QWidget {
+class ParameterWidget : public QWidget {
 	Q_OBJECT
 public:
-	explicit EventWidget(QWidget* parent=0);
+	explicit ParameterWidget(QWidget* parent=0);
 
 	virtual QSize sizeHint() const;
 	void updateData(VTMControlModel::EventList* eventList, VTMControlModel::Model* model);
@@ -78,4 +78,4 @@ private:
 
 } // namespace GS
 
-#endif // EVENT_WIDGET_H
+#endif // PARAMETER_WIDGET_H

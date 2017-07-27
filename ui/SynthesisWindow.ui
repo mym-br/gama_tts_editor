@@ -363,7 +363,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QScrollArea" name="eventScrollArea">
+       <widget class="QScrollArea" name="parameterScrollArea">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
           <horstretch>10</horstretch>
@@ -376,7 +376,7 @@
         <property name="widgetResizable">
          <bool>true</bool>
         </property>
-        <widget class="GS::EventWidget" name="eventWidget">
+        <widget class="GS::ParameterWidget" name="parameterWidget">
          <property name="geometry">
           <rect>
            <x>0</x>
@@ -409,9 +409,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>GS::EventWidget</class>
+   <class>GS::ParameterWidget</class>
    <extends>QWidget</extends>
-   <header>EventWidget.h</header>
+   <header>ParameterWidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

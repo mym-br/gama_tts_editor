@@ -23,7 +23,6 @@ HEADERS += \
     src/Clipboard.h \
     src/DataEntryWindow.h \
     src/editor_global.h \
-    src/EventWidget.h \
     src/interactive/AnalysisWindow.h \
     src/interactive/Audio.h \
     src/interactive/FFTW.h \
@@ -39,6 +38,7 @@ HEADERS += \
     src/IntonationWindow.h \
     src/JackClient.h \
     src/MainWindow.h \
+    src/ParameterWidget.h \
     src/PostureEditorWindow.h \
     src/PrototypeManagerWindow.h \
     src/qt_model/CategoryModel.h \
@@ -57,7 +57,6 @@ SOURCES += \
     src/AudioWorker.cpp \
     src/Clipboard.cpp \
     src/DataEntryWindow.cpp \
-    src/EventWidget.cpp \
     src/interactive/AnalysisWindow.cpp \
     src/interactive/Audio.cpp \
     src/interactive/FFTW.cpp \
@@ -74,6 +73,7 @@ SOURCES += \
     src/JackClient.cpp \
     src/main.cpp \
     src/MainWindow.cpp \
+    src/ParameterWidget.cpp \
     src/PostureEditorWindow.cpp \
     src/PrototypeManagerWindow.cpp \
     src/qt_model/CategoryModel.cpp \

@@ -20,7 +20,7 @@
 // This file was created by Marcelo Y. Matuda, and code/information
 // from Gnuspeech was added to it later.
 
-#include "EventWidget.h"
+#include "ParameterWidget.h"
 
 #include <cmath>
 #include <cstring> /* strlen */
@@ -46,7 +46,7 @@
 
 namespace GS {
 
-EventWidget::EventWidget(QWidget* parent)
+ParameterWidget::ParameterWidget(QWidget* parent)
 		: QWidget{parent}
 		, eventList_{}
 		, model_{}
@@ -68,7 +68,7 @@ EventWidget::EventWidget(QWidget* parent)
 
 // Note: with no antialiasing, the coordinates in QPointF are rounded to the nearest integer.
 void
-EventWidget::paintEvent(QPaintEvent* /*event*/)
+ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 {
 	if (eventList_ == nullptr || eventList_->list().empty()) {
 		return;
@@ -259,7 +259,7 @@ EventWidget::paintEvent(QPaintEvent* /*event*/)
 }
 
 void
-EventWidget::mouseMoveEvent(QMouseEvent* event)
+ParameterWidget::mouseMoveEvent(QMouseEvent* event)
 {
 	double time = -1.0;
 	double value = 0.0;
@@ -305,7 +305,7 @@ EventWidget::mouseMoveEvent(QMouseEvent* event)
 }
 
 void
-EventWidget::mouseDoubleClickEvent(QMouseEvent* /*event*/)
+ParameterWidget::mouseDoubleClickEvent(QMouseEvent* /*event*/)
 {
 	// Reset zoom.
 	timeScale_ = DEFAULT_TIME_SCALE;
@@ -317,25 +317,25 @@ EventWidget::mouseDoubleClickEvent(QMouseEvent* /*event*/)
 }
 
 double
-EventWidget::getGraphBaseY(unsigned int index)
+ParameterWidget::getGraphBaseY(unsigned int index)
 {
 	return 2.0 * textTotalHeight_ + (MARGIN + graphHeight_) * (index + 1U);
 }
 
 QSize
-EventWidget::sizeHint() const
+ParameterWidget::sizeHint() const
 {
 	return QSize(totalWidth_, totalHeight_);
 }
 
 void
-EventWidget::updateData(VTMControlModel::EventList* eventList, VTMControlModel::Model* model)
+ParameterWidget::updateData(VTMControlModel::EventList* eventList, VTMControlModel::Model* model)
 {
 	eventList_ = eventList;
 	model_ = model;
 
 	if (model_ && model_->parameterList().size() != NUM_PARAM) {
-		THROW_EXCEPTION(InvalidValueException, "[EventWidget::updateData] Wrong number of parameters: " <<
+		THROW_EXCEPTION(InvalidValueException, "[ParameterWidget::updateData] Wrong number of parameters: " <<
 				model_->parameterList().size() << " (should be " << NUM_PARAM << ").");
 		model_ = nullptr;
 		eventList_ = nullptr;
@@ -350,7 +350,7 @@ EventWidget::updateData(VTMControlModel::EventList* eventList, VTMControlModel::
 }
 
 void
-EventWidget::changeParameterSelection(unsigned int paramIndex, bool selected)
+ParameterWidget::changeParameterSelection(unsigned int paramIndex, bool selected)
 {
 	if (selected) {
 		if (paramIndex < model_->parameterList().size()) {
@@ -369,7 +369,7 @@ EventWidget::changeParameterSelection(unsigned int paramIndex, bool selected)
 }
 
 void
-EventWidget::changeXZoom(double zoom)
+ParameterWidget::changeXZoom(double zoom)
 {
 	zoom = qBound(xZoomMin(), zoom, xZoomMax());
 	timeScale_ = DEFAULT_TIME_SCALE * zoom;
@@ -378,7 +378,7 @@ EventWidget::changeXZoom(double zoom)
 }
 
 void
-EventWidget::changeYZoom(double zoom)
+ParameterWidget::changeYZoom(double zoom)
 {
 	zoom = qBound(yZoomMin(), zoom, yZoomMax());
 	graphHeight_ = DEFAULT_GRAPH_HEIGHT * zoom;
@@ -387,7 +387,7 @@ EventWidget::changeYZoom(double zoom)
 }
 
 void
-EventWidget::getScrollbarValue(int value)
+ParameterWidget::getScrollbarValue(int value)
 {
 	scrollbarValue_ = value;
 }

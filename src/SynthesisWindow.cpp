@@ -67,20 +67,20 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 	ui_->tempoSpinBox->setDecimals(1);
 	ui_->tempoSpinBox->setValue(1.0);
 
-	ui_->xZoomSpinBox->setRange(ui_->eventWidget->xZoomMin(), ui_->eventWidget->xZoomMax());
+	ui_->xZoomSpinBox->setRange(ui_->parameterWidget->xZoomMin(), ui_->parameterWidget->xZoomMax());
 	ui_->xZoomSpinBox->setSingleStep(0.1);
 	ui_->xZoomSpinBox->setValue(1.0);
 
-	ui_->yZoomSpinBox->setRange(ui_->eventWidget->yZoomMin(), ui_->eventWidget->yZoomMax());
+	ui_->yZoomSpinBox->setRange(ui_->parameterWidget->yZoomMin(), ui_->parameterWidget->yZoomMax());
 	ui_->yZoomSpinBox->setSingleStep(0.1);
 	ui_->yZoomSpinBox->setValue(1.0);
 
-	ui_->eventScrollArea->setBackgroundRole(QPalette::Base);
+	ui_->parameterScrollArea->setBackgroundRole(QPalette::Base);
 
-	connect(ui_->textLineEdit, &QLineEdit::returnPressed, ui_->parseButton, &QPushButton::click);
-	connect(ui_->eventWidget , &EventWidget::mouseMoved , this            , &SynthesisWindow::updateMouseTracking);
-	connect(ui_->eventWidget , &EventWidget::zoomReset  , this            , &SynthesisWindow::resetZoom);
-	connect(ui_->eventScrollArea->verticalScrollBar(), &QScrollBar::valueChanged, ui_->eventWidget, &EventWidget::getScrollbarValue);
+	connect(ui_->textLineEdit   , &QLineEdit::returnPressed   , ui_->parseButton, &QPushButton::click);
+	connect(ui_->parameterWidget, &ParameterWidget::mouseMoved, this            , &SynthesisWindow::updateMouseTracking);
+	connect(ui_->parameterWidget, &ParameterWidget::zoomReset , this            , &SynthesisWindow::resetZoom);
+	connect(ui_->parameterScrollArea->verticalScrollBar(), &QScrollBar::valueChanged, ui_->parameterWidget, &ParameterWidget::getScrollbarValue);
 
 	audioWorker_ = new AudioWorker;
 	audioWorker_->moveToThread(&audioThread_);
@@ -105,7 +105,7 @@ void
 SynthesisWindow::clear()
 {
 	ui_->parameterTableWidget->setRowCount(0);
-	ui_->eventWidget->updateData(nullptr, nullptr);
+	ui_->parameterWidget->updateData(nullptr, nullptr);
 	synthesis_ = nullptr;
 	model_ = nullptr;
 }
@@ -127,7 +127,7 @@ SynthesisWindow::setup(VTMControlModel::Model* model, Synthesis* synthesis)
 		model_ = model;
 		synthesis_ = synthesis;
 
-		ui_->eventWidget->updateData(&synthesis_->vtmController->eventList(), model_);
+		ui_->parameterWidget->updateData(&synthesis_->vtmController->eventList(), model_);
 
 		setupParameterTable();
 	} catch (...) {
@@ -188,7 +188,7 @@ SynthesisWindow::on_synthesizeButton_clicked()
 						buffer);
 		});
 
-		ui_->eventWidget->update();
+		ui_->parameterWidget->update();
 
 		emit audioStarted();
 		emit playAudioRequested(sampleRate);
@@ -227,7 +227,7 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 					vtmParamFilePath.toStdString().c_str(),
 					filePath.toStdString().c_str());
 
-		ui_->eventWidget->update();
+		ui_->parameterWidget->update();
 
 		emit textSynthesized();
 	} catch (const Exception& exc) {
@@ -307,19 +307,19 @@ void
 SynthesisWindow::on_parameterTableWidget_cellChanged(int row, int column)
 {
 	bool selected = ui_->parameterTableWidget->item(row, column)->checkState() == Qt::Checked;
-	ui_->eventWidget->changeParameterSelection(row, selected);
+	ui_->parameterWidget->changeParameterSelection(row, selected);
 }
 
 void
 SynthesisWindow::on_xZoomSpinBox_valueChanged(double d)
 {
-	ui_->eventWidget->changeXZoom(d);
+	ui_->parameterWidget->changeXZoom(d);
 }
 
 void
 SynthesisWindow::on_yZoomSpinBox_valueChanged(double d)
 {
-	ui_->eventWidget->changeYZoom(d);
+	ui_->parameterWidget->changeYZoom(d);
 }
 
 // Slot.
