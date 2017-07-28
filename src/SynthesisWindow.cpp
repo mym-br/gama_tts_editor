@@ -80,7 +80,8 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 	connect(ui_->textLineEdit   , &QLineEdit::returnPressed   , ui_->parseButton, &QPushButton::click);
 	connect(ui_->parameterWidget, &ParameterWidget::mouseMoved, this            , &SynthesisWindow::updateMouseTracking);
 	connect(ui_->parameterWidget, &ParameterWidget::zoomReset , this            , &SynthesisWindow::resetZoom);
-	connect(ui_->parameterScrollArea->verticalScrollBar(), &QScrollBar::valueChanged, ui_->parameterWidget, &ParameterWidget::getScrollbarValue);
+	connect(ui_->parameterScrollArea->verticalScrollBar()  , &QScrollBar::valueChanged, ui_->parameterWidget, &ParameterWidget::getVerticalScrollbarValue);
+	connect(ui_->parameterScrollArea->horizontalScrollBar(), &QScrollBar::valueChanged, ui_->parameterWidget, &ParameterWidget::getHorizontalScrollbarValue);
 
 	audioWorker_ = new AudioWorker;
 	audioWorker_->moveToThread(&audioThread_);

@@ -46,7 +46,8 @@ public:
 	void changeXZoom(double zoom);
 	void changeYZoom(double zoom);
 public slots:
-	void getScrollbarValue(int value);
+	void getVerticalScrollbarValue(int value);
+	void getHorizontalScrollbarValue(int value);
 signals:
 	void mouseMoved(double time, double value);
 	void zoomReset();
@@ -70,7 +71,8 @@ private:
 	unsigned int maxLabelSize_;
 	int totalWidth_;
 	int totalHeight_;
-	int scrollbarValue_;
+	int verticalScrollbarValue_;
+	int horizontalScrollbarValue_;
 	int textTotalHeight_;
 	std::vector<unsigned int> selectedParamList_;
 	std::vector<int> postureTimeList_;

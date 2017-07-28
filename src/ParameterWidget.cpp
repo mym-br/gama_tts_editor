@@ -57,7 +57,8 @@ ParameterWidget::ParameterWidget(QWidget* parent)
 		, maxLabelSize_{}
 		, totalWidth_{MININUM_WIDTH}
 		, totalHeight_{MININUM_HEIGHT}
-		, scrollbarValue_{}
+		, verticalScrollbarValue_{}
+		, horizontalScrollbarValue_{}
 		, textTotalHeight_{}
 {
 	setMinimumWidth(totalWidth_);
@@ -76,7 +77,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 
 	QPainter painter(this);
 	painter.setFont(QFont("monospace"));
-	QFontMetrics fm = painter.fontMetrics();
+	const QFontMetrics fm = painter.fontMetrics();
 	const int fontAscent = fm.ascent();
 	const int fontLeading = fm.leading();
 	const int textYOffset = fontAscent + fontLeading + 1;
@@ -85,11 +86,11 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 	if (modelUpdated_) {
 		int maxWidth = 0;
 		for (unsigned int i = 0; i < model_->parameterList().size(); ++i) {
-			unsigned int labelSize = model_->parameterList()[i].name().size();
+			const unsigned int labelSize = model_->parameterList()[i].name().size();
 			if (labelSize > maxLabelSize_) {
 				maxLabelSize_ = labelSize;
 			}
-			int width = fm.width(model_->parameterList()[i].name().c_str());
+			const int width = fm.width(model_->parameterList()[i].name().c_str());
 			if (width > maxWidth) {
 				maxWidth = width;
 			}
@@ -99,12 +100,13 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 		modelUpdated_ = false;
 	}
 
+	const double xBase = 3.0 * MARGIN + labelWidth_;
 	double xEnd, yEnd;
 	if (selectedParamList_.empty()) {
 		xEnd = MININUM_WIDTH;
 		yEnd = MININUM_HEIGHT;
 	} else {
-		xEnd = 2.0 * MARGIN + labelWidth_ + eventList_->list().back()->time * timeScale_;
+		xEnd = xBase + eventList_->list().back()->time * timeScale_;
 		yEnd = getGraphBaseY(selectedParamList_.size() - 1U);
 	}
 	totalWidth_ = std::ceil(xEnd + 3.0 * MARGIN);
@@ -119,6 +121,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 	setMinimumHeight(totalHeight_);
 
 	const double headerBottomY = 2.0 * textTotalHeight_ + MARGIN;
+	const QPalette pal;
 
 	if (!selectedParamList_.empty()) {
 
@@ -126,10 +129,10 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 
 		painter.setPen(Qt::black);
 
-		double yPosture = MARGIN + textTotalHeight_ + textYOffset + scrollbarValue_;
+		const double yPosture = MARGIN + textTotalHeight_ + textYOffset + verticalScrollbarValue_;
 		unsigned int postureIndex = 0;
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
-			double x = 2.0 * MARGIN + labelWidth_ + ev->time * timeScale_;
+			const double x = xBase + ev->time * timeScale_;
 			if (ev->flag) {
 				postureTimeList_.push_back(ev->time);
 				const VTMControlModel::Posture* posture = eventList_->getPostureAtIndex(postureIndex++);
@@ -139,9 +142,9 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 				}
 				// Event vertical lines.
 				for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
-					double yBase = getGraphBaseY(i);
-					double yTop = yBase - graphHeight_;
-					if (yTop - scrollbarValue_ < headerBottomY) {
+					const double yBase = getGraphBaseY(i);
+					const double yTop = yBase - graphHeight_;
+					if (yTop - verticalScrollbarValue_ < headerBottomY) {
 						continue;
 					}
 					painter.drawLine(QPointF(x, yTop), QPointF(x, yBase));
@@ -149,14 +152,13 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 			}
 		}
 
-		double xRule = 2.0 * MARGIN + labelWidth_;
-		double yRuleText = MARGIN + textYOffset + scrollbarValue_;
-		painter.drawText(QPointF(MARGIN, yRuleText), tr("Rule"));
+		const double yRuleText = MARGIN + textYOffset + verticalScrollbarValue_;
+
 		for (int i = 0; i < eventList_->numberOfRules(); ++i) {
-			auto* ruleData = eventList_->getRuleAtIndex(i);
+			const auto* ruleData = eventList_->getRuleAtIndex(i);
 			if (ruleData) {
-				unsigned int firstPosture = ruleData->firstPosture;
-				unsigned int lastPosture = ruleData->lastPosture;
+				const unsigned int firstPosture = ruleData->firstPosture;
+				const unsigned int lastPosture = ruleData->lastPosture;
 
 				int postureTime1, postureTime2;
 				if (firstPosture < postureTimeList_.size()) {
@@ -170,47 +172,50 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 					postureTime2 = postureTime1 + ruleData->duration;
 				}
 
-				double xPost1 = xRule + postureTime1 * timeScale_;
-				double xPost2 = xRule + postureTime2 * timeScale_;
+				const double xPost1 = xBase + postureTime1 * timeScale_;
+				const double xPost2 = xBase + postureTime2 * timeScale_;
 				// Rule frame.
 				painter.drawRect(QRectF(
-						QPointF(xPost1, MARGIN + scrollbarValue_),
-						QPointF(xPost2, MARGIN + textTotalHeight_ + scrollbarValue_)));
+						QPointF(xPost1, MARGIN + verticalScrollbarValue_),
+						QPointF(xPost2, MARGIN + textTotalHeight_ + verticalScrollbarValue_)));
 				// Rule number.
 				painter.drawText(QPointF(xPost1 + TEXT_MARGIN, yRuleText), QString::number(ruleData->number));
 			}
 		}
+
+		// Background for "Rule" label.
+		painter.fillRect(QRectF(
+					QPointF(horizontalScrollbarValue_                 , verticalScrollbarValue_),
+					QPointF(xBase - MARGIN + horizontalScrollbarValue_, headerBottomY + graphHeight_ + MARGIN + verticalScrollbarValue_)
+					), pal.window());
+
+		QString ruleLabel = tr("Rule");
+		painter.drawText(QPointF(MARGIN + (labelWidth_ - fm.width(ruleLabel)) + horizontalScrollbarValue_, yRuleText), ruleLabel);
 	}
 
-	QPen pen;
+	const QPen pen;
 	QPen pen2;
 	pen2.setWidth(2);
 
 	const unsigned int numParameters = model_->parameterList().size();
+	const double xText = MARGIN + horizontalScrollbarValue_;
 
 	for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
-		double yBase = getGraphBaseY(i);
-		double yTop = yBase - graphHeight_;
-		if (yTop - scrollbarValue_ < headerBottomY) {
+		const double yBase = getGraphBaseY(i);
+		const double yTop = yBase - graphHeight_;
+		if (yTop < headerBottomY + verticalScrollbarValue_) {
 			continue;
 		}
 
-		unsigned int paramIndex = selectedParamList_[i];
-		double currentMin = model_->parameterList()[paramIndex].minimum();
-		double currentMax = model_->parameterList()[paramIndex].maximum();
-
-		// Label.
-		painter.drawText(QPointF(MARGIN, yBase - 0.5 * graphHeight_), model_->parameterList()[paramIndex].name().c_str());
-		// Limits.
-		painter.drawText(QPointF(MARGIN, yBase), QString("%1").arg(currentMin, maxLabelSize_));
-		painter.drawText(QPointF(MARGIN, yBase - graphHeight_ + fontAscent), QString("%1").arg(currentMax, maxLabelSize_));
+		const unsigned int paramIndex = selectedParamList_[i];
+		const double currentMin = model_->parameterList()[paramIndex].minimum();
+		const double currentMax = model_->parameterList()[paramIndex].maximum();
 
 		// Graph frame.
-		double xBase = 2.0 * MARGIN + labelWidth_;
-		painter.drawLine(QPointF(xBase, yTop), QPointF(xEnd, yTop));
-		painter.drawLine(QPointF(xBase, yBase)  , QPointF(xEnd, yBase));
-		painter.drawLine(QPointF(xBase, yTop), QPointF(xBase, yBase));
-		painter.drawLine(QPointF(xEnd, yTop) , QPointF(xEnd, yBase));
+		painter.drawLine(QPointF(xBase, yTop) , QPointF(xEnd , yTop));
+		painter.drawLine(QPointF(xBase, yBase), QPointF(xEnd , yBase));
+		painter.drawLine(QPointF(xBase, yTop) , QPointF(xBase, yBase));
+		painter.drawLine(QPointF(xEnd , yTop) , QPointF(xEnd , yBase));
 
 		// Graph curve.
 		painter.setPen(pen2);
@@ -219,11 +224,11 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 		const double valueFactor = 1.0 / (currentMax - currentMin);
 		// Normal events.
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
-			double x = 0.5 + 2.0 * MARGIN + labelWidth_ + ev->time * timeScale_; // 0.5 added because of antialiasing
-			double value = ev->getParameter(paramIndex);
+			const double x = 0.5 + xBase + ev->time * timeScale_; // 0.5 added because of antialiasing
+			const double value = ev->getParameter(paramIndex);
 			if (value != VTMControlModel::Event::EMPTY_PARAMETER) {
-				double y = 0.5 + yBase - (value - currentMin) * valueFactor * graphHeight_; // 0.5 added because of antialiasing
-				QPointF point(x, y);
+				const double y = 0.5 + yBase - (value - currentMin) * valueFactor * graphHeight_; // 0.5 added because of antialiasing
+				const QPointF point(x, y);
 				if (!prevPoint.isNull()) {
 					painter.drawLine(prevPoint, point);
 				}
@@ -237,11 +242,11 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 		pen2.setColor(Qt::red);
 		painter.setPen(pen2);
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
-			double x = 0.5 + 2.0 * MARGIN + labelWidth_ + ev->time * timeScale_; // 0.5 added because of antialiasing
-			double value = ev->getParameter(paramIndex + numParameters);
+			const double x = 0.5 + xBase + ev->time * timeScale_; // 0.5 added because of antialiasing
+			const double value = ev->getParameter(paramIndex + numParameters);
 			if (value != VTMControlModel::Event::EMPTY_PARAMETER) {
-				double y = 0.5 + yBase - (value - currentMin) * valueFactor * graphHeight_; // 0.5 added because of antialiasing
-				QPointF point(x, y);
+				const double y = 0.5 + yBase - (value - currentMin) * valueFactor * graphHeight_; // 0.5 added because of antialiasing
+				const QPointF point(x, y);
 				if (!prevPoint.isNull()) {
 					painter.drawLine(prevPoint, point);
 				}
@@ -255,6 +260,18 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 
 		painter.setRenderHint(QPainter::Antialiasing, false);
 		painter.setPen(pen);
+
+		// Background for labels and limits.
+		painter.fillRect(QRectF(
+					QPointF(horizontalScrollbarValue_                 , yTop  - MARGIN),
+					QPointF(xBase - MARGIN + horizontalScrollbarValue_, yBase + MARGIN)
+					), pal.window());
+
+		// Label.
+		painter.drawText(QPointF(xText, yBase - 0.5 * graphHeight_), model_->parameterList()[paramIndex].name().c_str());
+		// Limits.
+		painter.drawText(QPointF(xText, yBase)                            , QString("%1").arg(currentMin, maxLabelSize_));
+		painter.drawText(QPointF(xText, yBase - graphHeight_ + fontAscent), QString("%1").arg(currentMax, maxLabelSize_));
 	}
 }
 
@@ -387,9 +404,15 @@ ParameterWidget::changeYZoom(double zoom)
 }
 
 void
-ParameterWidget::getScrollbarValue(int value)
+ParameterWidget::getVerticalScrollbarValue(int value)
 {
-	scrollbarValue_ = value;
+	verticalScrollbarValue_ = value;
+}
+
+void
+ParameterWidget::getHorizontalScrollbarValue(int value)
+{
+	horizontalScrollbarValue_ = value;
 }
 
 } // namespace GS
