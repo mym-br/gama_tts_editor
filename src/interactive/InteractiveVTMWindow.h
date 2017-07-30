@@ -26,6 +26,7 @@
 
 #include "Audio.h"
 #include "ProgramConfiguration.h"
+#include "VocalTractModelParameterValue.h"
 
 
 

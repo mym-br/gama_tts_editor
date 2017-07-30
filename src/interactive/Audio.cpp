@@ -26,6 +26,10 @@
 #include <iostream>
 
 #include "ProgramConfiguration.h"
+#include "VocalTractModelParameterValue.h"
+#include "VTMUtil.h"
+
+#define PARAMETER_FILTER_PERIOD_SEC (50.0e-3)
 
 
 
@@ -76,12 +80,14 @@ namespace GS {
 /*******************************************************************************
  * Constructor.
  */
-Audio::Processor::Processor()
+Audio::Processor::Processor(std::size_t numberOfParameters)
 		: outputPort_{}
-		, outputScale_{}
+		, vtmBufferPos_{}
+		, maxAbsSampleValue_{}
 		, vocalTractModel_{}
 		, parameterRingbuffer_{}
 		, analysisRingbuffer_{}
+		, paramValues_(numberOfParameters, 0.0)
 {
 }
 
@@ -99,10 +105,32 @@ void
 Audio::Processor::reset(jack_port_t* outputPort, ProgramConfiguration& configuration,
 			JackRingbuffer& parameterRingbuffer, JackRingbuffer& analysisRingbuffer)
 {
-	vocalTractModel_ = VTM::VocalTractModel::getInstance(*configuration.vtmData, true);
 	outputPort_ = outputPort;
+	vtmBufferPos_ = 0;
+	maxAbsSampleValue_ = 0.0;
+	vocalTractModel_ = VTM::VocalTractModel::getInstance(*configuration.vtmData, true);
 	parameterRingbuffer_ = &parameterRingbuffer;
 	analysisRingbuffer_ = &analysisRingbuffer;
+	for (auto& v : paramValues_) {
+		v = 0.0;
+	}
+
+	paramFilters_.clear();
+	for (std::size_t i = 0; i < paramValues_.size(); ++i) {
+		paramFilters_.emplace_back(vocalTractModel_->internalSampleRate(), PARAMETER_FILTER_PERIOD_SEC);
+	}
+}
+
+/*******************************************************************************
+ *
+ */
+float
+Audio::Processor::calcScale(const std::vector<float>& buffer) {
+	const float maxValue = VTM::Util::maximumAbsoluteValue(buffer);
+	if (maxValue > maxAbsSampleValue_) {
+		maxAbsSampleValue_ = maxValue;
+	}
+	return VTM::Util::calculateOutputScale(maxAbsSampleValue_);
 }
 
 /*******************************************************************************
@@ -123,7 +151,10 @@ Audio::Processor::process(jack_nframes_t nframes)
 	jack_default_audio_sample_t* out = static_cast<jack_default_audio_sample_t*>(jack_port_get_buffer(outputPort_, nframes));
 	const std::size_t sampleSize = sizeof(jack_default_audio_sample_t);
 
-	const std::size_t n = vocalTractModel_->getOutputSamples(nframes, out);
+	std::vector<float>& vtmOutputBuffer = vocalTractModel_->outputBuffer();
+
+	const std::size_t n = VTM::Util::getSamples(vtmOutputBuffer, vtmBufferPos_, out,
+							nframes, calcScale(vtmOutputBuffer));
 
 	// Send data to analysis.
 	for (std::size_t i = 0; i < n; ++i) {
@@ -146,17 +177,29 @@ Audio::Processor::process(jack_nframes_t nframes)
 	// Read parameters from ringbuffer, and send them to vocal tract model.
 	const size_t elementSize = sizeof(VocalTractModelParameterValue);
 	VocalTractModelParameterValue pv;
+	const int numParam = paramValues_.size();
 	while (parameterRingbuffer_->readSpace() >= elementSize) {
 #ifndef NDEBUG
 		size_t bytesRead =
 #endif
 		parameterRingbuffer_->read(reinterpret_cast<char*>(&pv), elementSize);
 		assert(bytesRead == elementSize);
-		vocalTractModel_->loadSingleInput(pv);
+		if (pv.index >= 0 && pv.index < numParam) {
+			paramValues_[pv.index] = pv.value;
+		}
 	}
 
-	vocalTractModel_->synthesizeSamples(nframes - n);
-	const std::size_t n2 = vocalTractModel_->getOutputSamples(nframes - n, out + n);
+	const std::size_t targetBufferSize = nframes - n;
+	while (vtmOutputBuffer.size() < targetBufferSize) {
+		for (int i = 0; i < numParam; ++i) {
+			// May throw exception.
+			vocalTractModel_->setParameter(i, paramFilters_[i].filter(paramValues_[i]));
+		}
+		vocalTractModel_->execSynthesisStep();
+	}
+
+	const std::size_t n2 = VTM::Util::getSamples(vtmOutputBuffer, vtmBufferPos_, out + n,
+							nframes - n, calcScale(vtmOutputBuffer));
 	assert(n2 == nframes - n);
 
 	// Send data to analysis.
@@ -183,7 +226,7 @@ Audio::Processor::process(jack_nframes_t nframes)
 Audio::Audio(ProgramConfiguration& configuration)
 		: state_{STOPPED}
 		, configuration_{configuration}
-		, processor_{}
+		, processor_{configuration_.dynamicParamList.size()}
 		, parameterRingbuffer_{std::make_unique<JackRingbuffer>(PARAMETER_RINGBUFFER_SIZE * sizeof(VocalTractModelParameterValue))}
 		// +1 because the ringbuffer keeps at least one position open.
 		, analysisRingbuffer_{std::make_unique<JackRingbuffer>(MAX_NUM_SAMPLES_FOR_ANALYSIS * sizeof(jack_default_audio_sample_t) + 1)}

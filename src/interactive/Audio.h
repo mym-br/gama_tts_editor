@@ -18,12 +18,14 @@
 #ifndef AUDIO_H_
 #define AUDIO_H_
 
+#include <cstddef> /* std::size_t */
 #include <memory>
 #include <vector>
 
 #include "Exception.h"
 #include "JackClient.h"
 #include "JackRingbuffer.h"
+#include "MovingAverageFilter.h"
 #include "VocalTractModel.h"
 
 
@@ -47,18 +49,23 @@ public:
 
 	class Processor {
 	public:
-		Processor();
+		Processor(std::size_t numberOfParameters);
 		~Processor();
 
 		void reset(jack_port_t* outputPort, ProgramConfiguration& configuration,
 				JackRingbuffer& parameterRingbuffer, JackRingbuffer& analysisRingbuffer);
 		int process(jack_nframes_t nframes);
 	private:
+		float calcScale(const std::vector<float>& buffer);
+
 		jack_port_t* outputPort_;
-		float outputScale_;
+		std::size_t vtmBufferPos_;
+		float maxAbsSampleValue_;
 		std::unique_ptr<VTM::VocalTractModel> vocalTractModel_;
 		JackRingbuffer* parameterRingbuffer_;
 		JackRingbuffer* analysisRingbuffer_;
+		std::vector<float> paramValues_;
+		std::vector<VTM::MovingAverageFilter<float>> paramFilters_;
 	};
 
 	Audio(ProgramConfiguration& configuration);
