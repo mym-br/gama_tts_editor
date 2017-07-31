@@ -71,10 +71,10 @@ private slots:
 	void on_interactiveVTMButton_clicked();
 
 	void about();
-private:
-	void openModel();
-	void saveModel();
 	void updateSynthesis();
+private:
+	bool openModel();
+	bool saveModel();
 
 	AppConfig config_;
 	std::unique_ptr<VTMControlModel::Model> model_;

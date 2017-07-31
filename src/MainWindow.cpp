@@ -212,7 +212,7 @@ MainWindow::on_openAction_triggered()
 	config_.projectDir = fileInfo.absolutePath() + '/';
 	config_.dataFileName = fileInfo.fileName();
 
-	openModel();
+	if (!openModel()) return;
 
 	ui_->fileNameLabel->setText(fileInfo.fileName());
 	ui_->statusBar->showMessage(tr("Model opened."), STATUSBAR_TIMEOUT_MS);
@@ -225,7 +225,7 @@ MainWindow::on_saveAction_triggered()
 		return;
 	}
 
-	saveModel();
+	if (!saveModel()) return;
 
 	ui_->statusBar->showMessage(tr("Model saved."), STATUSBAR_TIMEOUT_MS);
 }
@@ -255,7 +255,7 @@ MainWindow::on_saveAsAction_triggered()
 		done = true;
 	} while (!done);
 
-	saveModel();
+	if (!saveModel()) return;
 
 	ui_->statusBar->showMessage(tr("Model saved."), STATUSBAR_TIMEOUT_MS);
 }
@@ -269,7 +269,7 @@ MainWindow::on_reloadAction_triggered()
 
 	interactiveVTMWindow_.reset();
 
-	openModel();
+	if (!openModel()) return;
 
 	ui_->statusBar->showMessage(tr("Model reloaded."), STATUSBAR_TIMEOUT_MS);
 }
@@ -346,7 +346,7 @@ MainWindow::on_interactiveVTMButton_clicked()
 	interactiveVTMWindow_->raise();
 }
 
-void
+bool
 MainWindow::openModel()
 {
 	try {
@@ -384,10 +384,13 @@ MainWindow::openModel()
 		synthesis_->setup(QString(), nullptr);
 
 		model_.reset();
+
+		return false;
 	}
+	return true;
 }
 
-void
+bool
 MainWindow::saveModel()
 {
 	try {
@@ -396,7 +399,9 @@ MainWindow::saveModel()
 		qDebug() << "### Model saved to" << config_.projectDir.toStdString().c_str() << config_.dataFileName.toStdString().c_str();
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
+		return false;
 	}
+	return true;
 }
 
 void
