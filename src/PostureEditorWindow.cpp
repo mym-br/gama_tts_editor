@@ -106,7 +106,7 @@ PostureEditorWindow::on_addPostureButton_clicked()
 	if (model_ == nullptr) return;
 
 	if (model_->postureList().find(NEW_ITEM_NAME)) {
-		qWarning("Duplicate posture name.");
+		QMessageBox::critical(this, tr("Error"), tr("Duplicate posture name: %1").arg(NEW_ITEM_NAME));
 		return;
 	}
 
