@@ -459,6 +459,7 @@ PostureEditorWindow::setupPosturesTable()
 		}
 	}
 	table->setCurrentItem(nullptr);
+	clearPostureData();
 }
 
 void
