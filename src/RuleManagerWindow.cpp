@@ -121,8 +121,10 @@ RuleManagerWindow::on_removeButton_clicked()
 	int currRow = currItem->row();
 	model_->ruleList().erase(model_->ruleList().begin() + currRow);
 
+	clearRuleData();
 	setupRulesList();
 	ui_->rulesTable->setCurrentItem(nullptr);
+	selectedRule_ = nullptr;
 }
 
 void
@@ -267,16 +269,16 @@ RuleManagerWindow::on_rulesTable_currentItemChanged(QTableWidgetItem* current, Q
 	if (model_ == nullptr) return;
 	if (current == nullptr) {
 		clearRuleData();
+		selectedRule_ = nullptr;
 		return;
 	}
 
-	unsigned int row = current->row();
+	int row = current->row();
 	selectedRule_ = model_->ruleList()[row].get();
 
 	loadRuleData();
 }
 
-// Slot.
 void
 RuleManagerWindow::clearRuleData()
 {
