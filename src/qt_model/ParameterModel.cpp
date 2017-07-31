@@ -29,8 +29,8 @@
 namespace GS {
 
 ParameterModel::ParameterModel(QObject* parent)
-		: QAbstractTableModel(parent)
-		, model_(nullptr)
+		: QAbstractTableModel{parent}
+		, model_{}
 {
 }
 
@@ -114,7 +114,7 @@ ParameterModel::setData(const QModelIndex& index, const QVariant& value, int rol
 		{
 			std::string name = value.toString().toStdString();
 			if (model_->findParameterName(name)) {
-				qWarning("Duplicate parameter: %s", name.c_str());
+				emit errorOccurred(tr("Duplicate parameter: %1").arg(name.c_str()));
 				return false;
 			}
 			model_->parameterList()[row].setName(name);
@@ -182,7 +182,7 @@ ParameterModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	}
 
 	if (model_->findParameterName(NEW_ITEM_NAME)) {
-		qWarning("Duplicate parameter: %s", NEW_ITEM_NAME);
+		emit errorOccurred(tr("Duplicate parameter: %1").arg(NEW_ITEM_NAME));
 		return false;
 	}
 

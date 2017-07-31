@@ -29,8 +29,8 @@
 namespace GS {
 
 SymbolModel::SymbolModel(QObject* parent)
-		: QAbstractTableModel(parent)
-		, model_(nullptr)
+		: QAbstractTableModel{parent}
+		, model_{}
 {
 }
 
@@ -114,7 +114,7 @@ SymbolModel::setData(const QModelIndex& index, const QVariant& value, int role)
 		{
 			std::string name = value.toString().toStdString();
 			if (model_->findSymbolName(name)) {
-				qWarning("Duplicate symbol: %s", name.c_str());
+				emit errorOccurred(tr("Duplicate symbol: %1").arg(name.c_str()));
 				return false;
 			}
 			model_->symbolList()[row].setName(name);
@@ -182,7 +182,7 @@ SymbolModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	}
 
 	if (model_->findSymbolName(NEW_ITEM_NAME)) {
-		qWarning("Duplicate symbol: %s", NEW_ITEM_NAME);
+		emit errorOccurred(tr("Duplicate symbol: %1").arg(NEW_ITEM_NAME));
 		return false;
 	}
 

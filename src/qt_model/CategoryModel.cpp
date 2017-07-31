@@ -30,8 +30,8 @@
 namespace GS {
 
 CategoryModel::CategoryModel(QObject* parent)
-		: QAbstractTableModel(parent)
-		, model_(nullptr)
+		: QAbstractTableModel{parent}
+		, model_{}
 {
 }
 
@@ -116,7 +116,7 @@ CategoryModel::setData(const QModelIndex& index, const QVariant& value, int role
 	if (index.column() == 1) {
 		std::string name = value.toString().toStdString();
 		if (model_->findCategoryName(name)) {
-			qWarning("Duplicate category: %s", name.c_str());
+			emit errorOccurred(tr("Duplicate category: %1").arg(name.c_str()));
 			return false;
 		}
 		model_->categoryList()[row]->setName(name);
@@ -159,7 +159,7 @@ CategoryModel::insertRows(int row, int count, const QModelIndex& /*parent*/)
 	}
 
 	if (model_->findCategoryName(NEW_ITEM_NAME)) {
-		qWarning("Duplicate category: %s", NEW_ITEM_NAME);
+		emit errorOccurred(tr("Duplicate category: %1").arg(NEW_ITEM_NAME));
 		return false;
 	}
 
