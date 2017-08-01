@@ -68,10 +68,6 @@ private slots:
 	void handleAudioFinished();
 	void resetZoom();
 private:
-	enum {
-		NUM_PARAM = 16 // hardcoded
-	};
-
 	void enableProcessingButtons();
 	void disableProcessingButtons();
 

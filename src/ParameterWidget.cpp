@@ -197,7 +197,6 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 	QPen pen2;
 	pen2.setWidth(2);
 
-	const unsigned int numParameters = model_->parameterList().size();
 	const double xText = MARGIN + horizontalScrollbarValue_;
 
 	for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
@@ -225,7 +224,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 		// Normal events.
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
 			const double x = 0.5 + xBase + ev->time * timeScale_; // 0.5 added because of antialiasing
-			const double value = ev->getParameter(paramIndex);
+			const double value = ev->getParameter(paramIndex, false);
 			if (value != VTMControlModel::Event::EMPTY_PARAMETER) {
 				const double y = 0.5 + yBase - (value - currentMin) * valueFactor * graphHeight_; // 0.5 added because of antialiasing
 				const QPointF point(x, y);
@@ -243,7 +242,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 		painter.setPen(pen2);
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
 			const double x = 0.5 + xBase + ev->time * timeScale_; // 0.5 added because of antialiasing
-			const double value = ev->getParameter(paramIndex + numParameters);
+			const double value = ev->getParameter(paramIndex, true);
 			if (value != VTMControlModel::Event::EMPTY_PARAMETER) {
 				const double y = 0.5 + yBase - (value - currentMin) * valueFactor * graphHeight_; // 0.5 added because of antialiasing
 				const QPointF point(x, y);
@@ -286,12 +285,13 @@ ParameterWidget::mouseMoveEvent(QMouseEvent* event)
 		return;
 	}
 
-	double x = event->x();
-	double y = event->y();
-	double xStart = 2.0 * MARGIN + labelWidth_;
-	double xEnd = xStart + eventList_->list().back()->time * timeScale_;
+	const double x = event->x();
+	const double y = event->y();
+	const double xBase = 3.0 * MARGIN + labelWidth_;
 
-	if (x < xStart || x > xEnd) {
+	double xEnd = xBase + eventList_->list().back()->time * timeScale_;
+
+	if (x < xBase || x > xEnd) {
 		emit mouseMoved(time, value);
 		return;
 	}
@@ -300,19 +300,13 @@ ParameterWidget::mouseMoveEvent(QMouseEvent* event)
 		double yStart = getGraphBaseY(i);
 		double yEnd = yStart - graphHeight_;
 		if (yEnd <= y && y <= yStart) {
-			unsigned int paramIndex = selectedParamList_[i];
-			unsigned int modelParamIndex;
-			if (paramIndex >= NUM_PARAM) { // special
-				modelParamIndex = paramIndex - NUM_PARAM;
-			} else {
-				modelParamIndex = paramIndex;
+			const unsigned int paramIndex = selectedParamList_[i];
+			if (paramIndex < model_->parameterList().size()) {
+				double currentMin = model_->parameterList()[paramIndex].minimum();
+				double currentMax = model_->parameterList()[paramIndex].maximum();
+				value = ((yStart - y) / graphHeight_) * (currentMax - currentMin) + currentMin;
+				time = (x - xBase) / timeScale_;
 			}
-			double currentMin = model_->parameterList()[modelParamIndex].minimum();
-			double currentMax = model_->parameterList()[modelParamIndex].maximum();
-			value = ((yStart - y) / graphHeight_) * (currentMax - currentMin) + currentMin;
-
-			time = (x - xStart) / timeScale_;
-
 			emit mouseMoved(time, value);
 			return;
 		}
@@ -350,14 +344,6 @@ ParameterWidget::updateData(VTMControlModel::EventList* eventList, VTMControlMod
 {
 	eventList_ = eventList;
 	model_ = model;
-
-	if (model_ && model_->parameterList().size() != NUM_PARAM) {
-		THROW_EXCEPTION(InvalidValueException, "[ParameterWidget::updateData] Wrong number of parameters: " <<
-				model_->parameterList().size() << " (should be " << NUM_PARAM << ").");
-		model_ = nullptr;
-		eventList_ = nullptr;
-		return;
-	}
 
 	modelUpdated_ = true;
 

@@ -118,11 +118,6 @@ SynthesisWindow::setup(VTMControlModel::Model* model, Synthesis* synthesis)
 		clear();
 		return;
 	}
-	if (model->parameterList().size() != NUM_PARAM) {
-		qWarning("[SynthesisWindow::setup] Wrong number of parameters: %lu (should be %d).", model->parameterList().size(), NUM_PARAM);
-		clear();
-		return;
-	}
 
 	try {
 		model_ = model;
