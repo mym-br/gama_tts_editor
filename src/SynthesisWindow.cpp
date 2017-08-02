@@ -169,7 +169,11 @@ SynthesisWindow::on_synthesizeButton_clicked()
 	disableProcessingButtons();
 
 	try {
-		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+		QString vtmParamFilePath;
+		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
+		if (saveVTMParam) {
+			vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+		}
 
 		VTMControlModel::Configuration& config = synthesis_->vtmController->vtmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();
@@ -179,7 +183,7 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		audioWorker_->player().fillBuffer([&](std::vector<float>& buffer) {
 			synthesis_->vtmController->synthesizePhoneticStringToBuffer(
 							phoneticString.toStdString().c_str(),
-							vtmParamFilePath.toStdString().c_str(),
+							saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
 							buffer);
 		});
 
@@ -212,14 +216,18 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 	disableProcessingButtons();
 
 	try {
-		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+		QString vtmParamFilePath;
+		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
+		if (saveVTMParam) {
+			vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+		}
 
 		VTMControlModel::Configuration& config = synthesis_->vtmController->vtmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();
 
 		synthesis_->vtmController->synthesizePhoneticStringToFile(
 						phoneticString.toStdString().c_str(),
-						vtmParamFilePath.toStdString().c_str(),
+						saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
 						filePath.toStdString().c_str());
 
 		ui_->parameterWidget->update();
@@ -251,11 +259,15 @@ SynthesisWindow::synthesizeWithManualIntonation()
 
 		const double sampleRate = synthesis_->vtmController->outputSampleRate();
 
-		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+		QString vtmParamFilePath;
+		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
+		if (saveVTMParam) {
+			vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+		}
 
 		audioWorker_->player().fillBuffer([&](std::vector<float>& buffer) {
 			synthesis_->vtmController->synthesizeFromEventListToBuffer(
-							vtmParamFilePath.toStdString().c_str(),
+							saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
 							buffer);
 		});
 
@@ -284,10 +296,14 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 		eventList.clearMacroIntonation();
 		eventList.prepareMacroIntonationInterpolation();
 
-		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+		QString vtmParamFilePath;
+		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
+		if (saveVTMParam) {
+			vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+		}
 
 		synthesis_->vtmController->synthesizeFromEventListToFile(
-						vtmParamFilePath.toStdString().c_str(),
+						saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
 						filePath.toStdString().c_str());
 
 	} catch (const Exception& exc) {

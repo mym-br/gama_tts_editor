@@ -144,6 +144,13 @@
           </spacer>
          </item>
          <item>
+          <widget class="QCheckBox" name="saveVTMParamCheckBox">
+           <property name="text">
+            <string>Save VTM parameters to file</string>
+           </property>
+          </widget>
+         </item>
+         <item>
           <widget class="QPushButton" name="synthesizeButton">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
