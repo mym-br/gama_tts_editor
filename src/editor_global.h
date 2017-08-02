@@ -19,7 +19,7 @@
 #define EDITOR_GLOBAL_H_
 
 #define EDITOR_NAME "GamaTTS:Editor"
-#define EDITOR_VERSION "0.1.9"
+#define EDITOR_VERSION "2017_08_01"
 
 #define INTERACTIVE_NAME "GamaTTS:Interactive"
 #define INTERACTIVE_VERSION EDITOR_VERSION
