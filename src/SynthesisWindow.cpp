@@ -174,14 +174,13 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		VTMControlModel::Configuration& config = synthesis_->vtmController->vtmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();
 
-		const ConfigurationData& vtmConfig = synthesis_->vtmController->vtmConfigurationData();
-		const double sampleRate = vtmConfig.value<double>("output_rate");
+		const double sampleRate = synthesis_->vtmController->outputSampleRate();
 
 		audioWorker_->player().fillBuffer([&](std::vector<float>& buffer) {
-			synthesis_->vtmController->synthesizePhoneticString(
-						phoneticString.toStdString().c_str(),
-						vtmParamFilePath.toStdString().c_str(),
-						buffer);
+			synthesis_->vtmController->synthesizePhoneticStringToBuffer(
+							phoneticString.toStdString().c_str(),
+							vtmParamFilePath.toStdString().c_str(),
+							buffer);
 		});
 
 		ui_->parameterWidget->update();
@@ -218,10 +217,10 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 		VTMControlModel::Configuration& config = synthesis_->vtmController->vtmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();
 
-		synthesis_->vtmController->synthesizePhoneticString(
-					phoneticString.toStdString().c_str(),
-					vtmParamFilePath.toStdString().c_str(),
-					filePath.toStdString().c_str());
+		synthesis_->vtmController->synthesizePhoneticStringToFile(
+						phoneticString.toStdString().c_str(),
+						vtmParamFilePath.toStdString().c_str(),
+						filePath.toStdString().c_str());
 
 		ui_->parameterWidget->update();
 
@@ -250,15 +249,14 @@ SynthesisWindow::synthesizeWithManualIntonation()
 		eventList.clearMacroIntonation();
 		eventList.prepareMacroIntonationInterpolation();
 
-		const ConfigurationData& vtmConfig = synthesis_->vtmController->vtmConfigurationData();
-		const double sampleRate = vtmConfig.value<double>("output_rate");
+		const double sampleRate = synthesis_->vtmController->outputSampleRate();
 
 		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
 
 		audioWorker_->player().fillBuffer([&](std::vector<float>& buffer) {
-			synthesis_->vtmController->synthesizeFromEventList(
-						vtmParamFilePath.toStdString().c_str(),
-						buffer);
+			synthesis_->vtmController->synthesizeFromEventListToBuffer(
+							vtmParamFilePath.toStdString().c_str(),
+							buffer);
 		});
 
 		emit audioStarted();
@@ -288,9 +286,9 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 
 		QString vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
 
-		synthesis_->vtmController->synthesizeFromEventList(
-					vtmParamFilePath.toStdString().c_str(),
-					filePath.toStdString().c_str());
+		synthesis_->vtmController->synthesizeFromEventListToFile(
+						vtmParamFilePath.toStdString().c_str(),
+						filePath.toStdString().c_str());
 
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
