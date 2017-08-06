@@ -62,18 +62,21 @@ PostureEditorWindow::PostureEditorWindow(QWidget* parent)
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->categoriesTable->setColumnCount(NUM_CATEGORIES_TABLE_COLUMNS);
 	ui_->categoriesTable->setHorizontalHeaderLabels(QStringList() << tr("Name") << tr("Is member?"));
+	ui_->categoriesTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
 	vHeader = ui_->parametersTable->verticalHeader();
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->parametersTable->setColumnCount(NUM_PARAMETERS_TABLE_COLUMNS);
 	ui_->parametersTable->setHorizontalHeaderLabels(QStringList() << tr("Name") << tr("Value") << tr("Minimum") << tr("Maximum") << tr("Default"));
+	ui_->parametersTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
 	vHeader = ui_->symbolsTable->verticalHeader();
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->symbolsTable->setColumnCount(NUM_SYMBOLS_TABLE_COLUMNS);
 	ui_->symbolsTable->setHorizontalHeaderLabels(QStringList() << tr("Name") << tr("Value") << tr("Minimum") << tr("Maximum") << tr("Default"));
+	ui_->symbolsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 }
 
 PostureEditorWindow::~PostureEditorWindow()
