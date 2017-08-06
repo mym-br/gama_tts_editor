@@ -379,24 +379,54 @@ RuleManagerWindow::showRuleStatistics(const VTMControlModel::Rule& rule)
 	unsigned int count3 = 0;
 	unsigned int count4 = 0;
 
+	VTMControlModel::RuleExpressionData exprData;
+	exprData.tempo = 1.0;
 	for (unsigned int i = 0, size = model_->postureList().size(); i < size; ++i) {
 		const auto& posture = model_->postureList()[i];
+		exprData.posture = &posture;
 
-		if (rule.evalBooleanExpression(posture, 0)) {
+		exprData.marked = false;
+		if (rule.evalBooleanExpression(exprData, 0)) {
 			++count1;
 			ui_->matches1ListWidget->addItem(posture.name().c_str());
 		}
-		if (rule.evalBooleanExpression(posture, 1)) {
+		exprData.marked = true;
+		if (rule.evalBooleanExpression(exprData, 0)) {
+			++count1;
+			ui_->matches1ListWidget->addItem(QString(posture.name().c_str()) + '\'');
+		}
+
+		exprData.marked = false;
+		if (rule.evalBooleanExpression(exprData, 1)) {
 			++count2;
 			ui_->matches2ListWidget->addItem(posture.name().c_str());
 		}
-		if (rule.evalBooleanExpression(posture, 2)) {
+		exprData.marked = true;
+		if (rule.evalBooleanExpression(exprData, 1)) {
+			++count2;
+			ui_->matches2ListWidget->addItem(QString(posture.name().c_str()) + '\'');
+		}
+
+		exprData.marked = false;
+		if (rule.evalBooleanExpression(exprData, 2)) {
 			++count3;
 			ui_->matches3ListWidget->addItem(posture.name().c_str());
 		}
-		if (rule.evalBooleanExpression(posture, 3)) {
+		exprData.marked = true;
+		if (rule.evalBooleanExpression(exprData, 2)) {
+			++count3;
+			ui_->matches3ListWidget->addItem(QString(posture.name().c_str()) + '\'');
+		}
+
+		exprData.marked = false;
+		if (rule.evalBooleanExpression(exprData, 3)) {
 			++count4;
 			ui_->matches4ListWidget->addItem(posture.name().c_str());
+		}
+		exprData.marked = true;
+		if (rule.evalBooleanExpression(exprData, 3)) {
+			++count4;
+			ui_->matches4ListWidget->addItem(QString(posture.name().c_str()) + '\'');
 		}
 	}
 
@@ -516,7 +546,7 @@ RuleManagerWindow::on_ruleSymbolEquationsTable_currentItemChanged(QTableWidgetIt
 	std::shared_ptr<VTMControlModel::Equation> equation;
 	switch (row) {
 	case 0:
-		equation = selectedRule_->exprSymbolEquations().ruleDuration;
+		equation = selectedRule_->exprSymbolEquations().duration;
 		break;
 	case 1:
 		equation = selectedRule_->exprSymbolEquations().beat;
@@ -637,7 +667,7 @@ RuleManagerWindow::on_equationsTree_itemClicked(QTreeWidgetItem* item, int /*col
 	int row = currentItem->row();
 	switch (row) {
 	case 0:
-		ruleEquation = &selectedRule_->exprSymbolEquations().ruleDuration;
+		ruleEquation = &selectedRule_->exprSymbolEquations().duration;
 		break;
 	case 1:
 		ruleEquation = &selectedRule_->exprSymbolEquations().beat;
@@ -791,7 +821,7 @@ RuleManagerWindow::setupRuleSymbolEquationsTable()
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(0, 0, item.release());
 
-		const auto& equation = selectedRule_->exprSymbolEquations().ruleDuration;
+		const auto& equation = selectedRule_->exprSymbolEquations().duration;
 		item = std::make_unique<QTableWidgetItem>(equation ? equation->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(0, 1, item.release());
@@ -900,7 +930,7 @@ RuleManagerWindow::on_clearEquationButton_clicked()
 	int row = currentItem->row();
 	switch (row) {
 	case 0:
-		ruleEquation = &selectedRule_->exprSymbolEquations().ruleDuration;
+		ruleEquation = &selectedRule_->exprSymbolEquations().duration;
 		break;
 	case 1:
 		ruleEquation = &selectedRule_->exprSymbolEquations().beat;

@@ -135,10 +135,14 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 			const double x = xBase + ev->time * timeScale_;
 			if (ev->flag) {
 				postureTimeList_.push_back(ev->time);
-				const VTMControlModel::Posture* posture = eventList_->getPostureAtIndex(postureIndex++);
-				if (posture) {
+				const VTMControlModel::PostureData* postureData = eventList_->getPostureDataAtIndex(postureIndex++);
+				if (postureData) {
 					// Posture name.
-					painter.drawText(QPointF(x, yPosture), posture->name().c_str());
+					if (postureData->marked) {
+						painter.drawText(QPointF(x, yPosture), QString(postureData->posture->name().c_str()) + '\'');
+					} else {
+						painter.drawText(QPointF(x, yPosture), postureData->posture->name().c_str());
+					}
 				}
 				// Event vertical lines.
 				for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
@@ -155,7 +159,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 		const double yRuleText = MARGIN + textYOffset + verticalScrollbarValue_;
 
 		for (int i = 0; i < eventList_->numberOfRules(); ++i) {
-			const auto* ruleData = eventList_->getRuleAtIndex(i);
+			const auto* ruleData = eventList_->getRuleDataAtIndex(i);
 			if (ruleData) {
 				const unsigned int firstPosture = ruleData->firstPosture;
 				const unsigned int lastPosture = ruleData->lastPosture;

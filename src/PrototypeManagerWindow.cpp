@@ -582,7 +582,7 @@ PrototypeManagerWindow::on_transitionsTree_currentItemChanged(QTreeWidgetItem* c
 	ui_->transitionWidget->updateData(
 		transition->type(),
 		&pointList_,
-		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RD),
+		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RULE_DURATION),
 		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1),
 		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2),
 		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK3)
@@ -862,7 +862,7 @@ PrototypeManagerWindow::on_specialTransitionsTree_currentItemChanged(QTreeWidget
 	ui_->specialTransitionWidget->updateData(
 		specialTransition->type(),
 		&specialPointList_,
-		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RD),
+		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RULE_DURATION),
 		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1),
 		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2),
 		model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK3)

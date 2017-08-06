@@ -63,62 +63,82 @@ RuleTesterWindow::on_testButton_clicked()
 {
 	if (model_ == nullptr) return;
 
-	std::vector<const VTMControlModel::Posture*> postureSequence;
+	std::vector<VTMControlModel::RuleExpressionData> ruleExpressionData;
+	bool post1Marked = false;
+	bool post2Marked = false;
+	bool post3Marked = false;
+	bool post4Marked = false;
 
 	QString posture1Text = ui_->posture1LineEdit->text().trimmed();
-	if (!posture1Text.isEmpty()) {
-		const VTMControlModel::Posture* posture = model_->postureList().find(posture1Text.toStdString());
-		if (posture == nullptr) {
-			clearResults();
-			QMessageBox::warning(this, tr("Warning"), tr("Posture 1 not found."));
-			return;
-		} else {
-			postureSequence.push_back(posture);
-		}
-	} else {
+	if (posture1Text.isEmpty()) {
+		clearResults();
 		return;
+	}
+	if (posture1Text.endsWith('\'')) {
+		posture1Text.remove(posture1Text.size() - 1, 1);
+		post1Marked = true;
+	}
+	const VTMControlModel::Posture* posture1 = model_->postureList().find(posture1Text.toStdString());
+	if (posture1 == nullptr) {
+		clearResults();
+		QMessageBox::warning(this, tr("Warning"), tr("Posture 1 not found."));
+		return;
+	} else {
+		ruleExpressionData.push_back(VTMControlModel::RuleExpressionData{posture1, 1.0, post1Marked});
 	}
 
 	QString posture2Text = ui_->posture2LineEdit->text().trimmed();
-	if (!posture2Text.isEmpty()) {
-		const VTMControlModel::Posture* posture = model_->postureList().find(posture2Text.toStdString());
-		if (posture == nullptr) {
-			clearResults();
-			QMessageBox::warning(this, tr("Warning"), tr("Posture 2 not found."));
-			return;
-		} else {
-			postureSequence.push_back(posture);
-		}
-	} else {
+	if (posture2Text.isEmpty()) {
+		clearResults();
 		return;
+	}
+	if (posture2Text.endsWith('\'')) {
+		posture2Text.remove(posture2Text.size() - 1, 1);
+		post2Marked = true;
+	}
+	const VTMControlModel::Posture* posture2 = model_->postureList().find(posture2Text.toStdString());
+	if (posture2 == nullptr) {
+		clearResults();
+		QMessageBox::warning(this, tr("Warning"), tr("Posture 2 not found."));
+		return;
+	} else {
+		ruleExpressionData.push_back(VTMControlModel::RuleExpressionData{posture2, 1.0, post2Marked});
 	}
 
 	QString posture3Text = ui_->posture3LineEdit->text().trimmed();
 	if (!posture3Text.isEmpty()) {
-		const VTMControlModel::Posture* posture = model_->postureList().find(posture3Text.toStdString());
-		if (posture == nullptr) {
+		if (posture3Text.endsWith('\'')) {
+			posture3Text.remove(posture3Text.size() - 1, 1);
+			post3Marked = true;
+		}
+		const VTMControlModel::Posture* posture3 = model_->postureList().find(posture3Text.toStdString());
+		if (posture3 == nullptr) {
 			clearResults();
 			QMessageBox::warning(this, tr("Warning"), tr("Posture 3 not found."));
 			return;
 		} else {
-			postureSequence.push_back(posture);
+			ruleExpressionData.push_back(VTMControlModel::RuleExpressionData{posture3, 1.0, post3Marked});
 		}
 
 		QString posture4Text = ui_->posture4LineEdit->text().trimmed();
 		if (!posture4Text.isEmpty()) {
+			if (posture4Text.endsWith('\'')) {
+				posture4Text.remove(posture4Text.size() - 1, 1);
+				post4Marked = true;
+			}
 			const VTMControlModel::Posture* posture4 = model_->postureList().find(posture4Text.toStdString());
 			if (posture4 == nullptr) {
 				clearResults();
 				QMessageBox::warning(this, tr("Warning"), tr("Posture 4 not found."));
 				return;
 			} else {
-				postureSequence.push_back(posture4);
+				ruleExpressionData.push_back(VTMControlModel::RuleExpressionData{posture4, 1.0, post4Marked});
 			}
 		}
 	}
 
 	unsigned int ruleIndex;
-	const VTMControlModel::Rule* rule = model_->findFirstMatchingRule(postureSequence, ruleIndex);
+	const VTMControlModel::Rule* rule = model_->findFirstMatchingRule(ruleExpressionData, ruleIndex);
 	if (rule == nullptr) {
 		clearResults();
 		QMessageBox::critical(this, tr("Error"), tr("Could not find a matching rule."));
@@ -136,15 +156,14 @@ RuleTesterWindow::on_testButton_clicked()
 
 	ui_->consumedTokensLineEdit->setText(QString::number(rule->numberOfExpressions()));
 
-	const double tempos[] = {1.0, 1.0, 1.0, 1.0};
-	double ruleSymbols[5]; // {rd, beat, mark1, mark2, mark3}
-	rule->evaluateExpressionSymbols(tempos, postureSequence, *model_, ruleSymbols);
+	double ruleSymbols[VTMControlModel::Rule::NUM_SYMBOLS];
+	rule->evaluateExpressionSymbols(ruleExpressionData, *model_, ruleSymbols);
 
-	ui_->durationLineEdit->setText(QString::number(ruleSymbols[0]));
-	ui_->beatLineEdit->setText(    QString::number(ruleSymbols[1]));
-	ui_->mark1LineEdit->setText(   QString::number(ruleSymbols[2]));
-	ui_->mark2LineEdit->setText(   QString::number(ruleSymbols[3]));
-	ui_->mark3LineEdit->setText(   QString::number(ruleSymbols[4]));
+	ui_->durationLineEdit->setText(QString::number(ruleSymbols[VTMControlModel::Rule::SYMB_DURATION]));
+	ui_->beatLineEdit->setText(    QString::number(ruleSymbols[VTMControlModel::Rule::SYMB_BEAT]));
+	ui_->mark1LineEdit->setText(   QString::number(ruleSymbols[VTMControlModel::Rule::SYMB_MARK1]));
+	ui_->mark2LineEdit->setText(   QString::number(ruleSymbols[VTMControlModel::Rule::SYMB_MARK2]));
+	ui_->mark3LineEdit->setText(   QString::number(ruleSymbols[VTMControlModel::Rule::SYMB_MARK3]));
 }
 
 void

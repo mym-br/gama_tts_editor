@@ -572,7 +572,7 @@ TransitionEditorWindow::fillDefaultParameters()
 	if (transition_ == nullptr) return;
 
 	model_->setDefaultFormulaSymbols(transitionType_);
-	ui_->ruleDurationSpinBox->setValue(model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RD));
+	ui_->ruleDurationSpinBox->setValue(model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RULE_DURATION));
 	ui_->beatSpinBox->setValue(        model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_BEAT));
 	ui_->mark1SpinBox->setValue(       model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1));
 	ui_->mark2SpinBox->setValue(       model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2));
@@ -586,7 +586,7 @@ TransitionEditorWindow::updatePointTimes()
 	if (transition_ == nullptr) return;
 
 	model_->setDefaultFormulaSymbols(transitionType_);
-	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RD, ui_->ruleDurationSpinBox->value());
+	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RULE_DURATION, ui_->ruleDurationSpinBox->value());
 	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_BEAT, ui_->beatSpinBox->value());
 	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1, ui_->mark1SpinBox->value());
 	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2, ui_->mark2SpinBox->value());

@@ -152,11 +152,15 @@ IntonationWidget::paintEvent(QPaintEvent*)
 		double x = timeToX(ev->time);
 		if (ev->flag) {
 			postureTimeList_.push_back(ev->time);
-			const VTMControlModel::Posture* posture = eventList_->getPostureAtIndex(postureIndex++);
-			if (posture) {
+			const VTMControlModel::PostureData* postureData = eventList_->getPostureDataAtIndex(postureIndex++);
+			if (postureData) {
 				painter.setPen(Qt::black);
 				// Posture name.
-				painter.drawText(QPointF(x, yPosture), posture->name().c_str());
+				if (postureData->marked) {
+					painter.drawText(QPointF(x, yPosture), QString(postureData->posture->name().c_str()) + '\'');
+				} else {
+					painter.drawText(QPointF(x, yPosture), postureData->posture->name().c_str());
+				}
 			}
 			painter.setPen(Qt::lightGray);
 			// Event vertical line.
@@ -172,7 +176,7 @@ IntonationWidget::paintEvent(QPaintEvent*)
 	double yRuleText2 = yRuleText + TRACK_HEIGHT;
 
 	for (int i = 0; i < eventList_->numberOfRules(); ++i) {
-		auto* ruleData = eventList_->getRuleAtIndex(i);
+		auto* ruleData = eventList_->getRuleDataAtIndex(i);
 		if (ruleData) {
 			unsigned int firstPosture = ruleData->firstPosture;
 			unsigned int lastPosture = ruleData->lastPosture;
@@ -277,7 +281,7 @@ IntonationWidget::mouseDoubleClickEvent(QMouseEvent* event)
 	unsigned int ruleIndex = 0;
 	double minDist = 1.0e10;
 	for (unsigned int i = 0, size = eventList_->numberOfRules(); i < size; ++i) {
-		auto* ruleData = eventList_->getRuleAtIndex(i);
+		auto* ruleData = eventList_->getRuleDataAtIndex(i);
 		double distance = std::abs(clickTime - ruleData->beat);
 		if (distance <= minDist) {
 			minDist = distance;
@@ -287,7 +291,7 @@ IntonationWidget::mouseDoubleClickEvent(QMouseEvent* event)
 		}
 	}
 
-	auto* ruleData = eventList_->getRuleAtIndex(ruleIndex);
+	auto* ruleData = eventList_->getRuleDataAtIndex(ruleIndex);
 
 	VTMControlModel::IntonationPoint newPoint(eventList_);
 	newPoint.setRuleIndex(ruleIndex);

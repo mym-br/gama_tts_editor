@@ -43,7 +43,7 @@ PostureEditorWindow::PostureEditorWindow(QWidget* parent)
 		: QWidget(parent)
 		, ui_{std::make_unique<Ui::PostureEditorWindow>()}
 		, model_{}
-		, postureNameRegExp_{"[A-Za-z^#']+"}
+		, postureNameRegExp_{"[A-Za-z^#]+"}
 {
 	ui_->setupUi(this);
 
