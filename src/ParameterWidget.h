@@ -48,6 +48,7 @@ public:
 public slots:
 	void getVerticalScrollbarValue(int value);
 	void getHorizontalScrollbarValue(int value);
+	void handleModelUpdate();
 signals:
 	void mouseMoved(double time, double value);
 	void zoomReset();

@@ -84,6 +84,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 	textTotalHeight_ = fm.lineSpacing() + fontLeading + 1;
 
 	if (modelUpdated_) {
+		maxLabelSize_ = 0;
 		int maxWidth = 0;
 		for (unsigned int i = 0; i < model_->parameterList().size(); ++i) {
 			const unsigned int labelSize = model_->parameterList()[i].name().size();
@@ -403,6 +404,12 @@ void
 ParameterWidget::getHorizontalScrollbarValue(int value)
 {
 	horizontalScrollbarValue_ = value;
+}
+
+void
+ParameterWidget::handleModelUpdate()
+{
+	modelUpdated_ = true;
 }
 
 } // namespace GS
