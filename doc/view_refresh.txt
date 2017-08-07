@@ -14,7 +14,8 @@ Data entry
 		Remove    [no posture && no rule]
 		Move up   [no posture && no rule]
 		Move down [no posture && no rule]
-		Change name        -> Posture editor : unselect posture / Rule manager : load rule data / Synthesis window : reload parameters
+		Change name        -> Posture editor : unselect posture / Rule manager : load rule data
+		                      Synthesis window : reload parameters, recalculate label widths in Parameter widget
 		Change min/max/def -> Posture editor : unselect posture / Rule manager : load rule data
 	Symbols
 		Add       [no posture && no rule]

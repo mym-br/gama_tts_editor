@@ -56,7 +56,6 @@ public slots:
 	void setupParameterTable();
 	void synthesizeWithManualIntonation();
 	void synthesizeToFileWithManualIntonation(QString filePath);
-	void handleModelUpdate();
 private slots:
 	void on_parseButton_clicked();
 	void on_synthesizeButton_clicked();

@@ -312,12 +312,6 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 }
 
 void
-SynthesisWindow::handleModelUpdate()
-{
-	ui_->parameterWidget->handleModelUpdate();
-}
-
-void
 SynthesisWindow::on_parameterTableWidget_cellChanged(int row, int column)
 {
 	bool selected = ui_->parameterTableWidget->item(row, column)->checkState() == Qt::Checked;
@@ -350,6 +344,8 @@ SynthesisWindow::setupParameterTable()
 		item->setCheckState(Qt::Checked);
 		table->setItem(i, 0, item.release());
 	}
+
+	ui_->parameterWidget->handleModelUpdate();
 }
 
 // Slot.

@@ -93,8 +93,6 @@ MainWindow::MainWindow(QWidget* parent)
 			this                      , &MainWindow::updateSynthesis);
 	connect(dataEntryWindow_.get(), &DataEntryWindow::parameterChanged,
 			postureEditorWindow_.get(), &PostureEditorWindow::unselectPosture);
-	connect(dataEntryWindow_.get(), &DataEntryWindow::parameterChanged,
-			synthesisWindow_.get()    , &SynthesisWindow::handleModelUpdate);
 	connect(dataEntryWindow_.get(), &DataEntryWindow::symbolChanged,
 			postureEditorWindow_.get(), &PostureEditorWindow::unselectPosture);
 
