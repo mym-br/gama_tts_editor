@@ -115,6 +115,9 @@ CategoryModel::setData(const QModelIndex& index, const QVariant& value, int role
 
 	if (index.column() == 1) {
 		std::string name = value.toString().toStdString();
+		if (model_->categoryList()[row]->name() == name) {
+			return false;
+		}
 		if (model_->findCategoryName(name)) {
 			emit errorOccurred(tr("Duplicate category: %1").arg(name.c_str()));
 			return false;

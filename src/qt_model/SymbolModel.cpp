@@ -113,6 +113,9 @@ SymbolModel::setData(const QModelIndex& index, const QVariant& value, int role)
 	case 0:
 		{
 			std::string name = value.toString().toStdString();
+			if (model_->symbolList()[row].name() == name) {
+				return false;
+			}
 			if (model_->findSymbolName(name)) {
 				emit errorOccurred(tr("Duplicate symbol: %1").arg(name.c_str()));
 				return false;

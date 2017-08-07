@@ -113,6 +113,9 @@ ParameterModel::setData(const QModelIndex& index, const QVariant& value, int rol
 	case 0:
 		{
 			std::string name = value.toString().toStdString();
+			if (model_->parameterList()[row].name() == name) {
+				return false;
+			}
 			if (model_->findParameterName(name)) {
 				emit errorOccurred(tr("Duplicate parameter: %1").arg(name.c_str()));
 				return false;
