@@ -82,6 +82,10 @@ private:
 	VTMControlModel::Transition* transition_;
 	VTMControlModel::Transition::Type transitionType_;
 	std::vector<TransitionPoint> pointList_;
+	float ruleDuration_;
+	float ruleMark1_;
+	float ruleMark2_;
+	float ruleMark3_;
 };
 
 } // namespace GS

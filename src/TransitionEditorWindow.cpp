@@ -63,6 +63,10 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 		, model_{}
 		, transition_{}
 		, transitionType_{VTMControlModel::Transition::TYPE_INVALID}
+		, ruleDuration_{}
+		, ruleMark1_{}
+		, ruleMark2_{}
+		, ruleMark3_{}
 {
 	ui_->setupUi(this);
 
@@ -81,30 +85,7 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->pointsTable->setColumnCount(NUM_POINTS_TABLE_COLUMNS);
 	ui_->pointsTable->setHorizontalHeaderLabels(QStringList() << tr("Type") << tr("Value") << tr("Is phantom?") << tr("Has slope?") << tr("Slope") << tr("Time"));
-	//ui_->pointsTable->horizontalHeader()->setResizeMode(QHeaderView::Stretch);
-
-//	QDoubleValidator* validator = new QDoubleValidator(0.0, 1000.0, 1, this);
-//	validator->setNotation(QDoubleValidator::StandardNotation);
-//	ui_->ruleDurationLineEdit->setValidator(validator);
-//	ui_->beatLineEdit->setValidator(validator);
-//	ui_->mark1LineEdit->setValidator(validator);
-//	ui_->mark2LineEdit->setValidator(validator);
-//	ui_->mark3LineEdit->setValidator(validator);
-
-	ui_->ruleDurationSpinBox->setRange(PARAMETERS_MIN, PARAMETERS_MAX);
-	ui_->ruleDurationSpinBox->setDecimals(PARAMETERS_DECIMALS);
-
-	ui_->beatSpinBox->setRange(PARAMETERS_MIN, PARAMETERS_MAX);
-	ui_->beatSpinBox->setDecimals(PARAMETERS_DECIMALS);
-
-	ui_->mark1SpinBox->setRange(PARAMETERS_MIN, PARAMETERS_MAX);
-	ui_->mark1SpinBox->setDecimals(PARAMETERS_DECIMALS);
-
-	ui_->mark2SpinBox->setRange(PARAMETERS_MIN, PARAMETERS_MAX);
-	ui_->mark2SpinBox->setDecimals(PARAMETERS_DECIMALS);
-
-	ui_->mark3SpinBox->setRange(PARAMETERS_MIN, PARAMETERS_MAX);
-	ui_->mark3SpinBox->setDecimals(PARAMETERS_DECIMALS);
+	ui_->pointsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
 	connect(ui_->transitionWidget, &TransitionWidget::pointCreationRequested, this, &TransitionEditorWindow::createPoint);
 }
@@ -136,6 +117,10 @@ TransitionEditorWindow::clear()
 	ui_->formulaTextEdit->clear();
 	transitionType_ = VTMControlModel::Transition::TYPE_INVALID;
 	transition_ = nullptr;
+	ruleDuration_ = 0.0;
+	ruleMark1_    = 0.0;
+	ruleMark2_    = 0.0;
+	ruleMark3_    = 0.0;
 
 	ui_->transitionTypeComboBox->setCurrentIndex(0);
 	ui_->transitionNameLabel->setText("___");
@@ -189,7 +174,10 @@ TransitionEditorWindow::handleEditTransitionButtonClicked(unsigned int transitio
 		clear();
 		return;
 	}
-	ui_->transitionTypeComboBox->setCurrentIndex(typeIndex);
+	{
+		QSignalBlocker blocker{ui_->transitionTypeComboBox};
+		ui_->transitionTypeComboBox->setCurrentIndex(typeIndex);
+	}
 
 	fillDefaultParameters();
 
@@ -199,7 +187,7 @@ TransitionEditorWindow::handleEditTransitionButtonClicked(unsigned int transitio
 		updatePointTimes();
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
-		//TODO: clear?
+		clear();
 		return;
 	}
 
@@ -210,8 +198,6 @@ TransitionEditorWindow::handleEditTransitionButtonClicked(unsigned int transitio
 	}
 
 	updatePointsTable();
-	ui_->pointsTable->resizeColumnsToContents();
-
 	updateTransitionWidget();
 
 	ui_->equationsTree->setCurrentItem(nullptr);
@@ -232,7 +218,7 @@ TransitionEditorWindow::updateTransition()
 		updatePointTimes();
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
-		//TODO: clear?
+		clear();
 		return;
 	}
 
@@ -475,9 +461,6 @@ TransitionEditorWindow::on_updateTransitionButton_clicked()
 
 	emit transitionChanged();
 	emit equationReferenceChanged();
-
-	//clear();
-	//hide();
 }
 
 void
@@ -492,7 +475,6 @@ TransitionEditorWindow::on_transitionTypeComboBox_currentIndexChanged(int index)
 		transitionType_ = static_cast<VTMControlModel::Transition::Type>(ui_->transitionTypeComboBox->itemData(index).toInt());
 
 		fillDefaultParameters();
-
 		updateTransition();
 	}
 }
@@ -572,11 +554,10 @@ TransitionEditorWindow::fillDefaultParameters()
 	if (transition_ == nullptr) return;
 
 	model_->setDefaultFormulaSymbols(transitionType_);
-	ui_->ruleDurationSpinBox->setValue(model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RULE_DURATION));
-	ui_->beatSpinBox->setValue(        model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_BEAT));
-	ui_->mark1SpinBox->setValue(       model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1));
-	ui_->mark2SpinBox->setValue(       model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2));
-	ui_->mark3SpinBox->setValue(       model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK3));
+	ruleDuration_ = model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RULE_DURATION);
+	ruleMark1_    = model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1);
+	ruleMark2_    = model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2);
+	ruleMark3_    = model_->getFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK3);
 }
 
 void
@@ -586,12 +567,6 @@ TransitionEditorWindow::updatePointTimes()
 	if (transition_ == nullptr) return;
 
 	model_->setDefaultFormulaSymbols(transitionType_);
-	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_RULE_DURATION, ui_->ruleDurationSpinBox->value());
-	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_BEAT, ui_->beatSpinBox->value());
-	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK1, ui_->mark1SpinBox->value());
-	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK2, ui_->mark2SpinBox->value());
-	model_->setFormulaSymbolValue(VTMControlModel::FormulaSymbol::SYMB_MARK3, ui_->mark3SpinBox->value());
-
 	TransitionPoint::calculateTimes(*model_, pointList_);
 }
 
@@ -652,10 +627,10 @@ TransitionEditorWindow::updateTransitionWidget()
 	ui_->transitionWidget->updateData(
 		transitionType_,
 		&pointList_,
-		ui_->ruleDurationSpinBox->value(),
-		ui_->mark1SpinBox->value(),
-		ui_->mark2SpinBox->value(),
-		ui_->mark3SpinBox->value()
+		ruleDuration_,
+		ruleMark1_,
+		ruleMark2_,
+		ruleMark3_
 	);
 }
 
