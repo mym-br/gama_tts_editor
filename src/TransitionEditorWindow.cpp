@@ -34,8 +34,8 @@
 #include "ui_TransitionEditorWindow.h"
 
 #define NUM_EQUATIONS_TREE_COLUMNS 1
-#define NUM_POINTS_TABLE_COLUMNS 6
-#define NUM_POINTS_TABLE_COLUMNS_SPECIAL 4
+#define NUM_POINTS_TABLE_COLUMNS 5
+#define NUM_POINTS_TABLE_COLUMNS_SPECIAL 3
 #define PARAMETERS_MIN 1.0
 #define PARAMETERS_MAX 1000.0
 #define PARAMETERS_DECIMALS 1
@@ -84,7 +84,7 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 	vHeader->setSectionResizeMode(QHeaderView::Fixed);
 	vHeader->setDefaultSectionSize(rowHeight);
 	ui_->pointsTable->setColumnCount(NUM_POINTS_TABLE_COLUMNS);
-	ui_->pointsTable->setHorizontalHeaderLabels(QStringList() << tr("Type") << tr("Value") << tr("Is phantom?") << tr("Has slope?") << tr("Slope") << tr("Time"));
+	ui_->pointsTable->setHorizontalHeaderLabels(QStringList() << tr("Type") << tr("Value") << tr("Has slope?") << tr("Slope") << tr("Time"));
 	ui_->pointsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
 	connect(ui_->transitionWidget, &TransitionWidget::pointCreationRequested, this, &TransitionEditorWindow::createPoint);
@@ -104,7 +104,7 @@ TransitionEditorWindow::setSpecial()
 	setWindowTitle(tr("Special transition editor"));
 
 	ui_->pointsTable->setColumnCount(NUM_POINTS_TABLE_COLUMNS_SPECIAL);
-	ui_->pointsTable->setHorizontalHeaderLabels(QStringList() << tr("Type") << tr("Value") << tr("Is phantom?") << tr("Time"));
+	ui_->pointsTable->setHorizontalHeaderLabels(QStringList() << tr("Type") << tr("Value") << tr("Time"));
 }
 
 // Slot.
@@ -336,15 +336,12 @@ TransitionEditorWindow::on_pointsTable_itemChanged(QTableWidgetItem* item)
 		pointList_[row].value = item->data(Qt::DisplayRole).toFloat();
 		updateWidgets = true;
 		break;
-	case 2: // Is phantom?
-		pointList_[row].isPhantom = (item->checkState() == Qt::Checked);
-		break;
-	case 3: // Has slope?
+	case 2: // Has slope?
 		if (special_) return;
 		pointList_[row].hasSlope = (item->checkState() == Qt::Checked);
 		updateWidgets = true;
 		break;
-	case 4: // Slope
+	case 3: // Slope
 		if (special_) return;
 		pointList_[row].slope = item->data(Qt::DisplayRole).toFloat();
 		updateWidgets = true;
@@ -592,11 +589,6 @@ TransitionEditorWindow::updatePointsTable()
 		item = std::make_unique<QTableWidgetItem>();
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 		item->setData(Qt::DisplayRole, point.value);
-		table->setItem(i, column++, item.release());
-
-		item = std::make_unique<QTableWidgetItem>();
-		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
-		item->setCheckState(point.isPhantom ? Qt::Checked : Qt::Unchecked);
 		table->setItem(i, column++, item.release());
 
 		if (!special_) {

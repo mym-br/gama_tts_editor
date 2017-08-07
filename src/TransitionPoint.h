@@ -41,21 +41,18 @@ struct TransitionPoint {
 	float freeTime; // milliseconds
 	float time;
 
-	bool isPhantom;
-
 	// The point is at the start of a segment for which a slope is defined.
 	bool hasSlope;
 	float slope;
 
 	TransitionPoint()
-		: type(VTMControlModel::Transition::Point::TYPE_INVALID)
-		, value(0.0)
-		, timeExpression()
-		, freeTime(0.0)
-		, time(0.0)
-		, isPhantom(false)
-		, hasSlope(false)
-		, slope(0.0) {}
+		: type{VTMControlModel::Transition::Point::TYPE_INVALID}
+		, value{}
+		, timeExpression{}
+		, freeTime{}
+		, time{}
+		, hasSlope{}
+		, slope{} {}
 
 	static void copyPointsFromTransition(const VTMControlModel::Transition& transition, std::vector<TransitionPoint>& pointList);
 	static void sortPointListByTypeAndTime(std::vector<TransitionPoint>& pointList);

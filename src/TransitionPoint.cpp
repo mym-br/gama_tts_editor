@@ -51,7 +51,6 @@ TransitionPoint::copyPointsFromTransition(
 				tp.value = point.value;
 				tp.timeExpression = point.timeExpression;
 				tp.freeTime = point.freeTime;
-				tp.isPhantom = point.isPhantom;
 				if (i != size - 1) {
 					tp.hasSlope = true;
 					tp.slope = slopeRatio.slopeList[i]->slope;
@@ -67,7 +66,6 @@ TransitionPoint::copyPointsFromTransition(
 			tp.value = point.value;
 			tp.timeExpression = point.timeExpression;
 			tp.freeTime = point.freeTime;
-			tp.isPhantom = point.isPhantom;
 
 			pointList.push_back(std::move(tp));
 		}
@@ -207,7 +205,6 @@ TransitionPoint::makeNewPoint(const TransitionPoint& sourcePoint)
 	auto newPoint = std::make_unique<VTMControlModel::Transition::Point>();
 	newPoint->type = sourcePoint.type;
 	newPoint->value = sourcePoint.value;
-	newPoint->isPhantom = sourcePoint.isPhantom;
 
 	const std::shared_ptr<VTMControlModel::Equation> timeExpression(sourcePoint.timeExpression.lock());
 	if (timeExpression) {
