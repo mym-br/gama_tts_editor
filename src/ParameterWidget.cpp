@@ -362,7 +362,14 @@ ParameterWidget::changeParameterSelection(unsigned int paramIndex, bool selected
 {
 	if (selected) {
 		if (paramIndex < model_->parameterList().size()) {
-			selectedParamList_.push_back(paramIndex);
+			bool found = false;
+			for (unsigned int i : selectedParamList_) {
+				if (i == paramIndex) { // the item is already on the list
+					found = true;
+					break;
+				}
+			}
+			if (!found) selectedParamList_.push_back(paramIndex);
 		}
 	} else {
 		for (auto iter = selectedParamList_.begin(); iter != selectedParamList_.end(); ++iter) {
