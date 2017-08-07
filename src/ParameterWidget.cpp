@@ -41,6 +41,7 @@
 #define TEXT_MARGIN 5.0
 #define DEFAULT_TIME_SCALE 0.7
 #define POINT_RADIUS 2.0
+#define GRAPH_HIDE_TOLERANCE (0.5)
 
 
 
@@ -149,7 +150,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 				for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
 					const double yBase = getGraphBaseY(i);
 					const double yTop = yBase - graphHeight_;
-					if (yTop - verticalScrollbarValue_ < headerBottomY) {
+					if (yTop < headerBottomY + verticalScrollbarValue_ - GRAPH_HIDE_TOLERANCE) {
 						continue;
 					}
 					painter.drawLine(QPointF(x, yTop), QPointF(x, yBase));
@@ -207,7 +208,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 	for (unsigned int i = 0; i < selectedParamList_.size(); ++i) {
 		const double yBase = getGraphBaseY(i);
 		const double yTop = yBase - graphHeight_;
-		if (yTop < headerBottomY + verticalScrollbarValue_) {
+		if (yTop < headerBottomY + verticalScrollbarValue_ - GRAPH_HIDE_TOLERANCE) {
 			continue;
 		}
 
