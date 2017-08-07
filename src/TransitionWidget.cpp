@@ -54,18 +54,18 @@ std::vector<const char*> transitionYLabels = {
 	"-10"
 };
 std::vector<const char*> specialTransitionYLabels = {
-	"  %",
-	"120",
-	"100",
-	" 80",
-	" 60",
-	" 40",
-	" 20",
-	"  0",
-	"-20",
-	"-40",
-	"-60",
-	"-80",
+	"   %",
+	" 120",
+	" 100",
+	"  80",
+	"  60",
+	"  40",
+	"  20",
+	"   0",
+	" -20",
+	" -40",
+	" -60",
+	" -80",
 	"-100",
 	"-120"
 };
@@ -75,20 +75,20 @@ std::vector<const char*> specialTransitionYLabels = {
 namespace GS {
 
 TransitionWidget::TransitionWidget(QWidget* parent)
-		: QWidget(parent)
-		, special_(false)
-		, dataUpdated_(false)
-		, textYOffset_(0.0)
-		, leftMargin_(0.0)
-		, yStep_(0.0)
-		, graphWidth_(0.0)
-		, transitionType_(VTMControlModel::Transition::TYPE_INVALID)
-		, pointList_(nullptr)
-		, ruleDuration_(0.0)
-		, mark1_(0.0)
-		, mark2_(0.0)
-		, mark3_(0.0)
-		, selectedPointIndex_(-1)
+		: QWidget{parent}
+		, special_{}
+		, dataUpdated_{}
+		, textYOffset_{}
+		, leftMargin_{}
+		, yStep_{}
+		, graphWidth_{}
+		, transitionType_{VTMControlModel::Transition::TYPE_INVALID}
+		, pointList_{}
+		, ruleDuration_{}
+		, mark1_{}
+		, mark2_{}
+		, mark3_{}
+		, selectedPointIndex_{-1}
 {
 	QPalette pal;
 	pal.setColor(QPalette::Window, Qt::white);
@@ -150,7 +150,11 @@ TransitionWidget::paintEvent(QPaintEvent*)
 	if (dataUpdated_) {
 		QFontMetrics fm = painter.fontMetrics();
 		textYOffset_ = 0.5 * fm.ascent();
-		leftMargin_ = MARGIN + TEXT_MARGIN + fm.width(transitionYLabels[0]);
+		if (special_) {
+			leftMargin_ = MARGIN + TEXT_MARGIN + fm.width(specialTransitionYLabels[0]);
+		} else {
+			leftMargin_ = MARGIN + TEXT_MARGIN + fm.width(transitionYLabels[0]);
+		}
 		updateScales();
 
 		dataUpdated_ = false;
