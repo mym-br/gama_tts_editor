@@ -61,7 +61,6 @@ private slots:
 	void on_equationsTree_itemClicked(QTreeWidgetItem* item, int column);
 	void on_pointsTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
 	void on_pointsTable_itemChanged(QTableWidgetItem* item);
-	void on_updateParametersButton_clicked();
 	void on_removePointButton_clicked();
 	void on_movePointUpButton_clicked();
 	void on_movePointDownButton_clicked();

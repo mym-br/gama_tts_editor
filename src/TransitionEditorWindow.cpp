@@ -356,15 +356,6 @@ TransitionEditorWindow::on_pointsTable_itemChanged(QTableWidgetItem* item)
 }
 
 void
-TransitionEditorWindow::on_updateParametersButton_clicked()
-{
-	if (model_ == nullptr) return;
-	if (transition_ == nullptr) return;
-
-	updateTransition();
-}
-
-void
 TransitionEditorWindow::on_removePointButton_clicked()
 {
 	if (model_ == nullptr) return;
