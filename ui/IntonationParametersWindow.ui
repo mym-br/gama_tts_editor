@@ -139,6 +139,12 @@
       </item>
       <item>
        <widget class="QPushButton" name="updateButton">
+        <property name="minimumSize">
+         <size>
+          <width>150</width>
+          <height>0</height>
+         </size>
+        </property>
         <property name="text">
          <string>Update</string>
         </property>

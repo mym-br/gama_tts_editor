@@ -127,6 +127,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="updatePostureCommentButton">
+           <property name="minimumSize">
+            <size>
+             <width>150</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="text">
             <string>Update</string>
            </property>
@@ -304,6 +310,12 @@
              </item>
              <item>
               <widget class="QPushButton" name="useDefaultSymbolValueButton">
+               <property name="minimumSize">
+                <size>
+                 <width>150</width>
+                 <height>0</height>
+                </size>
+               </property>
                <property name="text">
                 <string>Use default</string>
                </property>

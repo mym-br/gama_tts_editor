@@ -332,6 +332,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="synthesizeButton">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="text">
             <string>Synthesize</string>
            </property>
@@ -339,6 +345,12 @@
          </item>
          <item>
           <widget class="QPushButton" name="synthesizeToFileButton">
+           <property name="minimumSize">
+            <size>
+             <width>200</width>
+             <height>0</height>
+            </size>
+           </property>
            <property name="text">
             <string>Synthesize to file</string>
            </property>

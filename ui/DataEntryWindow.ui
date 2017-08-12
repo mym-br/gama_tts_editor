@@ -70,6 +70,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="addCategoryButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Add</string>
             </property>
@@ -77,6 +83,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="removeCategoryButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Remove</string>
             </property>
@@ -84,6 +96,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="moveCategoryUpButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Move up</string>
             </property>
@@ -91,6 +109,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="moveCategoryDownButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Move down</string>
             </property>
@@ -152,6 +176,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="updateCategoryCommentButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Update</string>
             </property>
@@ -213,6 +243,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="addParameterButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Add</string>
             </property>
@@ -220,6 +256,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="removeParameterButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Remove</string>
             </property>
@@ -227,6 +269,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="moveParameterUpButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Move up</string>
             </property>
@@ -234,6 +282,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="moveParameterDownButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Move down</string>
             </property>
@@ -289,6 +343,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="updateParameterCommentButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Update</string>
             </property>
@@ -350,6 +410,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="addSymbolButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Add</string>
             </property>
@@ -357,6 +423,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="removeSymbolButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Remove</string>
             </property>
@@ -364,6 +436,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="moveSymbolUpButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Move up</string>
             </property>
@@ -371,6 +449,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="moveSymbolDownButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Move down</string>
             </property>
@@ -426,6 +510,12 @@
           </item>
           <item>
            <widget class="QPushButton" name="updateSymbolCommentButton">
+            <property name="minimumSize">
+             <size>
+              <width>150</width>
+              <height>0</height>
+             </size>
+            </property>
             <property name="text">
              <string>Update</string>
             </property>
