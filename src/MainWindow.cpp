@@ -221,9 +221,7 @@ MainWindow::on_openAction_triggered()
 void
 MainWindow::on_saveAction_triggered()
 {
-	if (model_.get() == nullptr || config_.dataFileName.isNull()) {
-		return;
-	}
+	if (!model_) return;
 
 	if (!saveModel()) return;
 
@@ -233,9 +231,7 @@ MainWindow::on_saveAction_triggered()
 void
 MainWindow::on_saveAsAction_triggered()
 {
-	if (model_.get() == nullptr || config_.dataFileName.isNull()) {
-		return;
-	}
+	if (!model_) return;
 
 	bool done = false;
 	do {
@@ -263,9 +259,7 @@ MainWindow::on_saveAsAction_triggered()
 void
 MainWindow::on_reloadAction_triggered()
 {
-	if (config_.projectDir.isEmpty() || config_.dataFileName.isEmpty()) {
-		return;
-	}
+	if (!model_) return;
 
 	interactiveVTMWindow_.reset();
 
@@ -333,9 +327,7 @@ MainWindow::on_intonationParametersButton_clicked()
 void
 MainWindow::on_interactiveVTMButton_clicked()
 {
-	if (model_.get() == nullptr || config_.dataFileName.isNull()) {
-		return;
-	}
+	if (!model_) return;
 
 	if (!interactiveVTMWindow_) {
 		interactiveVTMWindow_ = std::make_unique<InteractiveVTMWindow>(config_.projectDir.toStdString().c_str(), false);
@@ -407,9 +399,7 @@ MainWindow::saveModel()
 void
 MainWindow::updateSynthesis()
 {
-	if (config_.projectDir.isEmpty() || !model_) {
-		return;
-	}
+	if (!model_) return;
 
 	try {
 		synthesis_->setup(config_.projectDir, model_.get());
