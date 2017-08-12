@@ -577,6 +577,7 @@ PrototypeManagerWindow::on_transitionsTree_currentItemChanged(QTreeWidgetItem* c
 	model_->setDefaultFormulaSymbols(transition->type());
 	TransitionPoint::calculateTimes(*model_, pointList_);
 
+	TransitionPoint::sortPointListByTypeAndTime(specialPointList_);
 	TransitionPoint::adjustValuesInSlopeRatios(pointList_);
 
 	ui_->transitionWidget->updateData(
