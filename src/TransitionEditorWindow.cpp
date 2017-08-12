@@ -467,7 +467,7 @@ TransitionEditorWindow::updatePointsTable()
 	unsigned int numValidPoints = 0;
 	for (unsigned int i = 0, size = pointList_.size(); i < size; ++i) {
 		const auto& point = pointList_[i];
-		if (point.type <= transitionType_) {
+		if (point.type <= static_cast<int>(transitionType_)) {
 			++numValidPoints;
 		} else {
 			break;

@@ -221,7 +221,7 @@ TransitionWidget::paintEvent(QPaintEvent*)
 
 		for (unsigned int i = 0, size = pointList_->size(); i < size; ++i) {
 			const auto& point = (*pointList_)[i];
-			if (point.type > transitionType_) break;
+			if (point.type > static_cast<int>(transitionType_)) break;
 
 			QPointF p(0.5 + timeToX(point.time), 0.5 + valueToY(point.value));
 			painter.drawLine(prevP, p);
