@@ -221,7 +221,7 @@ TransitionWidget::paintEvent(QPaintEvent*)
 
 		for (unsigned int i = 0, size = pointList_->size(); i < size; ++i) {
 			const auto& point = (*pointList_)[i];
-			if (point.type > static_cast<int>(transitionType_)) break;
+			if (point.type > static_cast<int>(transitionType_)) continue;
 
 			QPointF p(0.5 + timeToX(point.time), 0.5 + valueToY(point.value));
 			painter.drawLine(prevP, p);
@@ -254,11 +254,11 @@ TransitionWidget::paintEvent(QPaintEvent*)
 				drawDiPoint(painter, x, y);
 				break;
 			case VTMControlModel::Transition::Point::TYPE_TRIPHONE:
-				if (transitionType_ < VTMControlModel::Transition::TYPE_TRIPHONE) break;
+				if (transitionType_ < VTMControlModel::Transition::TYPE_TRIPHONE) continue;
 				drawTriPoint(painter, x, y);
 				break;
 			case VTMControlModel::Transition::Point::TYPE_TETRAPHONE:
-				if (transitionType_ < VTMControlModel::Transition::TYPE_TETRAPHONE) break;
+				if (transitionType_ < VTMControlModel::Transition::TYPE_TETRAPHONE) continue;
 				drawTetraPoint(painter, x, y);
 				break;
 			default:
@@ -310,12 +310,18 @@ TransitionWidget::paintEvent(QPaintEvent*)
 
 		// Selected point.
 		if (selectedPointIndex_ >= 0 && static_cast<std::size_t>(selectedPointIndex_) < pointList_->size()) {
-			const auto& point = (*pointList_)[selectedPointIndex_];
-			double x = timeToX(point.time);
-			double y = valueToY(point.value);
-			painter.drawRect(QRectF(
-				 QPointF(x - SELECTION_SIZE, y - SELECTION_SIZE),
-				 QPointF(x + SELECTION_SIZE, y + SELECTION_SIZE)));
+			int i = 0;
+			for (const auto& point : *pointList_) {
+				if (point.type > static_cast<int>(transitionType_)) continue;
+				if (i == selectedPointIndex_) {
+					double x = timeToX(point.time);
+					double y = valueToY(point.value);
+					painter.drawRect(QRectF(
+						 QPointF(x - SELECTION_SIZE, y - SELECTION_SIZE),
+						 QPointF(x + SELECTION_SIZE, y + SELECTION_SIZE)));
+				}
+				++i;
+			}
 		}
 	}
 }

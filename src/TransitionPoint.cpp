@@ -81,6 +81,14 @@ TransitionPoint::sortPointListByTypeAndTime(std::vector<TransitionPoint>& pointL
 }
 
 void
+TransitionPoint::sortPointListByTime(std::vector<TransitionPoint>& pointList)
+{
+	std::sort(pointList.begin(), pointList.end(), [](const TransitionPoint& p1, const TransitionPoint& p2) -> bool {
+		return p1.time < p2.time;
+	});
+}
+
+void
 TransitionPoint::calculateTimes(const VTMControlModel::Model& model, std::vector<TransitionPoint>& pointList)
 {
 	for (auto& point : pointList) {
@@ -155,7 +163,7 @@ TransitionPoint::copyPointsToTransition(VTMControlModel::Transition::Type type, 
 	newTransition.setComment(transition.comment());
 
 	for (unsigned int i = 0, size = pointList.size(); i < size; ++i) {
-		if (pointList[i].type > static_cast<int>(type)) break;
+		if (pointList[i].type > static_cast<int>(type)) continue;
 		if (i != size - 1 && pointList[i].hasSlope) {
 			// Find the last point in the slope ratio group.
 			unsigned int j = i + 1;

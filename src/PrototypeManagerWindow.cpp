@@ -858,7 +858,7 @@ PrototypeManagerWindow::on_specialTransitionsTree_currentItemChanged(QTreeWidget
 	model_->setDefaultFormulaSymbols(specialTransition->type());
 	TransitionPoint::calculateTimes(*model_, specialPointList_);
 
-	TransitionPoint::sortPointListByTypeAndTime(specialPointList_);
+	TransitionPoint::sortPointListByTime(specialPointList_);
 
 	ui_->specialTransitionWidget->updateData(
 		specialTransition->type(),

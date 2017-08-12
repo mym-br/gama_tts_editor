@@ -56,6 +56,7 @@ struct TransitionPoint {
 
 	static void copyPointsFromTransition(const VTMControlModel::Transition& transition, std::vector<TransitionPoint>& pointList);
 	static void sortPointListByTypeAndTime(std::vector<TransitionPoint>& pointList);
+	static void sortPointListByTime(std::vector<TransitionPoint>& pointList);
 	static void calculateTimes(const VTMControlModel::Model& model, std::vector<TransitionPoint>& pointList);
 	static void adjustValuesInSlopeRatios(std::vector<TransitionPoint>& pointList);
 	static void copyPointsToTransition(VTMControlModel::Transition::Type type, const std::vector<TransitionPoint>& pointList, VTMControlModel::Transition& transition);

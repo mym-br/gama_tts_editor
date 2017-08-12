@@ -71,6 +71,7 @@ private:
 	void fillDefaultParameters();
 	void updateTransitionWidget();
 	void updatePointsTable();
+	int getPointListIndexFromTableRow(int row);
 
 	std::unique_ptr<Ui::TransitionEditorWindow> ui_;
 	bool special_;

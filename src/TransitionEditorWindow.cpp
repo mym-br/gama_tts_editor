@@ -203,8 +203,10 @@ TransitionEditorWindow::updateTransition()
 		return;
 	}
 
-	TransitionPoint::sortPointListByTypeAndTime(pointList_);
-	if (!special_) {
+	if (special_) {
+		TransitionPoint::sortPointListByTime(pointList_);
+	} else {
+		TransitionPoint::sortPointListByTypeAndTime(pointList_);
 		TransitionPoint::adjustValuesInSlopeRatios(pointList_);
 	}
 
@@ -262,10 +264,9 @@ TransitionEditorWindow::on_equationsTree_itemClicked(QTreeWidgetItem* item, int 
 	QTableWidgetItem* currentItem = ui_->pointsTable->currentItem();
 	if (currentItem == nullptr) return;
 
-	int row = currentItem->row();
-
-	if (pointList_[row].timeExpression.lock() != equation) {
-		pointList_[row].timeExpression = equation;
+	const int pointIndex = getPointListIndexFromTableRow(currentItem->row());
+	if (pointList_[pointIndex].timeExpression.lock() != equation) {
+		pointList_[pointIndex].timeExpression = equation;
 		updateTransition();
 	}
 }
@@ -283,7 +284,8 @@ TransitionEditorWindow::on_pointsTable_currentItemChanged(QTableWidgetItem* curr
 
 	ui_->transitionWidget->setSelectedPointIndex(row);
 
-	const auto timeExpression = pointList_[row].timeExpression.lock();
+	const int pointIndex = getPointListIndexFromTableRow(row);
+	const auto timeExpression = pointList_[pointIndex].timeExpression.lock();
 	if (timeExpression) {
 		unsigned int groupIndex;
 		unsigned int equationIndex;
@@ -313,23 +315,23 @@ TransitionEditorWindow::on_pointsTable_itemChanged(QTableWidgetItem* item)
 	if (model_ == nullptr) return;
 	if (transition_ == nullptr) return;
 
-	int row = item->row();
-	int col = item->column();
+	const int pointIndex = getPointListIndexFromTableRow(item->row());
+	const int col = item->column();
 
 	bool updateWidgets = false;
 	switch (col) {
 	case 1: // Value
-		pointList_[row].value = item->data(Qt::DisplayRole).toFloat();
+		pointList_[pointIndex].value = item->data(Qt::DisplayRole).toFloat();
 		updateWidgets = true;
 		break;
 	case 2: // Has slope?
 		if (special_) return;
-		pointList_[row].hasSlope = (item->checkState() == Qt::Checked);
+		pointList_[pointIndex].hasSlope = (item->checkState() == Qt::Checked);
 		updateWidgets = true;
 		break;
 	case 3: // Slope
 		if (special_) return;
-		pointList_[row].slope = item->data(Qt::DisplayRole).toFloat();
+		pointList_[pointIndex].slope = item->data(Qt::DisplayRole).toFloat();
 		updateWidgets = true;
 		break;
 	default:
@@ -350,8 +352,8 @@ TransitionEditorWindow::on_removePointButton_clicked()
 	QTableWidgetItem* currentItem = ui_->pointsTable->currentItem();
 	if (currentItem == nullptr) return;
 
-	int row = currentItem->row();
-	pointList_.erase(pointList_.begin() + row);
+	const int pointIndex = getPointListIndexFromTableRow(currentItem->row());
+	pointList_.erase(pointList_.begin() + pointIndex);
 
 	updateTransition();
 }
@@ -464,46 +466,49 @@ TransitionEditorWindow::updatePointsTable()
 
 	QSignalBlocker blocker(table);
 
+	const unsigned int numPoints = pointList_.size();
+
 	unsigned int numValidPoints = 0;
-	for (unsigned int i = 0, size = pointList_.size(); i < size; ++i) {
+	for (unsigned int i = 0; i < numPoints; ++i) {
 		const auto& point = pointList_[i];
 		if (point.type <= static_cast<int>(transitionType_)) {
 			++numValidPoints;
-		} else {
-			break;
 		}
 	}
 
 	table->setRowCount(numValidPoints);
-	for (unsigned int i = 0; i < numValidPoints; ++i) {
+	for (unsigned int i = 0, j = 0; i < numPoints; ++i) {
 		const auto& point = pointList_[i];
+		if (point.type > static_cast<int>(transitionType_)) continue;
 		unsigned int column = 0;
 
 		auto item = std::make_unique<QTableWidgetItem>(QString("%1 - %2").arg(point.type).arg(typeNames[point.type]));
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		table->setItem(i, column++, item.release());
+		table->setItem(j, column++, item.release());
 
 		item = std::make_unique<QTableWidgetItem>();
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 		item->setData(Qt::DisplayRole, point.value);
-		table->setItem(i, column++, item.release());
+		table->setItem(j, column++, item.release());
 
 		if (!special_) {
 			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsUserCheckable | Qt::ItemIsEnabled);
 			item->setCheckState(point.hasSlope ? Qt::Checked : Qt::Unchecked);
-			table->setItem(i, column++, item.release());
+			table->setItem(j, column++, item.release());
 
 			item = std::make_unique<QTableWidgetItem>();
 			item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEditable | Qt::ItemIsEnabled);
 			item->setData(Qt::DisplayRole, point.slope);
-			table->setItem(i, column++, item.release());
+			table->setItem(j, column++, item.release());
 		}
 
 		const auto timeExpression = point.timeExpression.lock();
 		item = std::make_unique<QTableWidgetItem>(timeExpression ? timeExpression->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
-		table->setItem(i, column, item.release());
+		table->setItem(j, column, item.release());
+
+		++j;
 	}
 }
 
@@ -521,6 +526,18 @@ TransitionEditorWindow::updateTransitionWidget()
 		ruleMark2_,
 		ruleMark3_
 	);
+}
+
+int
+TransitionEditorWindow::getPointListIndexFromTableRow(int row)
+{
+	for (int i = 0, j = 0, size = pointList_.size(); i < size; ++i) {
+		const auto& point = pointList_[i];
+		if (point.type > static_cast<int>(transitionType_)) continue;
+		if (j == row) return i;
+		++j;
+	}
+	return -1;
 }
 
 } // namespace GS
