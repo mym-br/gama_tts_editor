@@ -70,9 +70,9 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 {
 	ui_->setupUi(this);
 
-	ui_->transitionTypeComboBox->addItem(typeNames[2], 2);
-	ui_->transitionTypeComboBox->addItem(typeNames[3], 3);
-	ui_->transitionTypeComboBox->addItem(typeNames[4], 4);
+	ui_->transitionTypeComboBox->addItem(typeNames[2], VTMControlModel::Transition::TYPE_DIPHONE);
+	ui_->transitionTypeComboBox->addItem(typeNames[3], VTMControlModel::Transition::TYPE_TRIPHONE);
+	ui_->transitionTypeComboBox->addItem(typeNames[4], VTMControlModel::Transition::TYPE_TETRAPHONE);
 
 	ui_->equationsTree->setColumnCount(NUM_EQUATIONS_TREE_COLUMNS);
 	ui_->equationsTree->setHeaderLabels(QStringList() << tr("Equation"));
@@ -179,29 +179,9 @@ TransitionEditorWindow::handleEditTransitionButtonClicked(unsigned int transitio
 		ui_->transitionTypeComboBox->setCurrentIndex(typeIndex);
 	}
 
-	fillDefaultParameters();
-
 	TransitionPoint::copyPointsFromTransition(*transition_, pointList_);
 
-	try {
-		updatePointTimes();
-	} catch (const Exception& exc) {
-		QMessageBox::critical(this, tr("Error"), exc.what());
-		clear();
-		return;
-	}
-
-	if (special_) {
-		TransitionPoint::sortPointListByTypeAndTime(pointList_);
-	} else {
-		TransitionPoint::adjustValuesInSlopeRatios(pointList_);
-	}
-
-	updatePointsTable();
-	updateTransitionWidget();
-
-	ui_->equationsTree->setCurrentItem(nullptr);
-	ui_->pointsTable->setCurrentItem(nullptr);
+	updateTransition();
 
 	show();
 	raise();
@@ -214,20 +194,26 @@ TransitionEditorWindow::updateTransition()
 	if (model_ == nullptr) return;
 	if (transition_ == nullptr) return;
 
+	fillDefaultParameters();
 	try {
-		updatePointTimes();
+		TransitionPoint::calculateTimes(*model_, pointList_);
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 		clear();
 		return;
 	}
 
+	TransitionPoint::sortPointListByTypeAndTime(pointList_);
 	if (!special_) {
 		TransitionPoint::adjustValuesInSlopeRatios(pointList_);
 	}
 
 	updatePointsTable();
 	updateTransitionWidget();
+
+	ui_->pointsTable->setCurrentItem(nullptr);
+	ui_->equationsTree->setCurrentItem(nullptr);
+	ui_->transitionWidget->setSelectedPointIndex(-1);
 }
 
 void
@@ -297,7 +283,7 @@ TransitionEditorWindow::on_pointsTable_currentItemChanged(QTableWidgetItem* curr
 
 	ui_->transitionWidget->setSelectedPointIndex(row);
 
-	const std::shared_ptr<VTMControlModel::Equation> timeExpression(pointList_[row].timeExpression.lock());
+	const auto timeExpression = pointList_[row].timeExpression.lock();
 	if (timeExpression) {
 		unsigned int groupIndex;
 		unsigned int equationIndex;
@@ -367,67 +353,7 @@ TransitionEditorWindow::on_removePointButton_clicked()
 	int row = currentItem->row();
 	pointList_.erase(pointList_.begin() + row);
 
-	if (!special_) {
-		TransitionPoint::adjustValuesInSlopeRatios(pointList_);
-	}
-
-	updatePointsTable();
-	updateTransitionWidget();
-
-	ui_->pointsTable->setCurrentItem(nullptr);
-	ui_->equationsTree->setCurrentItem(nullptr);
-}
-
-void
-TransitionEditorWindow::on_movePointUpButton_clicked()
-{
-	if (model_ == nullptr) return;
-	if (transition_ == nullptr) return;
-
-	QTableWidgetItem* currentItem = ui_->pointsTable->currentItem();
-	if (currentItem == nullptr) return;
-
-	int row = currentItem->row();
-	if (row == 0) return;
-
-	if (pointList_[row].type == pointList_[row - 1].type) {
-		std::swap(pointList_[row], pointList_[row - 1]);
-
-		if (!special_) {
-			TransitionPoint::adjustValuesInSlopeRatios(pointList_);
-		}
-
-		updatePointsTable();
-		updateTransitionWidget();
-
-		ui_->pointsTable->setCurrentCell(row - 1, 0);
-	}
-}
-
-void
-TransitionEditorWindow::on_movePointDownButton_clicked()
-{
-	if (model_ == nullptr) return;
-	if (transition_ == nullptr) return;
-
-	QTableWidgetItem* currentItem = ui_->pointsTable->currentItem();
-	if (currentItem == nullptr) return;
-
-	int row = currentItem->row();
-	if (row == static_cast<int>(pointList_.size()) - 1) return;
-
-	if (pointList_[row].type == pointList_[row + 1].type) {
-		std::swap(pointList_[row], pointList_[row + 1]);
-
-		if (!special_) {
-			TransitionPoint::adjustValuesInSlopeRatios(pointList_);
-		}
-
-		updatePointsTable();
-		updateTransitionWidget();
-
-		ui_->pointsTable->setCurrentCell(row + 1, 0);
-	}
+	updateTransition();
 }
 
 void
@@ -435,10 +361,6 @@ TransitionEditorWindow::on_updateTransitionButton_clicked()
 {
 	if (model_ == nullptr) return;
 	if (transition_ == nullptr) return;
-
-	if (!special_) {
-		TransitionPoint::adjustValuesInSlopeRatios(pointList_);
-	}
 
 	try {
 		TransitionPoint::copyPointsToTransition(transitionType_, pointList_, *transition_);
@@ -462,7 +384,6 @@ TransitionEditorWindow::on_transitionTypeComboBox_currentIndexChanged(int index)
 	if (index >= 0) {
 		transitionType_ = static_cast<VTMControlModel::Transition::Type>(ui_->transitionTypeComboBox->itemData(index).toInt());
 
-		fillDefaultParameters();
 		updateTransition();
 	}
 }
@@ -482,24 +403,9 @@ TransitionEditorWindow::createPoint(unsigned int pointType, float time, float va
 	newPoint.type = static_cast<VTMControlModel::Transition::Point::Type>(pointType);
 	newPoint.value = value;
 	newPoint.freeTime = time;
-
-	QTableWidget* table = ui_->pointsTable;
-	if (table->rowCount() == 0) {
-		pointList_.push_back(std::move(newPoint));
-	} else {
-		// Insert point at the end of the group.
-		auto iter = pointList_.begin();
-		auto end = pointList_.end();
-		while (iter != end && static_cast<unsigned int>(iter->type) <= pointType) {
-			++iter;
-		}
-		pointList_.insert(iter, std::move(newPoint));
-	}
+	pointList_.push_back(std::move(newPoint));
 
 	updateTransition();
-
-	ui_->pointsTable->setCurrentItem(nullptr);
-	ui_->equationsTree->setCurrentItem(nullptr);
 }
 
 void
@@ -549,16 +455,6 @@ TransitionEditorWindow::fillDefaultParameters()
 }
 
 void
-TransitionEditorWindow::updatePointTimes()
-{
-	if (model_ == nullptr) return;
-	if (transition_ == nullptr) return;
-
-	model_->setDefaultFormulaSymbols(transitionType_);
-	TransitionPoint::calculateTimes(*model_, pointList_);
-}
-
-void
 TransitionEditorWindow::updatePointsTable()
 {
 	if (model_ == nullptr) return;
@@ -568,8 +464,18 @@ TransitionEditorWindow::updatePointsTable()
 
 	QSignalBlocker blocker(table);
 
-	table->setRowCount(pointList_.size());
+	unsigned int numValidPoints = 0;
 	for (unsigned int i = 0, size = pointList_.size(); i < size; ++i) {
+		const auto& point = pointList_[i];
+		if (point.type <= transitionType_) {
+			++numValidPoints;
+		} else {
+			break;
+		}
+	}
+
+	table->setRowCount(numValidPoints);
+	for (unsigned int i = 0; i < numValidPoints; ++i) {
 		const auto& point = pointList_[i];
 		unsigned int column = 0;
 
@@ -594,7 +500,7 @@ TransitionEditorWindow::updatePointsTable()
 			table->setItem(i, column++, item.release());
 		}
 
-		const std::shared_ptr<VTMControlModel::Equation> timeExpression(point.timeExpression.lock());
+		const auto timeExpression = point.timeExpression.lock();
 		item = std::make_unique<QTableWidgetItem>(timeExpression ? timeExpression->name().c_str() : "");
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(i, column, item.release());

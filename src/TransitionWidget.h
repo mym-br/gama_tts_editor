@@ -63,6 +63,7 @@ private:
 	bool special_;
 	bool dataUpdated_;
 	double textYOffset_;
+	double slopeTextYOffset_;
 	double leftMargin_;
 	double yStep_;
 	double graphWidth_;

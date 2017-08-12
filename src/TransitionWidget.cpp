@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2014, 2015 Marcelo Y. Matuda                                 *
+ *  Copyright 2014, 2015, 2017 Marcelo Y. Matuda                           *
  *  Copyright 1991, 1992, 1993, 1994, 1995, 1996, 2001, 2002               *
  *    David R. Hill, Leonard Manzara, Craig Schock                         *
  *                                                                         *
@@ -32,26 +32,29 @@
 #define TEXT_MARGIN 10.0
 #define SELECTION_SIZE 6.0
 #define SLOPE_TEXT_MARGIN 4.0
+#define TETRAPHONE_MARK1    (100.0)
+#define TETRAPHONE_MARK2    (200.0)
+#define TETRAPHONE_DURATION (300.0)
 
 
 
 namespace {
 
 std::vector<const char*> transitionYLabels = {
-	"  %",
-	"110",
-	"100",
-	" 90",
-	" 80",
-	" 70",
-	" 60",
-	" 50",
-	" 40",
-	" 30",
-	" 20",
-	" 10",
-	"  0",
-	"-10"
+	"   %",
+	" 110",
+	" 100",
+	"  90",
+	"  80",
+	"  70",
+	"  60",
+	"  50",
+	"  40",
+	"  30",
+	"  20",
+	"  10",
+	"   0",
+	" -10"
 };
 std::vector<const char*> specialTransitionYLabels = {
 	"   %",
@@ -79,6 +82,7 @@ TransitionWidget::TransitionWidget(QWidget* parent)
 		, special_{}
 		, dataUpdated_{}
 		, textYOffset_{}
+		, slopeTextYOffset_{}
 		, leftMargin_{}
 		, yStep_{}
 		, graphWidth_{}
@@ -145,7 +149,9 @@ TransitionWidget::paintEvent(QPaintEvent*)
 	}
 
 	QPainter painter(this);
-	painter.setFont(QFont("monospace"));
+	QFont normalFont{"monospace"};
+	QFont slopeFont{"monospace", 9};
+	painter.setFont(normalFont);
 
 	if (dataUpdated_) {
 		QFontMetrics fm = painter.fontMetrics();
@@ -155,6 +161,12 @@ TransitionWidget::paintEvent(QPaintEvent*)
 		} else {
 			leftMargin_ = MARGIN + TEXT_MARGIN + fm.width(transitionYLabels[0]);
 		}
+
+		painter.setFont(slopeFont);
+		fm = painter.fontMetrics();
+		slopeTextYOffset_ = 0.5 * fm.ascent();
+		painter.setFont(normalFont);
+
 		updateScales();
 
 		dataUpdated_ = false;
@@ -162,7 +174,7 @@ TransitionWidget::paintEvent(QPaintEvent*)
 
 	if (special_) {
 		// Gray area.
-		painter.fillRect(QRectF(QPointF(leftMargin_, MARGIN + 7.0 * yStep_), QPointF(leftMargin_ + graphWidth_, MARGIN + 14.0 * yStep_)), Qt::gray);
+		painter.fillRect(QRectF(QPointF(leftMargin_, MARGIN + 7.0 * yStep_), QPointF(leftMargin_ + graphWidth_, MARGIN + 14.0 * yStep_)), Qt::lightGray);
 
 		// Y labels.
 		for (unsigned int i = 0; i < specialTransitionYLabels.size(); ++i) {
@@ -172,8 +184,8 @@ TransitionWidget::paintEvent(QPaintEvent*)
 		}
 	} else {
 		// Gray areas.
-		painter.fillRect(QRectF(QPointF(leftMargin_, MARGIN), QPointF(leftMargin_ + graphWidth_, MARGIN + 2.0 * yStep_)), Qt::gray);
-		painter.fillRect(QRectF(QPointF(leftMargin_, MARGIN + 12.0 * yStep_), QPointF(leftMargin_ + graphWidth_, MARGIN + 14.0 * yStep_)), Qt::gray);
+		painter.fillRect(QRectF(QPointF(leftMargin_, MARGIN), QPointF(leftMargin_ + graphWidth_, MARGIN + 2.0 * yStep_)), Qt::lightGray);
+		painter.fillRect(QRectF(QPointF(leftMargin_, MARGIN + 12.0 * yStep_), QPointF(leftMargin_ + graphWidth_, MARGIN + 14.0 * yStep_)), Qt::lightGray);
 
 		// Y labels.
 		for (unsigned int i = 0; i < transitionYLabels.size(); ++i) {
@@ -182,6 +194,13 @@ TransitionWidget::paintEvent(QPaintEvent*)
 			painter.drawText(QPointF(leftMargin_ + graphWidth_ + TEXT_MARGIN, y), transitionYLabels[i]);
 		}
 	}
+
+	// Disabled area.
+	if (transitionType_ != VTMControlModel::Transition::TYPE_TETRAPHONE) {
+		const double xStartDisabled = timeToX(ruleDuration_);
+		painter.fillRect(QRectF(QPointF(xStartDisabled, MARGIN), QPointF(leftMargin_ + graphWidth_, MARGIN + 14.0 * yStep_)), Qt::lightGray);
+	}
+
 	// Horizontal lines.
 	for (int i = 0; i < 15; ++i) {
 		double y = MARGIN + i * yStep_;
@@ -202,13 +221,17 @@ TransitionWidget::paintEvent(QPaintEvent*)
 
 		for (unsigned int i = 0, size = pointList_->size(); i < size; ++i) {
 			const auto& point = (*pointList_)[i];
+			if (point.type > transitionType_) break;
+
 			QPointF p(0.5 + timeToX(point.time), 0.5 + valueToY(point.value));
 			painter.drawLine(prevP, p);
 
 			prevP = p;
-			if (i != size - 1) {
-				if (point.type != (*pointList_)[i + 1].type) {
-					prevP.setY(0.5 + valueToY(0.0));
+			if (!special_) {
+				if (i != size - 1) {
+					if (point.type != (*pointList_)[i + 1].type) {
+						prevP.setY(0.5 + valueToY(0.0));
+					}
 				}
 			}
 		}
@@ -231,9 +254,11 @@ TransitionWidget::paintEvent(QPaintEvent*)
 				drawDiPoint(painter, x, y);
 				break;
 			case VTMControlModel::Transition::Point::TYPE_TRIPHONE:
+				if (transitionType_ < VTMControlModel::Transition::TYPE_TRIPHONE) break;
 				drawTriPoint(painter, x, y);
 				break;
 			case VTMControlModel::Transition::Point::TYPE_TETRAPHONE:
+				if (transitionType_ < VTMControlModel::Transition::TYPE_TETRAPHONE) break;
 				drawTetraPoint(painter, x, y);
 				break;
 			default:
@@ -243,23 +268,10 @@ TransitionWidget::paintEvent(QPaintEvent*)
 	}
 
 	// Posture markers.
-	double yMarker = 0.5 + 0.5 * yStep_ + textYOffset_;
-	switch (transitionType_) {
-	case VTMControlModel::Transition::TYPE_DIPHONE:
-		drawDiPoint(painter, 0.5 + timeToX(ruleDuration_), yMarker);
-		break;
-	case VTMControlModel::Transition::TYPE_TRIPHONE:
-		drawDiPoint( painter, 0.5 + timeToX(mark1_)       , yMarker);
-		drawTriPoint(painter, 0.5 + timeToX(ruleDuration_), yMarker);
-		break;
-	case VTMControlModel::Transition::TYPE_TETRAPHONE:
-		drawDiPoint(   painter, 0.5 + timeToX(mark1_)       , yMarker);
-		drawTriPoint(  painter, 0.5 + timeToX(mark2_)       , yMarker);
-		drawTetraPoint(painter, 0.5 + timeToX(ruleDuration_), yMarker);
-		break;
-	default:
-		break;
-	}
+	double yMarker = 0.5 + 0.5 * yStep_;
+	drawDiPoint(   painter, 0.5 + timeToX(TETRAPHONE_MARK1)   , yMarker);
+	drawTriPoint(  painter, 0.5 + timeToX(TETRAPHONE_MARK2)   , yMarker);
+	drawTetraPoint(painter, 0.5 + timeToX(TETRAPHONE_DURATION), yMarker);
 
 	painter.setBrush(QBrush());
 	painter.setRenderHint(QPainter::Antialiasing, false);
@@ -267,47 +279,28 @@ TransitionWidget::paintEvent(QPaintEvent*)
 	// Posture vertical lines.
 	double yPosture1 = special_ ? valueToY(-140.0) : valueToY(-20.0);
 	double yPosture2 = special_ ? valueToY( 140.0) : valueToY(120.0);
-
 	double x = timeToX(0.0);
 	painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
-
-	switch (transitionType_) {
-	case VTMControlModel::Transition::TYPE_DIPHONE:
-		x = timeToX(ruleDuration_);
-		painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
-		break;
-	case VTMControlModel::Transition::TYPE_TRIPHONE:
-		x = timeToX(mark1_);
-		painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
-		x = timeToX(ruleDuration_);
-		painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
-		break;
-	case VTMControlModel::Transition::TYPE_TETRAPHONE:
-		x = timeToX(mark1_);
-		painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
-		x = timeToX(mark2_);
-		painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
-		x = timeToX(ruleDuration_);
-		painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
-		break;
-	default:
-		break;
-	}
+	x = timeToX(TETRAPHONE_MARK1);
+	painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
+	x = timeToX(TETRAPHONE_MARK2);
+	painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
+	x = timeToX(TETRAPHONE_DURATION);
+	painter.drawLine(QPointF(x, yPosture1), QPointF(x, yPosture2));
 
 	if (!pointList_->empty()) {
+		painter.setFont(slopeFont);
+
 		if (!special_) {
 			// Slopes.
-			double y1 = MARGIN + 15.0 * yStep_;
+			double y1 = MARGIN + 14.0 * yStep_;
 			double y2 = y1 + yStep_;
-			double yText = y2 - 0.5 * yStep_ + textYOffset_;
+			double yText = y2 - 0.5 * yStep_ + slopeTextYOffset_;
 			for (unsigned int i = 0, end = pointList_->size() - 1; i < end; ++i) {
 				const auto& point1 = (*pointList_)[i];
 				if (point1.hasSlope) {
 					const auto& point2 = (*pointList_)[i + 1];
-					painter.setPen(Qt::gray);
 					painter.drawRect(QRectF(QPointF(timeToX(point1.time), y1), QPointF(timeToX(point2.time), y2)));
-					painter.setPen(Qt::black);
-
 					painter.drawText(
 						QPointF(timeToX(point1.time) + SLOPE_TEXT_MARGIN, yText),
 						QString("%1").arg(point1.slope, 0, 'f', 1));
@@ -384,11 +377,7 @@ TransitionWidget::updateScales()
 		return;
 	}
 
-	if (special_) {
-		yStep_ = (height() - (2.0 * MARGIN)) / 15.0;
-	} else {
-		yStep_ = (height() - (2.0 * MARGIN)) / 16.0;
-	}
+	yStep_ = (height() - (2.0 * MARGIN)) / 15.0;
 	graphWidth_ = width() - 2.0 * leftMargin_;
 }
 
@@ -405,7 +394,7 @@ TransitionWidget::valueToY(double value)
 double
 TransitionWidget::timeToX(double time)
 {
-	return leftMargin_ + graphWidth_ * time / ruleDuration_;
+	return leftMargin_ + graphWidth_ * time / TETRAPHONE_DURATION;
 }
 
 double
@@ -421,7 +410,7 @@ TransitionWidget::yToValue(double y)
 double
 TransitionWidget::xToTime(double x)
 {
-	return (x - leftMargin_) * ruleDuration_ / graphWidth_;
+	return (x - leftMargin_) * TETRAPHONE_DURATION / graphWidth_;
 }
 
 void

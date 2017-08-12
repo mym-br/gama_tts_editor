@@ -84,7 +84,7 @@ void
 TransitionPoint::calculateTimes(const VTMControlModel::Model& model, std::vector<TransitionPoint>& pointList)
 {
 	for (auto& point : pointList) {
-		const std::shared_ptr<VTMControlModel::Equation> timeExpression(point.timeExpression.lock());
+		const auto timeExpression = point.timeExpression.lock();
 		if (!timeExpression) {
 			point.time = point.freeTime;
 		} else {
@@ -100,11 +100,11 @@ TransitionPoint::adjustValuesInSlopeRatios(std::vector<TransitionPoint>& pointLi
 		return;
 	}
 
-	for (unsigned int i = 0, last = pointList.size() - 1; i < last; ++i) {
+	for (unsigned int i = 0, end = pointList.size() - 1; i < end; ++i) {
 		if (pointList[i].hasSlope) {
 			// Find the last point in the slope ratio group.
 			unsigned int j = i + 1;
-			while (j < last && pointList[i].type == pointList[j].type && pointList[j].hasSlope) {
+			while (j < end && pointList[i].type == pointList[j].type && pointList[j].hasSlope) {
 				++j;
 			}
 			if (pointList[i].type != pointList[j].type) {
@@ -151,10 +151,11 @@ TransitionPoint::copyPointsToTransition(VTMControlModel::Transition::Type type, 
 		THROW_EXCEPTION(InvalidParameterException, "Empty point list.");
 	}
 
-	VTMControlModel::Transition newTransition(transition.name(), type, false /* special */);
+	VTMControlModel::Transition newTransition(transition.name(), type, transition.special());
 	newTransition.setComment(transition.comment());
 
 	for (unsigned int i = 0, size = pointList.size(); i < size; ++i) {
+		if (pointList[i].type > static_cast<int>(type)) break;
 		if (i != size - 1 && pointList[i].hasSlope) {
 			// Find the last point in the slope ratio group.
 			unsigned int j = i + 1;
@@ -206,7 +207,7 @@ TransitionPoint::makeNewPoint(const TransitionPoint& sourcePoint)
 	newPoint->type = sourcePoint.type;
 	newPoint->value = sourcePoint.value;
 
-	const std::shared_ptr<VTMControlModel::Equation> timeExpression(sourcePoint.timeExpression.lock());
+	const auto timeExpression = sourcePoint.timeExpression.lock();
 	if (timeExpression) {
 		newPoint->timeExpression = timeExpression;
 	} else {

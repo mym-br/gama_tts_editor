@@ -62,8 +62,6 @@ private slots:
 	void on_pointsTable_currentItemChanged(QTableWidgetItem* current, QTableWidgetItem* previous);
 	void on_pointsTable_itemChanged(QTableWidgetItem* item);
 	void on_removePointButton_clicked();
-	void on_movePointUpButton_clicked();
-	void on_movePointDownButton_clicked();
 	void on_updateTransitionButton_clicked();
 	void on_transitionTypeComboBox_currentIndexChanged(int index);
 	void createPoint(unsigned int pointType, float time, float value);
@@ -71,7 +69,6 @@ protected:
 	virtual void closeEvent(QCloseEvent* event);
 private:
 	void fillDefaultParameters();
-	void updatePointTimes();
 	void updateTransitionWidget();
 	void updatePointsTable();
 
