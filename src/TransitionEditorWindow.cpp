@@ -88,6 +88,7 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 	ui_->pointsTable->horizontalHeader()->setSectionResizeMode(QHeaderView::Stretch);
 
 	connect(ui_->transitionWidget, &TransitionWidget::pointCreationRequested, this, &TransitionEditorWindow::createPoint);
+	connect(ui_->transitionWidget, &TransitionWidget::pointSelected         , this, &TransitionEditorWindow::handlePointSelected);
 }
 
 TransitionEditorWindow::~TransitionEditorWindow()
@@ -408,6 +409,12 @@ TransitionEditorWindow::createPoint(unsigned int pointType, float time, float va
 	pointList_.push_back(std::move(newPoint));
 
 	updateTransition();
+}
+
+void
+TransitionEditorWindow::handlePointSelected(unsigned int pointIndex)
+{
+	ui_->pointsTable->setCurrentCell(pointIndex, 0);
 }
 
 void

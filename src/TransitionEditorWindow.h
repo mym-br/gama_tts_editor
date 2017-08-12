@@ -65,6 +65,7 @@ private slots:
 	void on_updateTransitionButton_clicked();
 	void on_transitionTypeComboBox_currentIndexChanged(int index);
 	void createPoint(unsigned int pointType, float time, float value);
+	void handlePointSelected(unsigned int pointIndex);
 protected:
 	virtual void closeEvent(QCloseEvent* event);
 private:

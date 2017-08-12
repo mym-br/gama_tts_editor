@@ -46,10 +46,12 @@ public:
 	void setSelectedPointIndex(int index);
 signals:
 	void pointCreationRequested(unsigned int pointType, float time, float value);
+	void pointSelected(unsigned int pointIndex);
 protected:
 	virtual void paintEvent(QPaintEvent*);
 	virtual void resizeEvent(QResizeEvent* event);
 	virtual void mouseDoubleClickEvent(QMouseEvent* event);
+	virtual void mousePressEvent(QMouseEvent* event);
 private:
 	void updateScales();
 	double valueToY(double value);

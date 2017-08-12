@@ -22,19 +22,22 @@
 
 #include "TransitionWidget.h"
 
+#include <cmath> /* fabs */
+
 #include <QMouseEvent>
 #include <QPainter>
 #include <QPointF>
 #include <QRectF>
 
-#define MARGIN 20.0
-#define MARKER_SIZE 3.5
-#define TEXT_MARGIN 10.0
-#define SELECTION_SIZE 6.0
-#define SLOPE_TEXT_MARGIN 4.0
-#define TETRAPHONE_MARK1    (100.0)
-#define TETRAPHONE_MARK2    (200.0)
-#define TETRAPHONE_DURATION (300.0)
+#define MARGIN                       (20.0)
+#define MARKER_SIZE                  (3.5)
+#define TEXT_MARGIN                  (10.0)
+#define SELECTION_SIZE               (6.0)
+#define SLOPE_TEXT_MARGIN            (4.0)
+#define TETRAPHONE_MARK1             (100.0)
+#define TETRAPHONE_MARK2             (200.0)
+#define TETRAPHONE_DURATION          (300.0)
+#define POINT_SELECTION_MAX_DISTANCE (25.0)
 
 
 
@@ -373,6 +376,31 @@ TransitionWidget::mouseDoubleClickEvent(QMouseEvent* event)
 		qDebug("mouseDoubleClickEvent type=%u time=%f value=%f", pointType, time, value);
 
 		emit pointCreationRequested(pointType, time, value);
+	}
+}
+
+void
+TransitionWidget::mousePressEvent(QMouseEvent* event)
+{
+	if (pointList_ == nullptr) return;
+	if (pointList_->empty()) return;
+
+	qDebug("TransitionWidget::mousePressEvent");
+
+	unsigned int i = 0;
+	for (const auto& point : *pointList_) {
+		if (point.type > static_cast<int>(transitionType_)) continue;
+
+		const double x = timeToX(point.time);
+		const double y = valueToY(point.value);
+		const double absDx = std::fabs(x - event->x());
+		const double absDy = std::fabs(y - event->y());
+		if (absDx <= POINT_SELECTION_MAX_DISTANCE && absDy <= POINT_SELECTION_MAX_DISTANCE) {
+			emit pointSelected(i);
+			break;
+		}
+
+		++i;
 	}
 }
 
