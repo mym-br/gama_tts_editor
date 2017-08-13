@@ -89,7 +89,7 @@ TransitionWidget::TransitionWidget(QWidget* parent)
 		, leftMargin_{}
 		, yStep_{}
 		, graphWidth_{}
-		, transitionType_{VTMControlModel::Transition::TYPE_INVALID}
+		, transitionType_{VTMControlModel::Transition::Type::invalid}
 		, pointList_{}
 		, ruleDuration_{}
 		, mark1_{}
@@ -106,7 +106,7 @@ TransitionWidget::TransitionWidget(QWidget* parent)
 void
 TransitionWidget::clear()
 {
-	transitionType_ = VTMControlModel::Transition::TYPE_INVALID;
+	transitionType_ = VTMControlModel::Transition::Type::invalid;
 	pointList_ = nullptr;
 	mark1_ = 0.0;
 	mark2_ = 0.0;
@@ -199,7 +199,7 @@ TransitionWidget::paintEvent(QPaintEvent*)
 	}
 
 	// Disabled area.
-	if (transitionType_ != VTMControlModel::Transition::TYPE_TETRAPHONE) {
+	if (transitionType_ != VTMControlModel::Transition::Type::tetraphone) {
 		const double xStartDisabled = timeToX(ruleDuration_);
 		painter.fillRect(QRectF(QPointF(xStartDisabled, MARGIN), QPointF(leftMargin_ + graphWidth_, MARGIN + 14.0 * yStep_)), Qt::lightGray);
 	}
@@ -224,7 +224,7 @@ TransitionWidget::paintEvent(QPaintEvent*)
 
 		for (unsigned int i = 0, size = pointList_->size(); i < size; ++i) {
 			const auto& point = (*pointList_)[i];
-			if (point.type > static_cast<int>(transitionType_)) continue;
+			if (static_cast<int>(point.type) > static_cast<int>(transitionType_)) continue;
 
 			QPointF p(0.5 + timeToX(point.time), 0.5 + valueToY(point.value));
 			painter.drawLine(prevP, p);
@@ -253,15 +253,16 @@ TransitionWidget::paintEvent(QPaintEvent*)
 			double x = 0.5 + timeToX(point.time);
 			double y = 0.5 + valueToY(point.value);
 			switch (point.type) {
-			case VTMControlModel::Transition::Point::TYPE_DIPHONE:
+			case VTMControlModel::Transition::Point::Type::diphone:
 				drawDiPoint(painter, x, y);
 				break;
-			case VTMControlModel::Transition::Point::TYPE_TRIPHONE:
-				if (transitionType_ < VTMControlModel::Transition::TYPE_TRIPHONE) continue;
+			case VTMControlModel::Transition::Point::Type::triphone:
+				if (transitionType_ == VTMControlModel::Transition::Type::diphone) continue;
 				drawTriPoint(painter, x, y);
 				break;
-			case VTMControlModel::Transition::Point::TYPE_TETRAPHONE:
-				if (transitionType_ < VTMControlModel::Transition::TYPE_TETRAPHONE) continue;
+			case VTMControlModel::Transition::Point::Type::tetraphone:
+				if (transitionType_ == VTMControlModel::Transition::Type::diphone
+					|| transitionType_ == VTMControlModel::Transition::Type::triphone) continue;
 				drawTetraPoint(painter, x, y);
 				break;
 			default:
@@ -315,7 +316,7 @@ TransitionWidget::paintEvent(QPaintEvent*)
 		if (selectedPointIndex_ >= 0 && static_cast<std::size_t>(selectedPointIndex_) < pointList_->size()) {
 			int i = 0;
 			for (const auto& point : *pointList_) {
-				if (point.type > static_cast<int>(transitionType_)) continue;
+				if (static_cast<int>(point.type) > static_cast<int>(transitionType_)) continue;
 				if (i == selectedPointIndex_) {
 					double x = timeToX(point.time);
 					double y = valueToY(point.value);
@@ -350,17 +351,17 @@ TransitionWidget::mouseDoubleClickEvent(QMouseEvent* event)
 	if (time >= 0.0 && time <= ruleDuration_ && value >= minValue && value <= maxValue) {
 		unsigned int pointType;
 		switch (transitionType_) {
-		case VTMControlModel::Transition::TYPE_DIPHONE:
+		case VTMControlModel::Transition::Type::diphone:
 			pointType = 2;
 			break;
-		case VTMControlModel::Transition::TYPE_TRIPHONE:
+		case VTMControlModel::Transition::Type::triphone:
 			if (time <= mark1_) {
 				pointType = 2;
 			} else {
 				pointType = 3;
 			}
 			break;
-		case VTMControlModel::Transition::TYPE_TETRAPHONE:
+		case VTMControlModel::Transition::Type::tetraphone:
 			if (time <= mark1_) {
 				pointType = 2;
 			} else if (time <= mark2_) {
@@ -389,7 +390,7 @@ TransitionWidget::mousePressEvent(QMouseEvent* event)
 
 	unsigned int i = 0;
 	for (const auto& point : *pointList_) {
-		if (point.type > static_cast<int>(transitionType_)) continue;
+		if (static_cast<int>(point.type) > static_cast<int>(transitionType_)) continue;
 
 		const double x = timeToX(point.time);
 		const double y = valueToY(point.value);

@@ -62,7 +62,7 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 		, special_{false}
 		, model_{}
 		, transition_{}
-		, transitionType_{VTMControlModel::Transition::TYPE_INVALID}
+		, transitionType_{VTMControlModel::Transition::Type::invalid}
 		, ruleDuration_{}
 		, ruleMark1_{}
 		, ruleMark2_{}
@@ -70,9 +70,9 @@ TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 {
 	ui_->setupUi(this);
 
-	ui_->transitionTypeComboBox->addItem(typeNames[2], VTMControlModel::Transition::TYPE_DIPHONE);
-	ui_->transitionTypeComboBox->addItem(typeNames[3], VTMControlModel::Transition::TYPE_TRIPHONE);
-	ui_->transitionTypeComboBox->addItem(typeNames[4], VTMControlModel::Transition::TYPE_TETRAPHONE);
+	ui_->transitionTypeComboBox->addItem(typeNames[2], static_cast<int>(VTMControlModel::Transition::Type::diphone));
+	ui_->transitionTypeComboBox->addItem(typeNames[3], static_cast<int>(VTMControlModel::Transition::Type::triphone));
+	ui_->transitionTypeComboBox->addItem(typeNames[4], static_cast<int>(VTMControlModel::Transition::Type::tetraphone));
 
 	ui_->equationsTree->setColumnCount(NUM_EQUATIONS_TREE_COLUMNS);
 	ui_->equationsTree->setHeaderLabels(QStringList() << tr("Equation"));
@@ -116,7 +116,7 @@ TransitionEditorWindow::clear()
 	ui_->transitionWidget->clear();
 	pointList_.clear();
 	ui_->formulaTextEdit->clear();
-	transitionType_ = VTMControlModel::Transition::TYPE_INVALID;
+	transitionType_ = VTMControlModel::Transition::Type::invalid;
 	transition_ = nullptr;
 	ruleDuration_ = 0.0;
 	ruleMark1_    = 0.0;
@@ -169,9 +169,9 @@ TransitionEditorWindow::handleEditTransitionButtonClicked(unsigned int transitio
 	ui_->transitionNameLabel->setText(transition_->name().c_str());
 
 	// Set transition type in the combo box.
-	int typeIndex = ui_->transitionTypeComboBox->findData(transitionType_);
+	int typeIndex = ui_->transitionTypeComboBox->findData(static_cast<int>(transitionType_));
 	if (typeIndex == -1) {
-		qCritical("Invalid transition type: %d.", transitionType_);
+		qCritical("Invalid transition type: %d.", static_cast<int>(transitionType_));
 		clear();
 		return;
 	}
@@ -478,7 +478,7 @@ TransitionEditorWindow::updatePointsTable()
 	unsigned int numValidPoints = 0;
 	for (unsigned int i = 0; i < numPoints; ++i) {
 		const auto& point = pointList_[i];
-		if (point.type <= static_cast<int>(transitionType_)) {
+		if (static_cast<int>(point.type) <= static_cast<int>(transitionType_)) {
 			++numValidPoints;
 		}
 	}
@@ -486,10 +486,12 @@ TransitionEditorWindow::updatePointsTable()
 	table->setRowCount(numValidPoints);
 	for (unsigned int i = 0, j = 0; i < numPoints; ++i) {
 		const auto& point = pointList_[i];
-		if (point.type > static_cast<int>(transitionType_)) continue;
+		if (static_cast<int>(point.type) > static_cast<int>(transitionType_)) continue;
 		unsigned int column = 0;
 
-		auto item = std::make_unique<QTableWidgetItem>(QString("%1 - %2").arg(point.type).arg(typeNames[point.type]));
+		auto item = std::make_unique<QTableWidgetItem>(QString("%1 - %2")
+								.arg(static_cast<int>(point.type))
+								.arg(typeNames[static_cast<int>(point.type)]));
 		item->setFlags(Qt::ItemIsSelectable | Qt::ItemIsEnabled);
 		table->setItem(j, column++, item.release());
 
@@ -540,7 +542,7 @@ TransitionEditorWindow::getPointListIndexFromTableRow(int row)
 {
 	for (int i = 0, j = 0, size = pointList_.size(); i < size; ++i) {
 		const auto& point = pointList_[i];
-		if (point.type > static_cast<int>(transitionType_)) continue;
+		if (static_cast<int>(point.type) > static_cast<int>(transitionType_)) continue;
 		if (j == row) return i;
 		++j;
 	}

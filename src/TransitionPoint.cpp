@@ -163,7 +163,7 @@ TransitionPoint::copyPointsToTransition(VTMControlModel::Transition::Type type, 
 	newTransition.setComment(transition.comment());
 
 	for (unsigned int i = 0, size = pointList.size(); i < size; ++i) {
-		if (pointList[i].type > static_cast<int>(type)) continue;
+		if (static_cast<int>(pointList[i].type) > static_cast<int>(type)) continue;
 		if (i != size - 1 && pointList[i].hasSlope) {
 			// Find the last point in the slope ratio group.
 			unsigned int j = i + 1;

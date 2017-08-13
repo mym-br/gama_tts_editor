@@ -370,7 +370,7 @@ PrototypeManagerWindow::on_addTransitionButton_clicked()
 			return;
 		}
 
-		auto transition = std::make_shared<VTMControlModel::Transition>(NEW_ITEM_NAME, VTMControlModel::Transition::TYPE_DIPHONE, false);
+		auto transition = std::make_shared<VTMControlModel::Transition>(NEW_ITEM_NAME, VTMControlModel::Transition::Type::diphone, false);
 		model_->transitionGroupList()[groupIndex].transitionList.push_back(transition);
 	} else {
 		if (model_->findTransitionGroupName(NEW_ITEM_NAME)) {
@@ -652,7 +652,7 @@ PrototypeManagerWindow::on_addSpecialTransitionButton_clicked()
 			return;
 		}
 
-		auto specialTransition = std::make_shared<VTMControlModel::Transition>(NEW_ITEM_NAME, VTMControlModel::Transition::TYPE_DIPHONE, true);
+		auto specialTransition = std::make_shared<VTMControlModel::Transition>(NEW_ITEM_NAME, VTMControlModel::Transition::Type::diphone, true);
 		model_->specialTransitionGroupList()[groupIndex].transitionList.push_back(specialTransition);
 	} else {
 		if (model_->findSpecialTransitionGroupName(NEW_ITEM_NAME)) {

@@ -46,7 +46,7 @@ struct TransitionPoint {
 	float slope;
 
 	TransitionPoint()
-		: type{VTMControlModel::Transition::Point::TYPE_INVALID}
+		: type{VTMControlModel::Transition::Point::Type::invalid}
 		, value{}
 		, timeExpression{}
 		, freeTime{}
