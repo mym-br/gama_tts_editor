@@ -492,7 +492,9 @@ IntonationWidget::loadIntonationFromEventList()
 	graphWidth_ = maxTime_ * timeScale_;
 
 	intonationPointList_ = eventList_->intonationPoints();
-	selectedPoint_ = -1;
+	if (selectedPoint_ >= static_cast<int>(intonationPointList_.size())) {
+		selectedPoint_ = -1;
+	}
 	sendSelectedPointData();
 
 	update();
