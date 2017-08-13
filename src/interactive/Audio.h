@@ -42,9 +42,9 @@ public:
 		PARAMETER_RINGBUFFER_SIZE = 32,
 		MAX_NUM_SAMPLES_FOR_ANALYSIS = 65536
 	};
-	enum AudioState {
-		STARTED,
-		STOPPED
+	enum class State {
+		started,
+		stopped
 	};
 
 	class Processor {
@@ -80,7 +80,7 @@ private:
 	Audio(const Audio&) = delete;
 	Audio& operator=(const Audio&) = delete;
 
-	AudioState state_;
+	State state_;
 	ProgramConfiguration& configuration_;
 	Processor processor_; // must be accessed only by the JACK thread
 	std::unique_ptr<JackRingbuffer> parameterRingbuffer_;

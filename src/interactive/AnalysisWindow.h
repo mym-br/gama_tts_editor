@@ -54,9 +54,9 @@ private slots:
 	void on_cursorFreqSpinBox_valueChanged(double d);
 	void showData();
 private:
-	enum State {
-		STOPPED,
-		ENABLED
+	enum class State {
+		stopped,
+		enabled
 	};
 
 	void setupWindow();

@@ -224,7 +224,7 @@ Audio::Processor::process(jack_nframes_t nframes)
  * Constructor.
  */
 Audio::Audio(ProgramConfiguration& configuration)
-		: state_{STOPPED}
+		: state_{State::stopped}
 		, configuration_{configuration}
 		, processor_{configuration_.dynamicParamList.size()}
 		, parameterRingbuffer_{std::make_unique<JackRingbuffer>(PARAMETER_RINGBUFFER_SIZE * sizeof(VocalTractModelParameterValue))}
@@ -245,7 +245,7 @@ Audio::Audio(ProgramConfiguration& configuration)
 void
 Audio::start()
 {
-	if (state_ == STARTED) {
+	if (state_ == State::started) {
 		if (!stop()) {
 			return;
 		}
@@ -288,7 +288,7 @@ Audio::start()
 
 	jackClient_.reset();
 	jackClient_ = std::move(newJackClient);
-	state_ = STARTED;
+	state_ = State::started;
 	std::cout << "Audio started." << std::endl;
 }
 
@@ -300,11 +300,11 @@ Audio::start()
 bool
 Audio::stop()
 {
-	if (state_ == STOPPED) return true;
+	if (state_ == State::stopped) return true;
 
 	jackClient_.reset();
 
-	state_ = STOPPED;
+	state_ = State::stopped;
 	std::cout << "Audio stopped." << std::endl;
 	return true;
 }

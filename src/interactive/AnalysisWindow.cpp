@@ -63,7 +63,7 @@ AnalysisWindow::AnalysisWindow(QWidget *parent)
 		, analysisRingbuffer_{}
 		, analysisRingbufferNumSamples_{}
 		, timer_{new QTimer(this)}
-		, state_{STOPPED}
+		, state_{State::stopped}
 		, signalDFT_{std::make_unique<SignalDFT>(FFT_SIZE)}
 {
 	ui_->setupUi(this);
@@ -160,16 +160,16 @@ AnalysisWindow::stop()
 {
 	timer_->stop();
 	ui_->startStopButton->setText(tr("Start"));
-	state_ = STOPPED;
+	state_ = State::stopped;
 }
 
 void
 AnalysisWindow::on_startStopButton_clicked()
 {
-	if (state_ == STOPPED) {
+	if (state_ == State::stopped) {
 		timer_->start();
 		ui_->startStopButton->setText(tr("Stop"));
-		state_ = ENABLED;
+		state_ = State::enabled;
 	} else {
 		stop();
 	}
