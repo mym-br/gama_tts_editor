@@ -629,6 +629,7 @@ InteractiveVTMWindow::closeEvent(QCloseEvent* event)
 			event->ignore();
 		}
 	} else {
+		emit destructionRequested();
 		event->accept();
 	}
 }

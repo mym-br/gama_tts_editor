@@ -72,6 +72,7 @@ private slots:
 
 	void about();
 	void updateSynthesis();
+	void destroyInteractiveVTMWindow();
 private:
 	bool openModel();
 	bool saveModel();

@@ -63,6 +63,8 @@ private slots:
 	void reload();
 	void about();
 	void showAnalysisWindow();
+signals:
+	void destructionRequested();
 private:
 	enum {
 		TRANSFER_TIMER_TIMEOUT_MS = 25

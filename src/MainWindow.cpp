@@ -333,6 +333,8 @@ MainWindow::on_interactiveVTMButton_clicked()
 		interactiveVTMWindow_ = std::make_unique<InteractiveVTMWindow>(config_.projectDir.toStdString().c_str(), false);
 		connect(postureEditorWindow_.get(), &PostureEditorWindow::currentPostureChanged,
 				interactiveVTMWindow_.get(), &InteractiveVTMWindow::setDynamicParameters);
+		connect(interactiveVTMWindow_.get(), &InteractiveVTMWindow::destructionRequested,
+				this, &MainWindow::destroyInteractiveVTMWindow, Qt::QueuedConnection);
 	}
 	interactiveVTMWindow_->show();
 	interactiveVTMWindow_->raise();
@@ -414,6 +416,13 @@ MainWindow::updateSynthesis()
 		intonationWindow_->setup(nullptr);
 		synthesisWindow_->setup(nullptr, nullptr);
 	}
+}
+
+// Slot.
+void
+MainWindow::destroyInteractiveVTMWindow()
+{
+	interactiveVTMWindow_.reset();
 }
 
 // Slot.
