@@ -24,7 +24,6 @@
 
 #include <utility> /* swap */
 
-#include <QDoubleValidator>
 #include <QMessageBox>
 #include <QSignalBlocker>
 #include <QTreeWidgetItem>
