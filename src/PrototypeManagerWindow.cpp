@@ -97,7 +97,7 @@ PrototypeManagerWindow::on_addEquationButton_clicked()
 	if (currentIndex.isValid() && !currentIndex.parent().isValid()) { // root item is selected
 		unsigned int groupIndex = currentIndex.row();
 		if (model_->findEquationName(NEW_ITEM_NAME)) {
-			qWarning("Duplicate equation name.");
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate equation name."));
 			return;
 		}
 		auto equation = std::make_shared<VTMControlModel::Equation>(NEW_ITEM_NAME);
@@ -110,7 +110,7 @@ PrototypeManagerWindow::on_addEquationButton_clicked()
 		model_->equationGroupList()[groupIndex].equationList.push_back(std::move(equation));
 	} else {
 		if (model_->findEquationGroupName(NEW_ITEM_NAME)) {
-			qWarning("Duplicate equation group name.");
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate equation group name."));
 			return;
 		}
 		VTMControlModel::EquationGroup equationGroup;
@@ -266,8 +266,11 @@ PrototypeManagerWindow::on_equationsTree_itemChanged(QTreeWidgetItem* item, int 
 	if (parent == nullptr) { // root item
 		int index = ui_->equationsTree->indexOfTopLevelItem(item);
 		if (model_->findEquationGroupName(newText)) {
-			item->setText(0, model_->equationGroupList()[index].name.c_str());
-			qWarning("Duplicate equation group name.");
+			{
+				QSignalBlocker blocker(ui_->equationsTree);
+				item->setText(0, model_->equationGroupList()[index].name.c_str());
+			}
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate equation group name."));
 			return;
 		}
 		model_->equationGroupList()[index].name = newText;
@@ -275,8 +278,11 @@ PrototypeManagerWindow::on_equationsTree_itemChanged(QTreeWidgetItem* item, int 
 		int parentIndex = ui_->equationsTree->indexOfTopLevelItem(parent);
 		int index = parent->indexOfChild(item);
 		if (model_->findEquationName(newText)) {
-			item->setText(0, model_->equationGroupList()[parentIndex].equationList[index]->name().c_str());
-			qWarning("Duplicate equation name.");
+			{
+				QSignalBlocker blocker(ui_->equationsTree);
+				item->setText(0, model_->equationGroupList()[parentIndex].equationList[index]->name().c_str());
+			}
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate equation name."));
 			return;
 		}
 		model_->equationGroupList()[parentIndex].equationList[index]->setName(newText);
@@ -314,8 +320,8 @@ PrototypeManagerWindow::setupEquationsTree()
 
 	if (model_ == nullptr) return;
 
-	QTreeWidget* tree = ui_->equationsTree;
 	{
+		QTreeWidget* tree = ui_->equationsTree;
 		QSignalBlocker blocker(tree);
 
 		tree->clear();
@@ -336,9 +342,10 @@ PrototypeManagerWindow::setupEquationsTree()
 
 			tree->addTopLevelItem(item.release());
 		}
+
+		tree->expandAll();
+		tree->resizeColumnToContents(0);
 	}
-	tree->expandAll();
-	tree->resizeColumnToContents(0);
 	clearEquationData();
 }
 
@@ -366,7 +373,7 @@ PrototypeManagerWindow::on_addTransitionButton_clicked()
 	if (currentIndex.isValid() && !currentIndex.parent().isValid()) { // root item is selected
 		unsigned int groupIndex = currentIndex.row();
 		if (model_->findTransitionName(NEW_ITEM_NAME)) {
-			qWarning("Duplicate transition name.");
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate transition name."));
 			return;
 		}
 
@@ -374,7 +381,7 @@ PrototypeManagerWindow::on_addTransitionButton_clicked()
 		model_->transitionGroupList()[groupIndex].transitionList.push_back(transition);
 	} else {
 		if (model_->findTransitionGroupName(NEW_ITEM_NAME)) {
-			qWarning("Duplicate transition group name.");
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate transition group name."));
 			return;
 		}
 		VTMControlModel::TransitionGroup transitionGroup;
@@ -535,8 +542,11 @@ PrototypeManagerWindow::on_transitionsTree_itemChanged(QTreeWidgetItem* item, in
 	if (parent == nullptr) { // root item
 		int index = ui_->transitionsTree->indexOfTopLevelItem(item);
 		if (model_->findTransitionGroupName(newText)) {
-			item->setText(0, model_->transitionGroupList()[index].name.c_str());
-			qWarning("Duplicate transition group name.");
+			{
+				QSignalBlocker blocker(ui_->transitionsTree);
+				item->setText(0, model_->transitionGroupList()[index].name.c_str());
+			}
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate transition group name."));
 			return;
 		}
 		model_->transitionGroupList()[index].name = newText;
@@ -544,9 +554,11 @@ PrototypeManagerWindow::on_transitionsTree_itemChanged(QTreeWidgetItem* item, in
 		int parentIndex = ui_->transitionsTree->indexOfTopLevelItem(parent);
 		int index = parent->indexOfChild(item);
 		if (model_->findTransitionName(newText)) {
-			QSignalBlocker blocker(ui_->transitionsTree);
-			item->setText(0, model_->transitionGroupList()[parentIndex].transitionList[index]->name().c_str());
-			qWarning("Duplicate transition name.");
+			{
+				QSignalBlocker blocker(ui_->transitionsTree);
+				item->setText(0, model_->transitionGroupList()[parentIndex].transitionList[index]->name().c_str());
+			}
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate transition name."));
 			return;
 		}
 		model_->transitionGroupList()[parentIndex].transitionList[index]->setName(newText);
@@ -598,8 +610,8 @@ PrototypeManagerWindow::setupTransitionsTree()
 {
 	if (model_ == nullptr) return;
 
-	QTreeWidget* tree = ui_->transitionsTree;
 	{
+		QTreeWidget* tree = ui_->transitionsTree;
 		QSignalBlocker blocker(tree);
 
 		tree->clear();
@@ -620,9 +632,10 @@ PrototypeManagerWindow::setupTransitionsTree()
 
 			tree->addTopLevelItem(item.release());
 		}
+
+		tree->expandAll();
+		tree->resizeColumnToContents(0);
 	}
-	tree->expandAll();
-	tree->resizeColumnToContents(0);
 	clearTransitionData();
 }
 
@@ -648,7 +661,7 @@ PrototypeManagerWindow::on_addSpecialTransitionButton_clicked()
 	if (currentIndex.isValid() && !currentIndex.parent().isValid()) { // root item is selected
 		unsigned int groupIndex = currentIndex.row();
 		if (model_->findSpecialTransitionName(NEW_ITEM_NAME)) {
-			qWarning("Duplicate special transition name.");
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate special transition name."));
 			return;
 		}
 
@@ -656,7 +669,7 @@ PrototypeManagerWindow::on_addSpecialTransitionButton_clicked()
 		model_->specialTransitionGroupList()[groupIndex].transitionList.push_back(specialTransition);
 	} else {
 		if (model_->findSpecialTransitionGroupName(NEW_ITEM_NAME)) {
-			qWarning("Duplicate special transition group name.");
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate special transition group name."));
 			return;
 		}
 		VTMControlModel::TransitionGroup specialTransitionGroup;
@@ -817,8 +830,11 @@ PrototypeManagerWindow::on_specialTransitionsTree_itemChanged(QTreeWidgetItem* i
 	if (parent == nullptr) { // root item
 		int index = ui_->specialTransitionsTree->indexOfTopLevelItem(item);
 		if (model_->findSpecialTransitionGroupName(newText)) {
-			item->setText(0, model_->specialTransitionGroupList()[index].name.c_str());
-			qWarning("Duplicate special transition group name.");
+			{
+				QSignalBlocker blocker(ui_->specialTransitionsTree);
+				item->setText(0, model_->specialTransitionGroupList()[index].name.c_str());
+			}
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate special transition group name."));
 			return;
 		}
 		model_->specialTransitionGroupList()[index].name = newText;
@@ -826,8 +842,11 @@ PrototypeManagerWindow::on_specialTransitionsTree_itemChanged(QTreeWidgetItem* i
 		int parentIndex = ui_->specialTransitionsTree->indexOfTopLevelItem(parent);
 		int index = parent->indexOfChild(item);
 		if (model_->findSpecialTransitionName(newText)) {
-			item->setText(0, model_->specialTransitionGroupList()[parentIndex].transitionList[index]->name().c_str());
-			qWarning("Duplicate special transition name.");
+			{
+				QSignalBlocker blocker(ui_->specialTransitionsTree);
+				item->setText(0, model_->specialTransitionGroupList()[parentIndex].transitionList[index]->name().c_str());
+			}
+			QMessageBox::critical(this, tr("Error"), tr("Duplicate special transition name."));
 			return;
 		}
 		model_->specialTransitionGroupList()[parentIndex].transitionList[index]->setName(newText);
@@ -878,8 +897,8 @@ PrototypeManagerWindow::setupSpecialTransitionsTree()
 {
 	if (model_ == nullptr) return;
 
-	QTreeWidget* tree = ui_->specialTransitionsTree;
 	{
+		QTreeWidget* tree = ui_->specialTransitionsTree;
 		QSignalBlocker blocker(tree);
 
 		tree->clear();
@@ -900,9 +919,10 @@ PrototypeManagerWindow::setupSpecialTransitionsTree()
 
 			tree->addTopLevelItem(item.release());
 		}
+
+		tree->expandAll();
+		tree->resizeColumnToContents(0);
 	}
-	tree->expandAll();
-	tree->resizeColumnToContents(0);
 	clearSpecialTransitionData();
 }
 
