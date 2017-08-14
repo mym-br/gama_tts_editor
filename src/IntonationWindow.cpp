@@ -17,6 +17,7 @@
 
 #include "IntonationWindow.h"
 
+#include <QDoubleValidator>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
@@ -39,6 +40,11 @@ IntonationWindow::IntonationWindow(QWidget* parent)
 	ui_->setupUi(this);
 
 	ui_->intonationScrollArea->setBackgroundRole(QPalette::Base);
+
+	QDoubleValidator* validator = new QDoubleValidator(this);
+	ui_->valueLineEdit->setValidator(validator);
+	ui_->slopeLineEdit->setValidator(validator);
+	ui_->beatOffsetLineEdit->setValidator(validator);
 
 	connect(ui_->intonationWidget, &IntonationWidget::pointSelected, this, &IntonationWindow::setPointData);
 }
