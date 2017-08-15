@@ -69,11 +69,11 @@ IntonationParametersWindow::IntonationParametersWindow(QWidget *parent)
 
 	// Drift parameters.
 
-	ui_->deviationSpinBox->setRange(0.0, 10.0);
+	ui_->deviationSpinBox->setRange(0.0, 100.0);
 	ui_->deviationSpinBox->setSingleStep(0.1);
 	ui_->deviationSpinBox->setDecimals(1);
 
-	ui_->cutoffSpinBox->setRange(0.1, 10.0);
+	ui_->cutoffSpinBox->setRange(0.1, 100.0);
 	ui_->cutoffSpinBox->setSingleStep(0.1);
 	ui_->cutoffSpinBox->setDecimals(1);
 

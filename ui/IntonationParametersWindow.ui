@@ -20,6 +20,13 @@
       <string>Parameters</string>
      </property>
      <layout class="QFormLayout" name="formLayout_2">
+      <item row="0" column="0">
+       <widget class="QCheckBox" name="useParametersCheckBox">
+        <property name="text">
+         <string>Use these parameters</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="0">
        <widget class="QLabel" name="label_3">
         <property name="text">
@@ -37,9 +44,6 @@
         </property>
        </widget>
       </item>
-      <item row="5" column="1">
-       <widget class="QDoubleSpinBox" name="tonicPerturbationRangeSpinBox"/>
-      </item>
       <item row="2" column="1">
        <widget class="QDoubleSpinBox" name="pretonicPitchRangeSpinBox"/>
       </item>
@@ -50,12 +54,18 @@
         </property>
        </widget>
       </item>
+      <item row="3" column="1">
+       <widget class="QDoubleSpinBox" name="pretonicPerturbationRangeSpinBox"/>
+      </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
          <string>Tonic pitch range:</string>
         </property>
        </widget>
+      </item>
+      <item row="4" column="1">
+       <widget class="QDoubleSpinBox" name="tonicPitchRangeSpinBox"/>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_6">
@@ -64,47 +74,8 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="1">
-       <widget class="QDoubleSpinBox" name="pretonicPerturbationRangeSpinBox"/>
-      </item>
-      <item row="4" column="1">
-       <widget class="QDoubleSpinBox" name="tonicPitchRangeSpinBox"/>
-      </item>
-      <item row="0" column="0">
-       <widget class="QCheckBox" name="useParametersCheckBox">
-        <property name="text">
-         <string>Use fixed parameters</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QGroupBox" name="groupBox_3">
-     <property name="title">
-      <string>Drift parameters</string>
-     </property>
-     <layout class="QFormLayout" name="formLayout">
-      <item row="0" column="0">
-       <widget class="QLabel" name="label">
-        <property name="text">
-         <string>Deviation:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="0" column="1">
-       <widget class="QDoubleSpinBox" name="deviationSpinBox"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLabel" name="label_2">
-        <property name="text">
-         <string>Cutoff:</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="1">
-       <widget class="QDoubleSpinBox" name="cutoffSpinBox"/>
+      <item row="5" column="1">
+       <widget class="QDoubleSpinBox" name="tonicPerturbationRangeSpinBox"/>
       </item>
      </layout>
     </widget>
@@ -194,6 +165,55 @@
        <widget class="QCheckBox" name="driftCheckBox">
         <property name="text">
          <string>Intonation drift</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Drift parameters</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="1" column="2">
+       <widget class="QLabel" name="label_9">
+        <property name="text">
+         <string>Hz</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="2">
+       <widget class="QLabel" name="label_10">
+        <property name="text">
+         <string>semitone</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QDoubleSpinBox" name="deviationSpinBox"/>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Lowpass cutoff:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <widget class="QDoubleSpinBox" name="cutoffSpinBox"/>
+      </item>
+      <item row="0" column="0">
+       <widget class="QLabel" name="label">
+        <property name="text">
+         <string>Deviation:</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
         </property>
        </widget>
       </item>
