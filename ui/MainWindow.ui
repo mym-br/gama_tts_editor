@@ -113,19 +113,6 @@
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="synthesisWindowButton">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="text">
-       <string>Synthesis window</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QPushButton" name="intonationParametersButton">
       <property name="sizePolicy">
        <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
@@ -135,6 +122,19 @@
       </property>
       <property name="text">
        <string>Intonation parameters</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="synthesisWindowButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Synthesis window</string>
       </property>
      </widget>
     </item>
