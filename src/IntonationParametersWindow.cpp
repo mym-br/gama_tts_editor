@@ -51,21 +51,21 @@ IntonationParametersWindow::IntonationParametersWindow(QWidget *parent)
 	ui_->notionalPitchSpinBox->setSingleStep(0.1);
 	ui_->notionalPitchSpinBox->setDecimals(1);
 
-	ui_->pretonicRangeSpinBox->setRange(-20.0, 20.0);
-	ui_->pretonicRangeSpinBox->setSingleStep(0.1);
-	ui_->pretonicRangeSpinBox->setDecimals(1);
+	ui_->pretonicPitchRangeSpinBox->setRange(-20.0, 20.0);
+	ui_->pretonicPitchRangeSpinBox->setSingleStep(0.1);
+	ui_->pretonicPitchRangeSpinBox->setDecimals(1);
 
-	ui_->pretonicLiftSpinBox->setRange(-20.0, 20.0);
-	ui_->pretonicLiftSpinBox->setSingleStep(0.1);
-	ui_->pretonicLiftSpinBox->setDecimals(1);
+	ui_->pretonicPerturbationRangeSpinBox->setRange(-20.0, 20.0);
+	ui_->pretonicPerturbationRangeSpinBox->setSingleStep(0.1);
+	ui_->pretonicPerturbationRangeSpinBox->setDecimals(1);
 
-	ui_->tonicRangeSpinBox->setRange(-20.0, 20.0);
-	ui_->tonicRangeSpinBox->setSingleStep(0.1);
-	ui_->tonicRangeSpinBox->setDecimals(1);
+	ui_->tonicPitchRangeSpinBox->setRange(-20.0, 20.0);
+	ui_->tonicPitchRangeSpinBox->setSingleStep(0.1);
+	ui_->tonicPitchRangeSpinBox->setDecimals(1);
 
-	ui_->tonicMovementSpinBox->setRange(-20.0, 20.0);
-	ui_->tonicMovementSpinBox->setSingleStep(0.1);
-	ui_->tonicMovementSpinBox->setDecimals(1);
+	ui_->tonicPerturbationRangeSpinBox->setRange(-20.0, 20.0);
+	ui_->tonicPerturbationRangeSpinBox->setSingleStep(0.1);
+	ui_->tonicPerturbationRangeSpinBox->setDecimals(1);
 
 	// Drift parameters.
 
@@ -88,10 +88,10 @@ void
 IntonationParametersWindow::clear()
 {
 	ui_->notionalPitchSpinBox->setValue(0.0);
-	ui_->pretonicRangeSpinBox->setValue(0.0);
-	ui_->pretonicLiftSpinBox->setValue(0.0);
-	ui_->tonicRangeSpinBox->setValue(0.0);
-	ui_->tonicMovementSpinBox->setValue(0.0);
+	ui_->pretonicPitchRangeSpinBox->setValue(0.0);
+	ui_->pretonicPerturbationRangeSpinBox->setValue(0.0);
+	ui_->tonicPitchRangeSpinBox->setValue(0.0);
+	ui_->tonicPerturbationRangeSpinBox->setValue(0.0);
 
 	ui_->deviationSpinBox->setValue(0.0);
 	ui_->cutoffSpinBox->setValue(0.1);
@@ -118,17 +118,17 @@ IntonationParametersWindow::setup(Synthesis* synthesis)
 	ui_->deviationSpinBox->setValue(config.driftDeviation);
 	ui_->cutoffSpinBox->setValue(config.driftLowpassCutoff);
 
-	ui_->microCheckBox->setCheckState( (config.intonation & VTMControlModel::Configuration::INTONATION_MICRO    ) ? Qt::Checked : Qt::Unchecked);
-	ui_->macroCheckBox->setCheckState( (config.intonation & VTMControlModel::Configuration::INTONATION_MACRO    ) ? Qt::Checked : Qt::Unchecked);
-	ui_->smoothCheckBox->setCheckState((config.intonation & VTMControlModel::Configuration::INTONATION_SMOOTH   ) ? Qt::Checked : Qt::Unchecked);
-	ui_->randomCheckBox->setCheckState((config.intonation & VTMControlModel::Configuration::INTONATION_RANDOMIZE) ? Qt::Checked : Qt::Unchecked);
-	ui_->driftCheckBox->setCheckState( (config.intonation & VTMControlModel::Configuration::INTONATION_DRIFT    ) ? Qt::Checked : Qt::Unchecked);
+	ui_->microCheckBox->setCheckState( (config.intonation & VTMControlModel::Configuration::INTONATION_MICRO ) ? Qt::Checked : Qt::Unchecked);
+	ui_->macroCheckBox->setCheckState( (config.intonation & VTMControlModel::Configuration::INTONATION_MACRO ) ? Qt::Checked : Qt::Unchecked);
+	ui_->smoothCheckBox->setCheckState((config.intonation & VTMControlModel::Configuration::INTONATION_SMOOTH) ? Qt::Checked : Qt::Unchecked);
+	ui_->randomCheckBox->setCheckState((config.intonation & VTMControlModel::Configuration::INTONATION_RANDOM) ? Qt::Checked : Qt::Unchecked);
+	ui_->driftCheckBox->setCheckState( (config.intonation & VTMControlModel::Configuration::INTONATION_DRIFT ) ? Qt::Checked : Qt::Unchecked);
 
-	ui_->notionalPitchSpinBox->setValue(config.notionalPitch);
-	ui_->pretonicRangeSpinBox->setValue(config.pretonicRange);
-	ui_->pretonicLiftSpinBox->setValue(config.pretonicLift);
-	ui_->tonicRangeSpinBox->setValue(config.tonicRange);
-	ui_->tonicMovementSpinBox->setValue(config.tonicMovement);
+	ui_->notionalPitchSpinBox->setValue(            config.notionalPitch);
+	ui_->pretonicPitchRangeSpinBox->setValue(       config.pretonicPitchRange);
+	ui_->pretonicPerturbationRangeSpinBox->setValue(config.pretonicPerturbationRange);
+	ui_->tonicPitchRangeSpinBox->setValue(          config.tonicPitchRange);
+	ui_->tonicPerturbationRangeSpinBox->setValue(   config.tonicPerturbationRange);
 }
 
 void
@@ -138,11 +138,11 @@ IntonationParametersWindow::on_updateButton_clicked()
 
 	VTMControlModel::Configuration& config = synthesis_->vtmController->vtmControlModelConfiguration();
 
-	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_MICRO    , ui_->microCheckBox->checkState());
-	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_MACRO    , ui_->macroCheckBox->checkState());
-	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_SMOOTH   , ui_->smoothCheckBox->checkState());
-	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_RANDOMIZE, ui_->randomCheckBox->checkState());
-	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_DRIFT    , ui_->driftCheckBox->checkState());
+	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_MICRO , ui_->microCheckBox->checkState());
+	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_MACRO , ui_->macroCheckBox->checkState());
+	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_SMOOTH, ui_->smoothCheckBox->checkState());
+	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_RANDOM, ui_->randomCheckBox->checkState());
+	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_DRIFT , ui_->driftCheckBox->checkState());
 
 	config.driftDeviation = ui_->deviationSpinBox->value();
 	config.driftLowpassCutoff = ui_->cutoffSpinBox->value();
@@ -151,10 +151,10 @@ IntonationParametersWindow::on_updateButton_clicked()
 	if (ui_->useParametersCheckBox->checkState() == Qt::Checked) {
 		eventList.setFixedIntonationParameters(
 					ui_->notionalPitchSpinBox->value(),
-					ui_->pretonicRangeSpinBox->value(),
-					ui_->pretonicLiftSpinBox->value(),
-					ui_->tonicRangeSpinBox->value(),
-					ui_->tonicMovementSpinBox->value());
+					ui_->pretonicPitchRangeSpinBox->value(),
+					ui_->pretonicPerturbationRangeSpinBox->value(),
+					ui_->tonicPitchRangeSpinBox->value(),
+					ui_->tonicPerturbationRangeSpinBox->value());
 		eventList.setUseFixedIntonationParameters(true);
 	} else {
 		eventList.setUseFixedIntonationParameters(false);

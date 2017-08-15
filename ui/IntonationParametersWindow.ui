@@ -33,47 +33,47 @@
       <item row="2" column="0">
        <widget class="QLabel" name="label_4">
         <property name="text">
-         <string>Pretonic range:</string>
+         <string>Pretonic pitch range:</string>
         </property>
        </widget>
       </item>
       <item row="5" column="1">
-       <widget class="QDoubleSpinBox" name="tonicMovementSpinBox"/>
+       <widget class="QDoubleSpinBox" name="tonicPerturbationRangeSpinBox"/>
       </item>
       <item row="2" column="1">
-       <widget class="QDoubleSpinBox" name="pretonicRangeSpinBox"/>
+       <widget class="QDoubleSpinBox" name="pretonicPitchRangeSpinBox"/>
       </item>
       <item row="3" column="0">
        <widget class="QLabel" name="label_7">
         <property name="text">
-         <string>Pretonic lift:</string>
+         <string>Pretonic perturbation range:</string>
         </property>
        </widget>
       </item>
       <item row="4" column="0">
        <widget class="QLabel" name="label_5">
         <property name="text">
-         <string>Tonic range:</string>
+         <string>Tonic pitch range:</string>
         </property>
        </widget>
       </item>
       <item row="5" column="0">
        <widget class="QLabel" name="label_6">
         <property name="text">
-         <string>Tonic movement:</string>
+         <string>Tonic perturbation range:</string>
         </property>
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QDoubleSpinBox" name="pretonicLiftSpinBox"/>
+       <widget class="QDoubleSpinBox" name="pretonicPerturbationRangeSpinBox"/>
       </item>
       <item row="4" column="1">
-       <widget class="QDoubleSpinBox" name="tonicRangeSpinBox"/>
+       <widget class="QDoubleSpinBox" name="tonicPitchRangeSpinBox"/>
       </item>
       <item row="0" column="0">
        <widget class="QCheckBox" name="useParametersCheckBox">
         <property name="text">
-         <string>Use parameters</string>
+         <string>Use fixed parameters</string>
         </property>
        </widget>
       </item>
@@ -162,14 +162,14 @@
       <item>
        <widget class="QCheckBox" name="microCheckBox">
         <property name="text">
-         <string>Micro</string>
+         <string>Micro intonation</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="macroCheckBox">
         <property name="text">
-         <string>Macro</string>
+         <string>Macro intonation</string>
         </property>
        </widget>
       </item>
@@ -179,21 +179,21 @@
          <bool>true</bool>
         </property>
         <property name="text">
-         <string>Smooth</string>
+         <string>Smooth intonation</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="randomCheckBox">
         <property name="text">
-         <string>Random</string>
+         <string>Random intonation</string>
         </property>
        </widget>
       </item>
       <item>
        <widget class="QCheckBox" name="driftCheckBox">
         <property name="text">
-         <string>Drift</string>
+         <string>Intonation drift</string>
         </property>
        </widget>
       </item>
