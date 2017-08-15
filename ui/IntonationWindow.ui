@@ -181,6 +181,13 @@
               </property>
              </spacer>
             </item>
+            <item row="1" column="2">
+             <widget class="QLabel" name="label_10">
+              <property name="text">
+               <string>semitone/ms</string>
+              </property>
+             </widget>
+            </item>
            </layout>
           </widget>
          </item>
