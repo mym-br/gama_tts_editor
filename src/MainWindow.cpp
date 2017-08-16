@@ -388,6 +388,8 @@ bool
 MainWindow::saveModel()
 {
 	try {
+		model_->validate();
+
 		model_->save(config_.projectDir.toStdString().c_str(), config_.dataFileName.toStdString().c_str());
 
 		qDebug() << "### Model saved to" << config_.projectDir.toStdString().c_str() << config_.dataFileName.toStdString().c_str();
