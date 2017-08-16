@@ -18,7 +18,6 @@
 #include "Synthesis.h"
 
 #include "Controller.h"
-#include "TextParser.h"
 
 
 
@@ -35,7 +34,6 @@ Synthesis::~Synthesis()
 void
 Synthesis::clear()
 {
-	textParser.reset();
 	vtmController.reset();
 	projectDir.clear();
 }
@@ -43,15 +41,13 @@ Synthesis::clear()
 void
 Synthesis::setup(const QString& newProjectDir, VTMControlModel::Model* model)
 {
-	if (model == nullptr) {
+	if (!model) {
 		clear();
 		return;
 	}
 	try {
 		projectDir = newProjectDir;
-		const std::string configDirPath = projectDir.toStdString();
-		vtmController = std::make_unique<VTMControlModel::Controller>(configDirPath.c_str(), *model);
-		textParser = TextParser::TextParser::getInstance(configDirPath);
+		vtmController = std::make_unique<VTMControlModel::Controller>(projectDir.toStdString().c_str(), *model);
 	} catch (...) {
 		clear();
 		throw;

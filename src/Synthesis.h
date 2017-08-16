@@ -26,9 +26,6 @@
 
 namespace GS {
 
-namespace TextParser {
-class TextParser;
-}
 namespace VTMControlModel {
 class Controller;
 class Model;
@@ -37,7 +34,6 @@ class Model;
 struct Synthesis {
 	QString projectDir;
 	std::unique_ptr<VTMControlModel::Controller> vtmController;
-	std::unique_ptr<TextParser::TextParser> textParser;
 
 	Synthesis();
 	~Synthesis();
