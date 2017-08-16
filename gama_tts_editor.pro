@@ -114,6 +114,7 @@ unix {
             message(Using local GamaTTS)
             INCLUDEPATH += \
                 ../gama_tts/src \
+                ../gama_tts/src/text_parser \
                 ../gama_tts/src/vtm \
                 ../gama_tts/src/vtm_control_model
             LIBS += -L../gama_tts-build -lgamatts

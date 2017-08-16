@@ -23,20 +23,6 @@
 
 
 
-namespace {
-
-int
-changeIntonation(int oldIntonation, GS::VTMControlModel::Configuration::Intonation field, Qt::CheckState state)
-{
-	if (state == Qt::Checked) {
-		return oldIntonation | static_cast<int>(field);
-	} else {
-		return oldIntonation & ~static_cast<int>(field);
-	}
-}
-
-} // namespace
-
 namespace GS {
 
 IntonationParametersWindow::IntonationParametersWindow(QWidget *parent)
@@ -118,11 +104,11 @@ IntonationParametersWindow::setup(Synthesis* synthesis)
 	ui_->deviationSpinBox->setValue(config.driftDeviation);
 	ui_->cutoffSpinBox->setValue(config.driftLowpassCutoff);
 
-	ui_->microCheckBox->setCheckState( (config.intonation & VTMControlModel::Configuration::INTONATION_MICRO ) ? Qt::Checked : Qt::Unchecked);
-	ui_->macroCheckBox->setCheckState( (config.intonation & VTMControlModel::Configuration::INTONATION_MACRO ) ? Qt::Checked : Qt::Unchecked);
-	ui_->smoothCheckBox->setCheckState((config.intonation & VTMControlModel::Configuration::INTONATION_SMOOTH) ? Qt::Checked : Qt::Unchecked);
-	ui_->randomCheckBox->setCheckState((config.intonation & VTMControlModel::Configuration::INTONATION_RANDOM) ? Qt::Checked : Qt::Unchecked);
-	ui_->driftCheckBox->setCheckState( (config.intonation & VTMControlModel::Configuration::INTONATION_DRIFT ) ? Qt::Checked : Qt::Unchecked);
+	ui_->microCheckBox->setCheckState( config.microIntonation  ? Qt::Checked : Qt::Unchecked);
+	ui_->macroCheckBox->setCheckState( config.macroIntonation  ? Qt::Checked : Qt::Unchecked);
+	ui_->smoothCheckBox->setCheckState(config.smoothIntonation ? Qt::Checked : Qt::Unchecked);
+	ui_->randomCheckBox->setCheckState(config.randomIntonation ? Qt::Checked : Qt::Unchecked);
+	ui_->driftCheckBox->setCheckState( config.intonationDrift  ? Qt::Checked : Qt::Unchecked);
 
 	ui_->notionalPitchSpinBox->setValue(            config.notionalPitch);
 	ui_->pretonicPitchRangeSpinBox->setValue(       config.pretonicPitchRange);
@@ -138,13 +124,13 @@ IntonationParametersWindow::on_updateButton_clicked()
 
 	VTMControlModel::Configuration& config = synthesis_->vtmController->vtmControlModelConfiguration();
 
-	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_MICRO , ui_->microCheckBox->checkState());
-	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_MACRO , ui_->macroCheckBox->checkState());
-	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_SMOOTH, ui_->smoothCheckBox->checkState());
-	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_RANDOM, ui_->randomCheckBox->checkState());
-	config.intonation = changeIntonation(config.intonation, VTMControlModel::Configuration::INTONATION_DRIFT , ui_->driftCheckBox->checkState());
+	config.microIntonation  = (ui_->microCheckBox->checkState()  == Qt::Checked);
+	config.macroIntonation  = (ui_->macroCheckBox->checkState()  == Qt::Checked);
+	config.smoothIntonation = (ui_->smoothCheckBox->checkState() == Qt::Checked);
+	config.randomIntonation = (ui_->randomCheckBox->checkState() == Qt::Checked);
+	config.intonationDrift  = (ui_->driftCheckBox->checkState()  == Qt::Checked);
 
-	config.driftDeviation = ui_->deviationSpinBox->value();
+	config.driftDeviation     = ui_->deviationSpinBox->value();
 	config.driftLowpassCutoff = ui_->cutoffSpinBox->value();
 
 	auto& eventList = synthesis_->vtmController->eventList();
