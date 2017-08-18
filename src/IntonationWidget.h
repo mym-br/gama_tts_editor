@@ -46,6 +46,7 @@ public:
 	void setSelectedPointSlope(double slope);
 	void setSelectedPointBeatOffset(double beatOffset);
 	bool saveIntonationToEventList();
+	void sendSelectedPointData();
 signals:
 	void pointSelected(
 		double value,
@@ -68,7 +69,6 @@ private:
 	void drawPointMarker(QPainter& painter, double x, double y);
 	void smoothPoints(QPainter& painter);
 	int addIntonationPoint(VTMControlModel::IntonationPoint& newPoint);
-	void sendSelectedPointData();
 
 	VTMControlModel::EventList* eventList_;
 	double timeScale_;

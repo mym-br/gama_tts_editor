@@ -17,7 +17,6 @@
 
 #include "IntonationWindow.h"
 
-#include <QDoubleValidator>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QProcess>
@@ -40,11 +39,6 @@ IntonationWindow::IntonationWindow(QWidget* parent)
 	ui_->setupUi(this);
 
 	ui_->intonationScrollArea->setBackgroundRole(QPalette::Base);
-
-	QDoubleValidator* validator = new QDoubleValidator(this);
-	ui_->valueLineEdit->setValidator(validator);
-	ui_->slopeLineEdit->setValidator(validator);
-	ui_->beatOffsetLineEdit->setValidator(validator);
 
 	connect(ui_->intonationWidget, &IntonationWidget::pointSelected, this, &IntonationWindow::setPointData);
 }
@@ -144,7 +138,7 @@ IntonationWindow::on_valueLineEdit_editingFinished()
 	bool ok;
 	double value = ui_->valueLineEdit->text().toDouble(&ok);
 	if (!ok) {
-		ui_->valueLineEdit->clear();
+		ui_->intonationWidget->sendSelectedPointData();
 		return;
 	}
 	ui_->intonationWidget->setSelectedPointValue(value);
@@ -156,7 +150,7 @@ IntonationWindow::on_slopeLineEdit_editingFinished()
 	bool ok;
 	double slope = ui_->slopeLineEdit->text().toDouble(&ok);
 	if (!ok) {
-		ui_->slopeLineEdit->clear();
+		ui_->intonationWidget->sendSelectedPointData();
 		return;
 	}
 	ui_->intonationWidget->setSelectedPointSlope(slope);
@@ -168,7 +162,7 @@ IntonationWindow::on_beatOffsetLineEdit_editingFinished()
 	bool ok;
 	double beatOffset = ui_->beatOffsetLineEdit->text().toDouble(&ok);
 	if (!ok) {
-		ui_->beatOffsetLineEdit->clear();
+		ui_->intonationWidget->sendSelectedPointData();
 		return;
 	}
 	ui_->intonationWidget->setSelectedPointBeatOffset(beatOffset);

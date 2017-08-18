@@ -455,19 +455,14 @@ IntonationWidget::setSelectedPointBeatOffset(double beatOffset)
 	double beat = intonationPointList_[selectedPoint_].beatTime();
 	double time = beat + beatOffset;
 
-	bool changedValue = false;
 	if (time > maxTime_) {
 		beatOffset = maxTime_ - beat;
-		changedValue = true;
 	} else if (time < 0.0) {
 		beatOffset = -beat;
-		changedValue = true;
 	}
 
 	intonationPointList_[selectedPoint_].setOffsetTime(beatOffset);
-	if (changedValue) {
-		sendSelectedPointData();
-	}
+	sendSelectedPointData();
 	update();
 }
 
