@@ -227,6 +227,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 		painter.setRenderHint(QPainter::Antialiasing);
 		QPointF prevPoint;
 		const double valueFactor = 1.0 / (currentMax - currentMin);
+
 		// Normal events.
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
 			const double x = 0.5 + xBase + ev->time * timeScale_; // 0.5 added because of antialiasing
@@ -242,8 +243,14 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 				prevPoint.setY(y);
 			}
 		}
-		prevPoint.setX(0.0); prevPoint.setY(0.0);
+		// Constant value until the end.
+		if (!prevPoint.isNull()) {
+			const QPointF point(xEnd, prevPoint.y());
+			painter.drawLine(prevPoint, point);
+		}
+
 		// Special events.
+		prevPoint.setX(0.0); prevPoint.setY(0.0);
 		pen2.setColor(Qt::red);
 		painter.setPen(pen2);
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
@@ -260,8 +267,12 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 				prevPoint.setY(y);
 			}
 		}
+		// Constant value until the end.
+		if (!prevPoint.isNull()) {
+			const QPointF point(xEnd, prevPoint.y());
+			painter.drawLine(prevPoint, point);
+		}
 		pen2.setColor(Qt::black);
-		painter.setPen(pen2);
 
 		painter.setRenderHint(QPainter::Antialiasing, false);
 		painter.setPen(pen);
