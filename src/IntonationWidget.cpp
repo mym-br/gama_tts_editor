@@ -227,10 +227,14 @@ IntonationWidget::paintEvent(QPaintEvent*)
 
 		prevPoint = currPoint;
 	}
-
-	painter.setBrush(QBrush());
-
 	painter.setPen(pen2);
+	if (!intonationPointList_.empty()) {
+		QPointF lastPoint(0.5 + xEnd, prevPoint.y());
+		painter.drawLine(prevPoint, lastPoint);
+	}
+
+	painter.setBrush(QBrush{});
+
 	smoothPoints(painter);
 	painter.setPen(pen);
 
