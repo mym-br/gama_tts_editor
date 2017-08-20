@@ -213,7 +213,7 @@ IntonationWidget::paintEvent(QPaintEvent*)
 	painter.setBrush(QBrush(Qt::black));
 
 	// Lines between intonation points.
-	QPointF prevPoint(0.5 + xStart, 0.5 + yStart);
+	QPointF prevPoint(0.5 + xStart, 0.5 + valueToY(eventList_->initialPitch()));
 	for (unsigned int i = 0, size = intonationPointList_.size(); i < size; ++i) {
 		QPointF currPoint(
 			0.5 + timeToX(intonationPointList_[i].absoluteTime()),
