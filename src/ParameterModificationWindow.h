@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2015 Marcelo Y. Matuda                                       *
+ *  Copyright 2017 Marcelo Y. Matuda                                       *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -15,35 +15,61 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef SYNTHESIS_H
-#define SYNTHESIS_H
+#ifndef PARAMETER_MODIFICATION_WINDOW_H
+#define PARAMETER_MODIFICATION_WINDOW_H
 
 #include <memory>
 
-#include <QString>
+#include <QTimer>
+#include <QWidget>
 
-
+namespace Ui {
+class ParameterModificationWindow;
+}
 
 namespace GS {
 
+struct Synthesis;
 namespace VTMControlModel {
-class Controller;
 class Model;
 }
-class ParameterModificationSynthesis;
 
-struct Synthesis {
-	QString projectDir;
-	std::unique_ptr<VTMControlModel::Controller> vtmController;
-	std::unique_ptr<ParameterModificationSynthesis> paramModifSynth;
-
-	Synthesis();
-	~Synthesis();
+class ParameterModificationWindow : public QWidget {
+	Q_OBJECT
+public:
+	explicit ParameterModificationWindow(QWidget* parent=nullptr);
+	~ParameterModificationWindow();
 
 	void clear();
-	void setup(const QString& newProjectDir, VTMControlModel::Model* model);
+	void setup(VTMControlModel::Model* model, Synthesis* synthesis);
+public slots:
+	void resetData();
+private slots:
+	void on_synthesizeButton_clicked();
+	void on_synthesizeToFileButton_clicked();
+	void on_parameterComboBox_currentIndexChanged(int index);
+	void on_addRadioButton_toggled(bool checked);
+	void handleModificationStarted();
+	void handleOffsetChanged(double offset);
+	void sendModificationValue();
+private:
+	enum {
+		MODIF_TIMER_INTERVAL_MS = 4
+	};
+	enum class State {
+		stopped,
+		running
+	};
+
+	std::unique_ptr<Ui::ParameterModificationWindow> ui_;
+	VTMControlModel::Model* model_;
+	Synthesis* synthesis_;
+	double prevAmplitude_;
+	State state_;
+	double modificationValue_;
+	QTimer modificationTimer_;
 };
 
 } // namespace GS
 
-#endif // SYNTHESIS_H
+#endif // PARAMETER_MODIFICATION_WINDOW_H

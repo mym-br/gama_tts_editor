@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>250</width>
-    <height>489</height>
+    <height>600</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,7 +26,7 @@
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
-   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0">
+   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0,0,0,0,0,0,0,0">
     <item>
      <widget class="QLabel" name="fileNameLabel">
       <property name="text">
@@ -148,6 +148,19 @@
       </property>
       <property name="text">
        <string>Intonation window</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="parameterModificationButton">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="MinimumExpanding" vsizetype="MinimumExpanding">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="text">
+       <string>Parameter modification</string>
       </property>
      </widget>
     </item>

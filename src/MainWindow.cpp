@@ -40,6 +40,7 @@
 #include "IntonationWindow.h"
 #include "IntonationParametersWindow.h"
 #include "Model.h"
+#include "ParameterModificationWindow.h"
 #include "PostureEditorWindow.h"
 #include "PrototypeManagerWindow.h"
 #include "RuleManagerWindow.h"
@@ -63,8 +64,10 @@ MainWindow::MainWindow(QWidget* parent)
 		, synthesis_{std::make_unique<Synthesis>()}
 		, ui_{std::make_unique<Ui::MainWindow>()}
 		, dataEntryWindow_{std::make_unique<DataEntryWindow>()}
+		, interactiveVTMWindow_{}
 		, intonationWindow_{std::make_unique<IntonationWindow>()}
 		, intonationParametersWindow_{std::make_unique<IntonationParametersWindow>()}
+		, parameterModificationWindow_{std::make_unique<ParameterModificationWindow>()}
 		, postureEditorWindow_{std::make_unique<PostureEditorWindow>()}
 		, prototypeManagerWindow_{std::make_unique<PrototypeManagerWindow>()}
 		, specialTransitionEditorWindow_{std::make_unique<TransitionEditorWindow>()}
@@ -72,7 +75,6 @@ MainWindow::MainWindow(QWidget* parent)
 		, ruleTesterWindow_{std::make_unique<RuleTesterWindow>()}
 		, synthesisWindow_{std::make_unique<SynthesisWindow>()}
 		, transitionEditorWindow_{std::make_unique<TransitionEditorWindow>()}
-		, interactiveVTMWindow_{}
 {
 	ui_->setupUi(this);
 
@@ -163,6 +165,9 @@ MainWindow::MainWindow(QWidget* parent)
 			intonationWindow_.get(), &IntonationWindow::handleAudioFinished);
 	connect(synthesisWindow_.get() , &SynthesisWindow::synthesisFinished,
 			intonationWindow_.get(), &IntonationWindow::handleSynthesisFinished);
+	connect(synthesisWindow_.get() , &SynthesisWindow::textSynthesized,
+			parameterModificationWindow_.get(), &ParameterModificationWindow::resetData);
+
 	connect(intonationWindow_.get(), &IntonationWindow::synthesisRequested,
 			synthesisWindow_.get() , &SynthesisWindow::synthesizeWithManualIntonation);
 	connect(intonationWindow_.get(), &IntonationWindow::synthesisToFileRequested,
@@ -340,6 +345,13 @@ MainWindow::on_interactiveVTMButton_clicked()
 	interactiveVTMWindow_->raise();
 }
 
+void
+MainWindow::on_parameterModificationButton_clicked()
+{
+	parameterModificationWindow_->show();
+	parameterModificationWindow_->raise();
+}
+
 bool
 MainWindow::openModel()
 {
@@ -356,17 +368,19 @@ MainWindow::openModel()
 		specialTransitionEditorWindow_->resetModel(model_.get());
 		ruleManagerWindow_->resetModel(model_.get());
 		ruleTesterWindow_->resetModel(model_.get());
+		intonationParametersWindow_->setup(synthesis_.get());
 		synthesisWindow_->setup(model_.get(), synthesis_.get());
 		intonationWindow_->setup(synthesis_.get());
-		intonationParametersWindow_->setup(synthesis_.get());
+		parameterModificationWindow_->setup(model_.get(), synthesis_.get());
 
 		qDebug() << "### Model opened from" << config_.projectDir.toStdString().c_str() << config_.dataFileName.toStdString().c_str();
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 
-		intonationParametersWindow_->setup(nullptr);
+		parameterModificationWindow_->setup(nullptr, nullptr);
 		intonationWindow_->setup(nullptr);
 		synthesisWindow_->setup(nullptr, nullptr);
+		intonationParametersWindow_->setup(nullptr);
 		ruleTesterWindow_->resetModel(nullptr);
 		ruleManagerWindow_->resetModel(nullptr);
 		specialTransitionEditorWindow_->resetModel(nullptr);
@@ -411,9 +425,11 @@ MainWindow::updateSynthesis()
 		synthesisWindow_->setup(model_.get(), synthesis_.get());
 		intonationWindow_->setup(synthesis_.get());
 		intonationParametersWindow_->setup(synthesis_.get());
+		parameterModificationWindow_->setup(model_.get(), synthesis_.get());
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 
+		parameterModificationWindow_->setup(nullptr, nullptr);
 		intonationParametersWindow_->setup(nullptr);
 		intonationWindow_->setup(nullptr);
 		synthesisWindow_->setup(nullptr, nullptr);

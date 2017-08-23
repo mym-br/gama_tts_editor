@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2015 Marcelo Y. Matuda                                       *
+ *  Copyright 2017 Marcelo Y. Matuda                                       *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -15,35 +15,21 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef SYNTHESIS_H
-#define SYNTHESIS_H
+#ifndef PARAMETER_MODIFICATION_CURVE_WIDGET_H
+#define PARAMETER_MODIFICATION_CURVE_WIDGET_H
 
-#include <memory>
-
-#include <QString>
-
-
+#include <QWidget>
 
 namespace GS {
 
-namespace VTMControlModel {
-class Controller;
-class Model;
-}
-class ParameterModificationSynthesis;
-
-struct Synthesis {
-	QString projectDir;
-	std::unique_ptr<VTMControlModel::Controller> vtmController;
-	std::unique_ptr<ParameterModificationSynthesis> paramModifSynth;
-
-	Synthesis();
-	~Synthesis();
-
-	void clear();
-	void setup(const QString& newProjectDir, VTMControlModel::Model* model);
+class ParameterModificationCurveWidget : public QWidget {
+	Q_OBJECT
+public:
+	explicit ParameterModificationCurveWidget(QWidget* parent=nullptr);
+protected:
+	virtual void paintEvent(QPaintEvent* event);
 };
 
 } // namespace GS
 
-#endif // SYNTHESIS_H
+#endif // PARAMETER_MODIFICATION_CURVE_WIDGET_H

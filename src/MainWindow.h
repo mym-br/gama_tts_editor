@@ -36,6 +36,7 @@ class DataEntryWindow;
 class InteractiveVTMWindow;
 class IntonationWindow;
 class IntonationParametersWindow;
+class ParameterModificationWindow;
 class PostureEditorWindow;
 class PrototypeManagerWindow;
 class RuleManagerWindow;
@@ -69,6 +70,7 @@ private slots:
 	void on_synthesisWindowButton_clicked();
 	void on_intonationParametersButton_clicked();
 	void on_interactiveVTMButton_clicked();
+	void on_parameterModificationButton_clicked();
 
 	void about();
 	void updateSynthesis();
@@ -83,8 +85,10 @@ private:
 
 	std::unique_ptr<Ui::MainWindow> ui_;
 	std::unique_ptr<DataEntryWindow> dataEntryWindow_;
+	std::unique_ptr<InteractiveVTMWindow> interactiveVTMWindow_;
 	std::unique_ptr<IntonationWindow> intonationWindow_;
 	std::unique_ptr<IntonationParametersWindow> intonationParametersWindow_;
+	std::unique_ptr<ParameterModificationWindow> parameterModificationWindow_;
 	std::unique_ptr<PostureEditorWindow> postureEditorWindow_;
 	std::unique_ptr<PrototypeManagerWindow> prototypeManagerWindow_;
 	std::unique_ptr<TransitionEditorWindow> specialTransitionEditorWindow_;
@@ -92,7 +96,6 @@ private:
 	std::unique_ptr<RuleTesterWindow> ruleTesterWindow_;
 	std::unique_ptr<SynthesisWindow> synthesisWindow_;
 	std::unique_ptr<TransitionEditorWindow> transitionEditorWindow_;
-	std::unique_ptr<InteractiveVTMWindow> interactiveVTMWindow_;
 };
 
 } // namespace GS

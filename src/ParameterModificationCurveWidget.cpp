@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2015 Marcelo Y. Matuda                                       *
+ *  Copyright 2017 Marcelo Y. Matuda                                       *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -15,35 +15,32 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef SYNTHESIS_H
-#define SYNTHESIS_H
+#include "ParameterModificationCurveWidget.h"
 
-#include <memory>
-
-#include <QString>
+#include <QPainter>
 
 
 
 namespace GS {
 
-namespace VTMControlModel {
-class Controller;
-class Model;
+ParameterModificationCurveWidget::ParameterModificationCurveWidget(QWidget* parent)
+		: QWidget{parent}
+{
+	setBackgroundRole(QPalette::Base);
+	setAutoFillBackground(true);
 }
-class ParameterModificationSynthesis;
 
-struct Synthesis {
-	QString projectDir;
-	std::unique_ptr<VTMControlModel::Controller> vtmController;
-	std::unique_ptr<ParameterModificationSynthesis> paramModifSynth;
+void
+ParameterModificationCurveWidget::paintEvent(QPaintEvent* /*event*/)
+{
+	QPainter painter(this);
 
-	Synthesis();
-	~Synthesis();
-
-	void clear();
-	void setup(const QString& newProjectDir, VTMControlModel::Model* model);
-};
+	const int xEnd = width() - 1;
+	const int yEnd = height() - 1;
+	painter.drawLine(0, 0, 0, yEnd);
+	painter.drawLine(0, 0, xEnd, 0);
+	painter.drawLine(xEnd, 0, xEnd, yEnd);
+	painter.drawLine(0, yEnd, xEnd, yEnd);
+}
 
 } // namespace GS
-
-#endif // SYNTHESIS_H

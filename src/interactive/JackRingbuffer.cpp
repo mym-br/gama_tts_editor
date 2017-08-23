@@ -75,4 +75,10 @@ JackRingbuffer::advanceRead(size_t cnt)
 	jack_ringbuffer_read_advance(ringbuffer_, cnt);
 }
 
+void
+JackRingbuffer::reset()
+{
+	jack_ringbuffer_reset(ringbuffer_);
+}
+
 } /* namespace GS */

@@ -42,6 +42,8 @@ public:
 	size_t peek(char* dest, size_t cnt);
 
 	void advanceRead(size_t cnt);
+
+	void reset(); // not thread safe
 private:
 	JackRingbuffer(JackRingbuffer&);
 	JackRingbuffer& operator=(JackRingbuffer&);

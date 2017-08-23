@@ -18,6 +18,7 @@
 #include "Synthesis.h"
 
 #include "Controller.h"
+#include "ParameterModificationSynthesis.h"
 
 
 

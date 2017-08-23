@@ -50,7 +50,11 @@ HEADERS += \
     src/SynthesisWindow.h \
     src/TransitionEditorWindow.h \
     src/TransitionPoint.h \
-    src/TransitionWidget.h
+    src/TransitionWidget.h \
+    src/ParameterModificationWidget.h \
+    src/ParameterModificationCurveWidget.h \
+    src/ParameterModificationWindow.h \
+    src/ParameterModificationSynthesis.h
 
 SOURCES += \
     src/AudioPlayer.cpp \
@@ -85,7 +89,11 @@ SOURCES += \
     src/SynthesisWindow.cpp \
     src/TransitionEditorWindow.cpp \
     src/TransitionPoint.cpp \
-    src/TransitionWidget.cpp
+    src/TransitionWidget.cpp \
+    src/ParameterModificationWidget.cpp \
+    src/ParameterModificationCurveWidget.cpp \
+    src/ParameterModificationWindow.cpp \
+    src/ParameterModificationSynthesis.cpp
 
 FORMS += \
     ui/DataEntryWindow.ui \
@@ -98,7 +106,8 @@ FORMS += \
     ui/RuleManagerWindow.ui \
     ui/RuleTesterWindow.ui \
     ui/SynthesisWindow.ui \
-    ui/TransitionEditorWindow.ui
+    ui/TransitionEditorWindow.ui \
+    ui/ParameterModificationWindow.ui
 
 INCLUDEPATH += \
     src \

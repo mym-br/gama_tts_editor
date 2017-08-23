@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2015 Marcelo Y. Matuda                                       *
+ *  Copyright 2017 Marcelo Y. Matuda                                       *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -15,35 +15,56 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef SYNTHESIS_H
-#define SYNTHESIS_H
+#include "ParameterModificationWidget.h"
 
-#include <memory>
-
-#include <QString>
+#include <QPainter>
+#include <QMouseEvent>
 
 
 
 namespace GS {
 
-namespace VTMControlModel {
-class Controller;
-class Model;
+ParameterModificationWidget::ParameterModificationWidget(QWidget* parent)
+		: QWidget{parent}
+{
+	setMouseTracking(true);
+	setBackgroundRole(QPalette::Base);
+	setAutoFillBackground(true);
 }
-class ParameterModificationSynthesis;
 
-struct Synthesis {
-	QString projectDir;
-	std::unique_ptr<VTMControlModel::Controller> vtmController;
-	std::unique_ptr<ParameterModificationSynthesis> paramModifSynth;
+void
+ParameterModificationWidget::paintEvent(QPaintEvent* /*event*/)
+{
+	QPainter painter(this);
 
-	Synthesis();
-	~Synthesis();
+	const int xCenter = width() / 2;
+	const int xEnd = width() - 1;
+	const int yEnd = height() - 1;
+	painter.drawLine(0, 0, 0, yEnd);
+	painter.drawLine(0, 0, xEnd, 0);
+	painter.drawLine(xEnd, 0, xEnd, yEnd);
+	painter.drawLine(0, yEnd, xEnd, yEnd);
+	painter.drawLine(xCenter, 0, xCenter, yEnd);
+}
 
-	void clear();
-	void setup(const QString& newProjectDir, VTMControlModel::Model* model);
-};
+void
+ParameterModificationWidget::mouseMoveEvent(QMouseEvent* event)
+{
+	emit offsetChanged(offset(event->x()));
+}
+
+void
+ParameterModificationWidget::mousePressEvent(QMouseEvent* event)
+{
+	emit modificationStarted();
+	emit offsetChanged(offset(event->x()));
+}
+
+double
+ParameterModificationWidget::offset(int xMouse)
+{
+	const double xCenter = static_cast<double>(width() / 2);
+	return (xMouse - xCenter) / xCenter;
+}
 
 } // namespace GS
-
-#endif // SYNTHESIS_H
