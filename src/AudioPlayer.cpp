@@ -24,6 +24,7 @@
 
 #include "Exception.h"
 #include "JackClient.h"
+#include "Log.h"
 
 
 
@@ -54,7 +55,7 @@ player_jack_process_callback(jack_nframes_t nframes, void* arg)
 void
 player_jack_shutdown_callback(void* /*arg*/)
 {
-	std::cout << "[AudioPlayer] player_jack_shutdown_callback()" << std::endl;
+	if (Log::debugEnabled) std::cout << "[AudioPlayer] player_jack_shutdown_callback()" << std::endl;
 }
 
 } /* extern "C" */
