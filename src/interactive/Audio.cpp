@@ -25,6 +25,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include "Exception.h"
+#include "Log.h"
 #include "ProgramConfiguration.h"
 #include "VocalTractModelParameterValue.h"
 #include "VTMUtil.h"
@@ -38,8 +40,6 @@ namespace {
 using namespace GS;
 
 const char* CLIENT_NAME = "gama_tts_interactive";
-
-
 
 extern "C" {
 
@@ -66,7 +66,7 @@ jack_process_callback(jack_nframes_t nframes, void* arg)
 void
 jack_shutdown_callback(void* /*arg*/)
 {
-	std::cout << "[Audio] jack_shutdown_callback()" << std::endl;
+	if (Log::debugEnabled) std::cout << "[Audio] jack_shutdown_callback()" << std::endl;
 }
 
 } /* extern "C" */
@@ -246,9 +246,7 @@ void
 Audio::start()
 {
 	if (state_ == State::started) {
-		if (!stop()) {
-			return;
-		}
+		stop();
 	}
 
 	auto newJackClient = std::make_unique<JackClient>(CLIENT_NAME);
@@ -265,7 +263,7 @@ Audio::start()
 	// Prepare the configuration.
 	const float outputRate = static_cast<float>(jackSampleRate);
 	configuration_.setOutputRate(outputRate);
-	std::cout << "Output sample rate: " << outputRate << std::endl;
+	if (Log::debugEnabled) std::cout << "Output sample rate: " << outputRate << std::endl;
 
 	// Prepare the audio processor.
 	processor_.reset(outputPort, configuration_, *parameterRingbuffer_, *analysisRingbuffer_);
@@ -289,24 +287,22 @@ Audio::start()
 	jackClient_.reset();
 	jackClient_ = std::move(newJackClient);
 	state_ = State::started;
-	std::cout << "Audio started." << std::endl;
+	if (Log::debugEnabled) std::cout << "Audio started." << std::endl;
 }
 
 /*******************************************************************************
  * Stops the connection to the JACK server.
- *
- * Returns false if an error ocurred.
  */
-bool
+void
 Audio::stop()
 {
-	if (state_ == State::stopped) return true;
+	if (state_ == State::stopped) return;
 
 	jackClient_.reset();
 
 	state_ = State::stopped;
-	std::cout << "Audio stopped." << std::endl;
-	return true;
+	if (Log::debugEnabled) std::cout << "Audio stopped." << std::endl;
+	return;
 }
 
 } /* namespace GS */

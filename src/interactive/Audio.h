@@ -22,7 +22,6 @@
 #include <memory>
 #include <vector>
 
-#include "Exception.h"
 #include "JackClient.h"
 #include "JackRingbuffer.h"
 #include "MovingAverageFilter.h"
@@ -32,8 +31,6 @@
 
 namespace GS {
 
-struct AudioException : public virtual Exception {};
-
 struct ProgramConfiguration;
 
 class Audio {
@@ -41,10 +38,6 @@ public:
 	enum {
 		PARAMETER_RINGBUFFER_SIZE = 32,
 		MAX_NUM_SAMPLES_FOR_ANALYSIS = 65536
-	};
-	enum class State {
-		started,
-		stopped
 	};
 
 	class Processor {
@@ -71,12 +64,17 @@ public:
 	Audio(ProgramConfiguration& configuration);
 
 	void start();
-	bool stop();
+	void stop();
 
 	JackRingbuffer& parameterRingbuffer() { return *parameterRingbuffer_; }
 	JackRingbuffer& analysisRingbuffer() { return *analysisRingbuffer_; }
 	unsigned int sampleRate() const { return sampleRate_; }
 private:
+	enum class State {
+		started,
+		stopped
+	};
+
 	Audio(const Audio&) = delete;
 	Audio& operator=(const Audio&) = delete;
 

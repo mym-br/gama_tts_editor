@@ -335,7 +335,7 @@ SynthesisWindow::on_yZoomSpinBox_valueChanged(double d)
 void
 SynthesisWindow::setupParameterTable()
 {
-	if (model_ == nullptr) return;
+	if (!model_) return;
 
 	auto* table = ui_->parameterTableWidget;
 	table->setRowCount(model_->parameterList().size());
