@@ -141,15 +141,15 @@ ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 			assert(modif_.parameter < numParameters_);
 		}
 
-		const float filteredModif = modifFilter_.filter(modif_.value);
+		const float filteredModif = (modif_.operation != OPER_NONE) ? modifFilter_.filter(modif_.value) : 0.0;
 
 		// Calculate the parameters for the control step.
 		if (stepIndex_ == 0) {
 			// Apply the modification.
 			const float origValue = paramList_[paramSetIndex_][modif_.parameter];
-			if (modif_.operation == 0) {
+			if (modif_.operation == OPER_ADD) {
 				modifiedParamList_[paramSetIndex_][modif_.parameter] = origValue + filteredModif;
-			} else {
+			} else if (modif_.operation == OPER_MULTIPLY) {
 				modifiedParamList_[paramSetIndex_][modif_.parameter] = origValue * filteredModif;
 			}
 
@@ -336,7 +336,7 @@ ParameterModificationSynthesis::stop()
 bool
 ParameterModificationSynthesis::modifyParameter(
 		unsigned int parameter,
-		unsigned int operation,
+		Operation operation,
 		float value)
 {
 	if (!processor_->running()) {
@@ -352,6 +352,16 @@ ParameterModificationSynthesis::modifyParameter(
 		parameterRingbuffer_->write(reinterpret_cast<const char*>(&modif), sizeof(Modification));
 	}
 
+	return true;
+}
+
+bool
+ParameterModificationSynthesis::checkSynthesis()
+{
+	if (!processor_->running()) {
+		stop();
+		return false;
+	}
 	return true;
 }
 

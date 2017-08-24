@@ -39,14 +39,20 @@ class Controller;
 
 class ParameterModificationSynthesis {
 public:
+	enum Operation {
+		OPER_ADD,
+		OPER_MULTIPLY,
+		OPER_NONE
+	};
+
 	struct Modification {
 		unsigned int parameter;
-		unsigned int operation; // 0:add 1:multiply
+		Operation operation;
 		float value;
 
 		void clear() {
 			parameter = 0;
-			operation = 0;
+			operation = OPER_NONE;
 			value = 0.0;
 		}
 	};
@@ -103,8 +109,11 @@ public:
 	// Returns false when there are no more data to process.
 	bool modifyParameter(
 			unsigned int parameter,
-			unsigned int operation, // 0:add 1:multiply
+			Operation operation,
 			float value);
+
+	// Returns false when there are no more data to process.
+	bool checkSynthesis();
 
 	Processor& processor() { return *processor_; }
 private:

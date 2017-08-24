@@ -54,9 +54,11 @@ private slots:
 	void handleModificationStarted();
 	void handleOffsetChanged(double offset);
 	void sendModificationValue();
+	void checkSynthesis();
 private:
 	enum {
-		MODIF_TIMER_INTERVAL_MS = 2
+		MODIF_TIMER_INTERVAL_MS = 2,
+		SYNTH_TIMER_INTERVAL_MS = 30
 	};
 	enum class State {
 		stopped,
@@ -72,6 +74,7 @@ private:
 	State state_;
 	double modificationValue_;
 	QTimer modificationTimer_;
+	QTimer synthesisTimer_;
 	QVector<double> paramY_;
 	QVector<double> modifParamX_;
 	QVector<double> modifParamY_;

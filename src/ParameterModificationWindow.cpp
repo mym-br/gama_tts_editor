@@ -78,6 +78,8 @@ ParameterModificationWindow::ParameterModificationWindow(QWidget* parent)
 	modificationTimer_.setTimerType(Qt::PreciseTimer);
 	connect(&modificationTimer_, &QTimer::timeout,
 			this, &ParameterModificationWindow::sendModificationValue);
+	connect(&synthesisTimer_   , &QTimer::timeout,
+			this, &ParameterModificationWindow::checkSynthesis);
 }
 
 ParameterModificationWindow::~ParameterModificationWindow()
@@ -152,6 +154,15 @@ void
 ParameterModificationWindow::on_synthesizeButton_clicked()
 {
 	if (!model_) return;
+
+	try {
+		synthesis_->paramModifSynth->startSynthesis(
+			synthesis_->vtmController->outputScale() * ui_->outputGainSpinBox->value());
+	} catch (const std::exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
+		return;
+	}
+	synthesisTimer_.start(SYNTH_TIMER_INTERVAL_MS);
 }
 
 void
@@ -254,12 +265,25 @@ ParameterModificationWindow::sendModificationValue()
 
 	if (!synthesis_->paramModifSynth->modifyParameter(
 				ui_->parameterComboBox->currentIndex(),
-				ui_->addRadioButton->isChecked() ? 0 : 1,
+				ui_->addRadioButton->isChecked() ?
+					ParameterModificationSynthesis::OPER_ADD :
+					ParameterModificationSynthesis::OPER_MULTIPLY,
 				modificationValue_)) {
 		state_ = State::stopped;
 		modificationTimer_.stop();
+		qDebug("Modification STOP");
 
 		showModifiedParameterData();
+	}
+}
+
+// Slot.
+void
+ParameterModificationWindow::checkSynthesis()
+{
+	if (!synthesis_->paramModifSynth->checkSynthesis()) {
+		synthesisTimer_.stop();
+		qDebug("Synthesis STOP");
 	}
 }
 
