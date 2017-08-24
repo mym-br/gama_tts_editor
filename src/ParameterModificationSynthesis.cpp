@@ -141,17 +141,18 @@ ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 			assert(modif_.parameter < numParameters_);
 		}
 
-		// Apply the modification.
 		const float filteredModif = modifFilter_.filter(modif_.value);
-		const float origValue = paramList_[paramSetIndex_][modif_.parameter];
-		if (modif_.operation == 0) {
-			modifiedParamList_[paramSetIndex_][modif_.parameter] = origValue + filteredModif;
-		} else {
-			modifiedParamList_[paramSetIndex_][modif_.parameter] = origValue * filteredModif;
-		}
 
 		// Calculate the parameters for the control step.
 		if (stepIndex_ == 0) {
+			// Apply the modification.
+			const float origValue = paramList_[paramSetIndex_][modif_.parameter];
+			if (modif_.operation == 0) {
+				modifiedParamList_[paramSetIndex_][modif_.parameter] = origValue + filteredModif;
+			} else {
+				modifiedParamList_[paramSetIndex_][modif_.parameter] = origValue * filteredModif;
+			}
+
 			const float coef = 1.0f / controlSteps_;
 			for (unsigned int i = 0; i < numParameters_; ++i) {
 				currentParam_[i] = modifiedParamList_[paramSetIndex_ - 1][i];
