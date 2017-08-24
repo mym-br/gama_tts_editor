@@ -20,6 +20,7 @@
 #include <exception>
 
 #include <QMessageBox>
+#include <QSignalBlocker>
 
 #include "Controller.h"
 #include "Model.h"
@@ -101,12 +102,6 @@ ParameterModificationWindow::setup(VTMControlModel::Model* model, Synthesis* syn
 	model_ = model;
 	synthesis_ = synthesis;
 
-	// Fill parameters combobox.
-	ui_->parameterComboBox->clear();
-	for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
-		ui_->parameterComboBox->addItem(model_->parameterList()[i].name().c_str(), i);
-	}
-
 	try {
 		synthesis_->paramModifSynth.reset();
 		synthesis_->paramModifSynth = std::make_unique<ParameterModificationSynthesis>(
@@ -116,6 +111,15 @@ ParameterModificationWindow::setup(VTMControlModel::Model* model, Synthesis* syn
 	} catch (...) {
 		clear();
 		throw;
+	}
+
+	{
+		QSignalBlocker blocker{ui_->parameterComboBox};
+		// Fill parameters combobox.
+		ui_->parameterComboBox->clear();
+		for (unsigned int i = 0, size = model_->parameterList().size(); i < size; ++i) {
+			ui_->parameterComboBox->addItem(model_->parameterList()[i].name().c_str(), i);
+		}
 	}
 }
 
@@ -156,9 +160,11 @@ ParameterModificationWindow::on_synthesizeToFileButton_clicked()
 }
 
 void
-ParameterModificationWindow::on_parameterComboBox_currentIndexChanged(int /*index*/)
+ParameterModificationWindow::on_parameterComboBox_currentIndexChanged(int index)
 {
 	if (!model_) return;
+
+	if (index >= 0) showModifiedParameterData();
 }
 
 void
