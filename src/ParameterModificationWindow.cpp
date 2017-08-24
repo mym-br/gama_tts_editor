@@ -63,11 +63,11 @@ ParameterModificationWindow::ParameterModificationWindow(QWidget* parent)
 	ui_->outputGainSpinBox->setValue(DEFAULT_OUTPUT_GAIN);
 
 	ui_->parameterCurveWidget->addGraph(); // original parameters
-	ui_->parameterCurveWidget->graph(0)->setPen(QPen(Qt::black));
+	ui_->parameterCurveWidget->graph(0)->setPen(QPen(QBrush(Qt::black), 2.0));
 	ui_->parameterCurveWidget->graph(0)->setAntialiased(true);
 
 	ui_->parameterCurveWidget->addGraph(); // modified parameters
-	ui_->parameterCurveWidget->graph(1)->setPen(QPen(Qt::blue));
+	ui_->parameterCurveWidget->graph(1)->setPen(QPen(QBrush(Qt::blue), 2.0));
 	ui_->parameterCurveWidget->graph(1)->setAntialiased(true);
 
 	connect(ui_->parameterModificationWidget, &ParameterModificationWidget::modificationStarted,
@@ -296,11 +296,15 @@ ParameterModificationWindow::showModifiedParameterData()
 		return;
 	}
 
-	synthesis_->paramModifSynth->processor().getParameter(ui_->parameterComboBox->currentIndex(), paramY_);
-	synthesis_->paramModifSynth->processor().getModifiedParameter(ui_->parameterComboBox->currentIndex(), modifParamY_);
+	const int parameter = ui_->parameterComboBox->currentIndex();
+	synthesis_->paramModifSynth->processor().getParameter(parameter, paramY_);
+	synthesis_->paramModifSynth->processor().getModifiedParameter(parameter, modifParamY_);
 
 	ui_->parameterCurveWidget->graph(0)->setData(modifParamX_, paramY_);
-	ui_->parameterCurveWidget->graph(0)->rescaleAxes();
+	ui_->parameterCurveWidget->graph(0)->valueAxis()->setRange(
+				model_->parameterList()[parameter].minimum(),
+				model_->parameterList()[parameter].maximum());
+	ui_->parameterCurveWidget->graph(0)->rescaleAxes(true);
 	ui_->parameterCurveWidget->graph(1)->setData(modifParamX_, modifParamY_);
 	ui_->parameterCurveWidget->graph(1)->rescaleAxes(true);
 	ui_->parameterCurveWidget->replot();
