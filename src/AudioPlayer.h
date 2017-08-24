@@ -18,6 +18,7 @@
 #ifndef AUDIO_PLAYER_H
 #define AUDIO_PLAYER_H
 
+#include <atomic>
 #include <cstddef> /* std::size_t */
 #include <mutex>
 #include <vector>
@@ -46,7 +47,7 @@ private:
 	std::vector<float> buffer_;
 	std::size_t bufferIndex_;
 	std::mutex bufferMutex_;
-	jack_port_t* jackOutputPort_;
+	std::atomic<jack_port_t*> jackOutputPort_;
 };
 
 template<typename T>

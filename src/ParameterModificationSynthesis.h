@@ -18,6 +18,7 @@
 #ifndef PARAMETER_MODIFICATION_SYNTHESIS_H
 #define PARAMETER_MODIFICATION_SYNTHESIS_H
 
+#include <atomic>
 #include <memory>
 #include <vector>
 
@@ -83,7 +84,7 @@ public:
 		bool running() const;
 	private:
 		unsigned int numParameters_;
-		jack_port_t* outputPort_;
+		std::atomic<jack_port_t*> outputPort_;
 		std::size_t vtmBufferPos_;
 		JackRingbuffer* parameterRingbuffer_;
 		std::vector<std::vector<float>> paramList_;
