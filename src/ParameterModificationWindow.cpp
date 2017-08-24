@@ -17,6 +17,7 @@
 
 #include "ParameterModificationWindow.h"
 
+#include <cmath> /* pow */
 #include <exception>
 
 #include <QMessageBox>
@@ -57,10 +58,9 @@ ParameterModificationWindow::ParameterModificationWindow(QWidget* parent)
 	ui_->amplitudeSpinBox->setMaximum(MAX_AMPLITUDE_SPINBOX_VALUE);
 	ui_->amplitudeSpinBox->setValue(DEFAULT_AMPLITUDE);
 
-	ui_->outputGainSpinBox->setSingleStep(GAIN_INCREMENT);
-	ui_->outputGainSpinBox->setMinimum(0.0);
-	ui_->outputGainSpinBox->setMaximum(1.0);
-	ui_->outputGainSpinBox->setValue(DEFAULT_OUTPUT_GAIN);
+	for (int i = -5; i >= -40; i -= 5) {
+		ui_->outputGainComboBox->addItem(QString::number(i), static_cast<double>(i));
+	}
 
 	ui_->parameterCurveWidget->addGraph(); // original parameters
 	ui_->parameterCurveWidget->graph(0)->setPen(QPen(QBrush(Qt::black), 2.0));
@@ -190,7 +190,7 @@ ParameterModificationWindow::on_synthesizeButton_clicked()
 
 	try {
 		synthesis_->paramModifSynth->startSynthesis(
-			synthesis_->vtmController->outputScale() * ui_->outputGainSpinBox->value());
+			synthesis_->vtmController->outputScale() * outputGain());
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 		enableWindow();
@@ -268,7 +268,7 @@ ParameterModificationWindow::handleModificationStarted()
 		disableInput();
 		try {
 			synthesis_->paramModifSynth->startSynthesis(
-				synthesis_->vtmController->outputScale() * ui_->outputGainSpinBox->value());
+				synthesis_->vtmController->outputScale() * outputGain());
 		} catch (const std::exception& exc) {
 			QMessageBox::critical(this, tr("Error"), exc.what());
 			enableInput();
@@ -366,12 +366,18 @@ ParameterModificationWindow::setInputEnabled(bool enabled)
 	ui_->addRadioButton->setEnabled(enabled);
 	ui_->multiplyRadioButton->setEnabled(enabled);
 	ui_->amplitudeSpinBox->setEnabled(enabled);
-	ui_->outputGainSpinBox->setEnabled(enabled);
+	ui_->outputGainComboBox->setEnabled(enabled);
 	//ui_->parameterModificationWidget->setEnabled(enabled);
 	ui_->resetParameterButton->setEnabled(enabled);
 	ui_->synthesizeButton->setEnabled(enabled);
 	ui_->saveVTMParamCheckBox->setEnabled(enabled);
 	ui_->synthesizeToFileButton->setEnabled(enabled);
+}
+
+double
+ParameterModificationWindow::outputGain()
+{
+	return std::pow(10.0, ui_->outputGainComboBox->currentData().toDouble() * 0.05);
 }
 
 } // namespace GS

@@ -74,6 +74,7 @@ private:
 
 	void showModifiedParameterData();
 	void setInputEnabled(bool enabled);
+	double outputGain();
 
 	std::unique_ptr<Ui::ParameterModificationWindow> ui_;
 	VTMControlModel::Model* model_;
