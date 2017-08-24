@@ -34,6 +34,7 @@
 #define MAX_AMPLITUDE_SPINBOX_VALUE (60.0)
 #define DEFAULT_OUTPUT_GAIN (0.5)
 #define GAIN_INCREMENT (0.01)
+#define VTM_PARAM_FILE_NAME "generated__modif_vtm_param.txt"
 
 
 
@@ -157,6 +158,29 @@ void
 ParameterModificationWindow::on_synthesizeToFileButton_clicked()
 {
 	if (!model_) return;
+
+	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), synthesis_->projectDir, tr("WAV files (*.wav)"));
+	if (filePath.isEmpty()) {
+		return;
+	}
+
+	try {
+		QString vtmParamFilePath;
+		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
+		if (saveVTMParam) {
+			vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+		}
+
+		std::vector<std::vector<float>> vtmParamList;
+		synthesis_->paramModifSynth->processor().getModifiedParameterList(vtmParamList);
+		synthesis_->vtmController->synthesizeToFile(
+					vtmParamList,
+					saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
+					filePath.toStdString().c_str());
+
+	} catch (const Exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
+	}
 }
 
 void
