@@ -45,9 +45,12 @@ public:
 		Processor(std::size_t numberOfParameters);
 		~Processor();
 
+		// Called only by the JACK thread.
+		int process(jack_nframes_t nframes);
+
+		// Can be called by the main thread only when the JACK thread is not running.
 		void reset(jack_port_t* outputPort, ProgramConfiguration& configuration,
 				JackRingbuffer& parameterRingbuffer, JackRingbuffer& analysisRingbuffer);
-		int process(jack_nframes_t nframes);
 	private:
 		float calcScale(const std::vector<float>& buffer);
 

@@ -140,13 +140,8 @@ int
 Audio::Processor::process(jack_nframes_t nframes)
 {
 	if (!vocalTractModel_) {
-		return 1; // error
+		return 1; // end
 	}
-
-//	jack_transport_state_t ts = jack_transport_query(client_, 0);
-//	if (ts == JackTransportRolling) {
-//	} else if (ts == JackTransportStopped) {
-//	}
 
 	jack_default_audio_sample_t* out = static_cast<jack_default_audio_sample_t*>(jack_port_get_buffer(outputPort_, nframes));
 	const std::size_t sampleSize = sizeof(jack_default_audio_sample_t);
