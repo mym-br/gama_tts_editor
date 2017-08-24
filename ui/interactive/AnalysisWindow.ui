@@ -158,6 +158,16 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>viewComboBox</tabstop>
+  <tabstop>startStopButton</tabstop>
+  <tabstop>windowSizeComboBox</tabstop>
+  <tabstop>windowTypeComboBox</tabstop>
+  <tabstop>maxFreqComboBox</tabstop>
+  <tabstop>yAxisComboBox</tabstop>
+  <tabstop>minDecibelLevelComboBox</tabstop>
+  <tabstop>cursorFreqSpinBox</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

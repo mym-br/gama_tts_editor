@@ -144,6 +144,9 @@
            <height>150</height>
           </size>
          </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -311,6 +314,9 @@
            <height>150</height>
           </size>
          </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
         </widget>
        </item>
        <item>
@@ -477,6 +483,9 @@
            <width>16777215</width>
            <height>150</height>
           </size>
+         </property>
+         <property name="tabChangesFocus">
+          <bool>true</bool>
          </property>
         </widget>
        </item>

@@ -222,6 +222,22 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>microCheckBox</tabstop>
+  <tabstop>macroCheckBox</tabstop>
+  <tabstop>smoothCheckBox</tabstop>
+  <tabstop>randomCheckBox</tabstop>
+  <tabstop>driftCheckBox</tabstop>
+  <tabstop>useParametersCheckBox</tabstop>
+  <tabstop>notionalPitchSpinBox</tabstop>
+  <tabstop>pretonicPitchRangeSpinBox</tabstop>
+  <tabstop>pretonicPerturbationRangeSpinBox</tabstop>
+  <tabstop>tonicPitchRangeSpinBox</tabstop>
+  <tabstop>tonicPerturbationRangeSpinBox</tabstop>
+  <tabstop>deviationSpinBox</tabstop>
+  <tabstop>cutoffSpinBox</tabstop>
+  <tabstop>updateButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

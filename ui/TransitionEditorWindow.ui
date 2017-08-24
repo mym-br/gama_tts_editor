@@ -176,6 +176,9 @@
           <verstretch>2</verstretch>
          </sizepolicy>
         </property>
+        <property name="focusPolicy">
+         <enum>Qt::NoFocus</enum>
+        </property>
         <property name="readOnly">
          <bool>true</bool>
         </property>
@@ -258,6 +261,14 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>transitionTypeComboBox</tabstop>
+  <tabstop>pointsTable</tabstop>
+  <tabstop>removePointButton</tabstop>
+  <tabstop>updateTransitionButton</tabstop>
+  <tabstop>equationsTree</tabstop>
+  <tabstop>formulaTextEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

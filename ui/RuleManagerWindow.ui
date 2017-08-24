@@ -265,6 +265,9 @@
            <height>150</height>
           </size>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
          </property>
@@ -310,6 +313,9 @@
           </item>
           <item>
            <widget class="QLineEdit" name="combinationsLineEdit">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -332,6 +338,9 @@
            <height>150</height>
           </size>
          </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
+         </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
          </property>
@@ -353,6 +362,9 @@
            <width>0</width>
            <height>150</height>
           </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
@@ -389,6 +401,9 @@
            <width>0</width>
            <height>150</height>
           </size>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
          <property name="alternatingRowColors">
           <bool>true</bool>
@@ -626,7 +641,11 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_4">
        <item>
-        <widget class="QPlainTextEdit" name="commentTextEdit"/>
+        <widget class="QPlainTextEdit" name="commentTextEdit">
+         <property name="tabChangesFocus">
+          <bool>true</bool>
+         </property>
+        </widget>
        </item>
        <item>
         <widget class="QWidget" name="widget_9" native="true">
@@ -678,6 +697,29 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>rulesTable</tabstop>
+  <tabstop>removeButton</tabstop>
+  <tabstop>moveUpButton</tabstop>
+  <tabstop>moveDownButton</tabstop>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>expression1LineEdit</tabstop>
+  <tabstop>expression2LineEdit</tabstop>
+  <tabstop>expression3LineEdit</tabstop>
+  <tabstop>expression4LineEdit</tabstop>
+  <tabstop>addButton</tabstop>
+  <tabstop>updateButton</tabstop>
+  <tabstop>ruleTransitionsTable</tabstop>
+  <tabstop>transitionsTree</tabstop>
+  <tabstop>ruleSpecialTransitionsTable</tabstop>
+  <tabstop>clearSpecialTransitionButton</tabstop>
+  <tabstop>specialTransitionsTree</tabstop>
+  <tabstop>ruleSymbolEquationsTable</tabstop>
+  <tabstop>clearEquationButton</tabstop>
+  <tabstop>equationsTree</tabstop>
+  <tabstop>commentTextEdit</tabstop>
+  <tabstop>updateCommentButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

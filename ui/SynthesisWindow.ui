@@ -61,6 +61,9 @@
           <pointsize>14</pointsize>
          </font>
         </property>
+        <property name="tabChangesFocus">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item row="0" column="0">
@@ -339,6 +342,9 @@
              </item>
              <item row="0" column="1">
               <widget class="QLineEdit" name="timeLineEdit">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="readOnly">
                 <bool>true</bool>
                </property>
@@ -353,6 +359,9 @@
              </item>
              <item row="1" column="1">
               <widget class="QLineEdit" name="valueLineEdit">
+               <property name="focusPolicy">
+                <enum>Qt::NoFocus</enum>
+               </property>
                <property name="readOnly">
                 <bool>true</bool>
                </property>
@@ -372,6 +381,9 @@
          </property>
          <property name="cursor" stdset="0">
           <cursorShape>CrossCursor</cursorShape>
+         </property>
+         <property name="focusPolicy">
+          <enum>Qt::NoFocus</enum>
          </property>
          <property name="widgetResizable">
           <bool>true</bool>
@@ -402,6 +414,21 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>textLineEdit</tabstop>
+  <tabstop>parseButton</tabstop>
+  <tabstop>phoneticStringTextEdit</tabstop>
+  <tabstop>tempoSpinBox</tabstop>
+  <tabstop>saveVTMParamCheckBox</tabstop>
+  <tabstop>synthesizeButton</tabstop>
+  <tabstop>synthesizeToFileButton</tabstop>
+  <tabstop>parameterTableWidget</tabstop>
+  <tabstop>parameterScrollArea</tabstop>
+  <tabstop>xZoomSpinBox</tabstop>
+  <tabstop>yZoomSpinBox</tabstop>
+  <tabstop>timeLineEdit</tabstop>
+  <tabstop>valueLineEdit</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

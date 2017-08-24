@@ -182,6 +182,17 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>parameterComboBox</tabstop>
+  <tabstop>addRadioButton</tabstop>
+  <tabstop>multiplyRadioButton</tabstop>
+  <tabstop>amplitudeSpinBox</tabstop>
+  <tabstop>outputGainComboBox</tabstop>
+  <tabstop>resetParameterButton</tabstop>
+  <tabstop>synthesizeButton</tabstop>
+  <tabstop>saveVTMParamCheckBox</tabstop>
+  <tabstop>synthesizeToFileButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

@@ -108,7 +108,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="equationCommentTextEdit"/>
+           <widget class="QPlainTextEdit" name="equationCommentTextEdit">
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QLabel" name="label">
@@ -118,7 +122,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="equationFormulaTextEdit"/>
+           <widget class="QPlainTextEdit" name="equationFormulaTextEdit">
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QWidget" name="widget_2" native="true">
@@ -173,6 +181,9 @@
           </item>
           <item>
            <widget class="QPlainTextEdit" name="eqParserMessagesTextEdit">
+            <property name="focusPolicy">
+             <enum>Qt::NoFocus</enum>
+            </property>
             <property name="readOnly">
              <bool>true</bool>
             </property>
@@ -226,7 +237,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="transitionCommentTextEdit"/>
+           <widget class="QPlainTextEdit" name="transitionCommentTextEdit">
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QWidget" name="widget_4" native="true">
@@ -420,7 +435,11 @@
            </widget>
           </item>
           <item>
-           <widget class="QPlainTextEdit" name="specialTransitionCommentTextEdit"/>
+           <widget class="QPlainTextEdit" name="specialTransitionCommentTextEdit">
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+           </widget>
           </item>
           <item>
            <widget class="QWidget" name="widget_7" native="true">
@@ -583,6 +602,34 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>equationsTree</tabstop>
+  <tabstop>addEquationButton</tabstop>
+  <tabstop>moveEquationUpButton</tabstop>
+  <tabstop>removeEquationButton</tabstop>
+  <tabstop>moveEquationDownButton</tabstop>
+  <tabstop>equationCommentTextEdit</tabstop>
+  <tabstop>equationFormulaTextEdit</tabstop>
+  <tabstop>updateEquationButton</tabstop>
+  <tabstop>eqParserMessagesTextEdit</tabstop>
+  <tabstop>transitionsTree</tabstop>
+  <tabstop>addTransitionButton</tabstop>
+  <tabstop>moveTransitionUpButton</tabstop>
+  <tabstop>removeTransitionButton</tabstop>
+  <tabstop>moveTransitionDownButton</tabstop>
+  <tabstop>transitionCommentTextEdit</tabstop>
+  <tabstop>updateTransitionButton</tabstop>
+  <tabstop>editTransitionButton</tabstop>
+  <tabstop>specialTransitionsTree</tabstop>
+  <tabstop>addSpecialTransitionButton</tabstop>
+  <tabstop>moveSpecialTransitionUpButton</tabstop>
+  <tabstop>removeSpecialTransitionButton</tabstop>
+  <tabstop>moveSpecialTransitionDownButton</tabstop>
+  <tabstop>specialTransitionCommentTextEdit</tabstop>
+  <tabstop>updateSpecialTransitionButton</tabstop>
+  <tabstop>editSpecialTransitionButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>
