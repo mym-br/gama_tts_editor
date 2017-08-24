@@ -32,9 +32,13 @@ class AudioPlayer {
 public:
 	AudioPlayer();
 
-	template<typename T> void fillBuffer(T f);
-	void play(double sampleRate);
+	// Called only by the JACK thread.
 	int callback(jack_nframes_t nframes);
+	void stop(); // must be called only by the shutdown callback
+
+	// These functions can be called by the main thread.
+	template<typename T> void fillBuffer(T f);
+	void play(double sampleRate); // will block until the end of the playback
 private:
 	AudioPlayer(const AudioPlayer&) = delete;
 	AudioPlayer& operator=(const AudioPlayer&) = delete;

@@ -53,9 +53,11 @@ player_jack_process_callback(jack_nframes_t nframes, void* arg)
  * decides to disconnect the client.
  */
 void
-player_jack_shutdown_callback(void* /*arg*/)
+player_jack_shutdown_callback(void* arg)
 {
 	if (Log::debugEnabled) std::cout << "[AudioPlayer] player_jack_shutdown_callback()" << std::endl;
+
+	static_cast<AudioPlayer*>(arg)->stop();
 }
 
 } /* extern "C" */
@@ -82,8 +84,7 @@ AudioPlayer::play(double sampleRate)
 	auto jackClient = std::make_unique<JackClient>(CLIENT_NAME);
 
 	jackClient->setProcessCallback(player_jack_process_callback, this);
-
-	jackClient->setShutdownCallback(player_jack_shutdown_callback, nullptr);
+	jackClient->setShutdownCallback(player_jack_shutdown_callback, this);
 
 	jackOutputPort_ = jackClient->registerPort("output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 
@@ -111,12 +112,13 @@ AudioPlayer::play(double sampleRate)
 
 	do {
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
-	} while (jack_port_connected(jackOutputPort_) > 0);
+	} while (jackOutputPort_ && jack_port_connected(jackOutputPort_) > 0);
 }
 
 int
 AudioPlayer::callback(jack_nframes_t nframes)
 {
+	if (!jackOutputPort_) return 1; // end
 	jack_default_audio_sample_t* out =
 		static_cast<jack_default_audio_sample_t*>(jack_port_get_buffer(jackOutputPort_, nframes));
 
@@ -136,6 +138,12 @@ AudioPlayer::callback(jack_nframes_t nframes)
 	}
 
 	return 0;
+}
+
+void
+AudioPlayer::stop()
+{
+	jackOutputPort_ = nullptr;
 }
 
 } // namespace GS
