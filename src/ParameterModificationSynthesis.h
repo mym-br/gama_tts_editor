@@ -23,7 +23,7 @@
 
 #include "JackClient.h"
 #include "JackRingbuffer.h"
-//#include "MovingAverageFilter.h"
+#include "MovingAverageFilter.h"
 
 
 
@@ -57,7 +57,7 @@ public:
 			unsigned int numberOfParameters,
 			JackRingbuffer* parameterRingbuffer,
 			const ConfigurationData& vtmConfigData,
-			unsigned int controlSteps);
+			double controlRate);
 		~Processor();
 
 		// Called only by the JACK thread.
@@ -88,11 +88,11 @@ public:
 		unsigned int paramSetIndex_;
 		unsigned int controlSteps_;
 		Modification modif_;
+		VTM::MovingAverageFilter<float> modifFilter_;
 	};
 
 	ParameterModificationSynthesis(
 		unsigned int numberOfParameters,
-		double vtmInternalSampleRate,
 		double controlRate,
 		const ConfigurationData& vtmConfigData);
 	~ParameterModificationSynthesis() {}

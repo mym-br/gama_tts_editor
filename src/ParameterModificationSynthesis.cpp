@@ -28,6 +28,8 @@
 #include "VocalTractModel.h"
 #include "VTMUtil.h"
 
+#define PARAMETER_FILTER_PERIOD_SEC (20.0e-3)
+
 
 
 namespace {
@@ -79,7 +81,7 @@ ParameterModificationSynthesis::Processor::Processor(
 			unsigned int numberOfParameters,
 			JackRingbuffer* parameterRingbuffer,
 			const ConfigurationData& vtmConfigData,
-			unsigned int controlSteps)
+			double controlRate)
 		: numParameters_{numberOfParameters}
 		, outputPort_{}
 		, vtmBufferPos_{}
@@ -90,7 +92,8 @@ ParameterModificationSynthesis::Processor::Processor(
 		, gain_{}
 		, stepIndex_{}
 		, paramSetIndex_{1}
-		, controlSteps_{controlSteps}
+		, controlSteps_{static_cast<unsigned int>(std::rint(vocalTractModel_->internalSampleRate() / controlRate))}
+		, modifFilter_{static_cast<float>(vocalTractModel_->internalSampleRate()), PARAMETER_FILTER_PERIOD_SEC}
 {
 	if (!parameterRingbuffer_) {
 		THROW_EXCEPTION(MissingValueException, "Missing parameter ringbuffer.");
@@ -139,10 +142,12 @@ ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 		}
 
 		// Apply the modification.
+		const float filteredModif = modifFilter_.filter(modif_.value);
+		const float origValue = paramList_[paramSetIndex_][modif_.parameter];
 		if (modif_.operation == 0) {
-			modifiedParamList_[paramSetIndex_][modif_.parameter] = paramList_[paramSetIndex_][modif_.parameter] + modif_.value;
+			modifiedParamList_[paramSetIndex_][modif_.parameter] = origValue + filteredModif;
 		} else {
-			modifiedParamList_[paramSetIndex_][modif_.parameter] = paramList_[paramSetIndex_][modif_.parameter] * modif_.value;
+			modifiedParamList_[paramSetIndex_][modif_.parameter] = origValue * filteredModif;
 		}
 
 		// Calculate the parameters for the control step.
@@ -165,10 +170,7 @@ ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 		}
 
 		// Synthesize using the VTM.
-
-		// May throw exception.
 		vocalTractModel_->setAllParameters(currentParam_);
-
 		vocalTractModel_->execSynthesisStep();
 	}
 
@@ -212,6 +214,7 @@ ParameterModificationSynthesis::Processor::prepareSynthesis(jack_port_t* jackOut
 	stepIndex_ = 0;
 	paramSetIndex_ = 1;
 	modif_.clear();
+	modifFilter_.reset();
 }
 
 /*******************************************************************************
@@ -237,7 +240,6 @@ ParameterModificationSynthesis::Processor::running() const
  */
 ParameterModificationSynthesis::ParameterModificationSynthesis(
 			unsigned int numberOfParameters,
-			double vtmInternalSampleRate,
 			double controlRate,
 			const ConfigurationData& vtmConfigData)
 		: parameterRingbuffer_{std::make_unique<JackRingbuffer>(PARAMETER_RINGBUFFER_SIZE * sizeof(Modification))}
@@ -245,7 +247,7 @@ ParameterModificationSynthesis::ParameterModificationSynthesis(
 					numberOfParameters,
 					parameterRingbuffer_.get(),
 					vtmConfigData,
-					static_cast<unsigned int>(std::rint(vtmInternalSampleRate / controlRate)))}
+					controlRate)}
 		, jackClient_{}
 {
 }

@@ -60,13 +60,13 @@ ParameterModificationWindow::ParameterModificationWindow(QWidget* parent)
 	ui_->outputGainSpinBox->setMaximum(1.0);
 	ui_->outputGainSpinBox->setValue(DEFAULT_OUTPUT_GAIN);
 
-	ui_->parameterCurveWidget->addGraph();
+	ui_->parameterCurveWidget->addGraph(); // original parameters
 	ui_->parameterCurveWidget->graph(0)->setPen(QPen(Qt::black));
-	ui_->parameterCurveWidget->graph(0)->setAntialiased(false);
+	ui_->parameterCurveWidget->graph(0)->setAntialiased(true);
 
-	ui_->parameterCurveWidget->addGraph();
+	ui_->parameterCurveWidget->addGraph(); // modified parameters
 	ui_->parameterCurveWidget->graph(1)->setPen(QPen(Qt::blue));
-	ui_->parameterCurveWidget->graph(1)->setAntialiased(false);
+	ui_->parameterCurveWidget->graph(1)->setAntialiased(true);
 
 	connect(ui_->parameterModificationWidget, &ParameterModificationWidget::modificationStarted,
 			this, &ParameterModificationWindow::handleModificationStarted);
@@ -111,7 +111,6 @@ ParameterModificationWindow::setup(VTMControlModel::Model* model, Synthesis* syn
 		synthesis_->paramModifSynth.reset();
 		synthesis_->paramModifSynth = std::make_unique<ParameterModificationSynthesis>(
 			model_->parameterList().size(),
-			synthesis_->vtmController->vtmInternalSampleRate(),
 			synthesis_->vtmController->vtmControlModelConfiguration().controlRate,
 			synthesis_->vtmController->vtmConfigData());
 	} catch (...) {

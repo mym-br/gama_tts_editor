@@ -56,7 +56,7 @@ private slots:
 	void sendModificationValue();
 private:
 	enum {
-		MODIF_TIMER_INTERVAL_MS = 4
+		MODIF_TIMER_INTERVAL_MS = 2
 	};
 	enum class State {
 		stopped,
