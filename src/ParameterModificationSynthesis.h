@@ -68,6 +68,7 @@ public:
 
 		// Called only by the JACK thread.
 		int process(jack_nframes_t nframes);
+		void stop();
 
 		// These functions can be called by the main thread only when the JACK thread is not running.
 		void resetData(const std::vector<std::vector<float>>& paramList);

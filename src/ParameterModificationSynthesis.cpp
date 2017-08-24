@@ -61,9 +61,12 @@ param_modif_jack_process_callback(jack_nframes_t nframes, void* arg)
  * decides to disconnect the client.
  */
 void
-param_modif_jack_shutdown_callback(void* /*arg*/)
+param_modif_jack_shutdown_callback(void* arg)
 {
 	if (Log::debugEnabled) std::cout << "[ParameterModificationSynthesis] jack_shutdown_callback()" << std::endl;
+
+	ParameterModificationSynthesis::Processor* p = static_cast<ParameterModificationSynthesis::Processor*>(arg);
+	p->stop();
 }
 
 } /* extern "C" */
@@ -115,6 +118,7 @@ ParameterModificationSynthesis::Processor::~Processor()
 int
 ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 {
+	if (!outputPort_) return 1; // end
 	jack_default_audio_sample_t* out = static_cast<jack_default_audio_sample_t*>(jack_port_get_buffer(outputPort_, nframes));
 	std::vector<float>& vtmOutputBuffer = vocalTractModel_->outputBuffer();
 
@@ -128,7 +132,7 @@ ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 	const std::size_t targetBufferSize = nframes - n;
 	while (vtmOutputBuffer.size() < targetBufferSize) { // while there is not enough data available
 		if (paramSetIndex_ >= modifiedParamList_.size()) {
-			return 1;
+			return 1; // end
 		}
 
 		// Get modification data.
@@ -180,6 +184,15 @@ ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 	assert(n2 == nframes - n);
 
 	return 0;
+}
+
+/*******************************************************************************
+ *
+ */
+void
+ParameterModificationSynthesis::Processor::stop()
+{
+	outputPort_ = nullptr;
 }
 
 /*******************************************************************************
@@ -294,7 +307,7 @@ ParameterModificationSynthesis::startSynthesis(float gain)
 	processor_->prepareSynthesis(outputPort, gain);
 
 	newJackClient->setProcessCallback(param_modif_jack_process_callback, processor_.get());
-	newJackClient->setShutdownCallback(param_modif_jack_shutdown_callback, nullptr);
+	newJackClient->setShutdownCallback(param_modif_jack_shutdown_callback, processor_.get());
 
 	newJackClient->activate();
 
