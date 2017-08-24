@@ -45,9 +45,8 @@ public slots:
 	void on_synthesizeButton_clicked();
 	void on_synthesizeToFileButton_clicked();
 	void loadIntonationFromEventList();
-	void handleAudioStarted();
-	void handleAudioFinished();
-	void handleSynthesisFinished();
+	void enableProcessingButtons();
+	void disableProcessingButtons();
 private slots:
 	void on_valueLineEdit_editingFinished();
 	void on_slopeLineEdit_editingFinished();
@@ -59,9 +58,6 @@ private slots:
 		double beatOffset,
 		double absoluteTime);
 private:
-	void enableProcessingButtons();
-	void disableProcessingButtons();
-
 	std::unique_ptr<Ui::IntonationWindow> ui_;
 	Synthesis* synthesis_;
 };

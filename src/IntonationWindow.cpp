@@ -111,27 +111,6 @@ IntonationWindow::loadIntonationFromEventList()
 	ui_->intonationWidget->loadIntonationFromEventList();
 }
 
-// Slot.
-void
-IntonationWindow::handleAudioStarted()
-{
-	disableProcessingButtons();
-}
-
-// Slot.
-void
-IntonationWindow::handleAudioFinished()
-{
-	enableProcessingButtons();
-}
-
-// Slot.
-void
-IntonationWindow::handleSynthesisFinished()
-{
-	enableProcessingButtons();
-}
-
 void
 IntonationWindow::on_valueLineEdit_editingFinished()
 {
@@ -179,6 +158,7 @@ IntonationWindow::setPointData(double value, double slope, double beat, double b
 	ui_->absoluteTimeLineEdit->setText(QString::number(absoluteTime));
 }
 
+// Slot.
 void
 IntonationWindow::enableProcessingButtons()
 {
@@ -186,6 +166,7 @@ IntonationWindow::enableProcessingButtons()
 	ui_->synthesizeToFileButton->setEnabled(true);
 }
 
+// Slot.
 void
 IntonationWindow::disableProcessingButtons()
 {

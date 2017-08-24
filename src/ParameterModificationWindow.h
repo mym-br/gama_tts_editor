@@ -43,8 +43,15 @@ public:
 
 	void clear();
 	void setup(VTMControlModel::Model* model, Synthesis* synthesis);
+signals:
+	void synthesisStarted();
+	void synthesisFinished();
 public slots:
 	void resetData();
+	void enableInput();
+	void disableInput();
+	void enableWindow();
+	void disableWindow();
 private slots:
 	void on_resetParameterButton_clicked();
 	void on_synthesizeButton_clicked();
@@ -66,6 +73,7 @@ private:
 	};
 
 	void showModifiedParameterData();
+	void setInputEnabled(bool enabled);
 
 	std::unique_ptr<Ui::ParameterModificationWindow> ui_;
 	VTMControlModel::Model* model_;

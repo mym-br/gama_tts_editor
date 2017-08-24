@@ -158,20 +158,34 @@ MainWindow::MainWindow(QWidget* parent)
 			prototypeManagerWindow_.get(), &PrototypeManagerWindow::setupEquationsTree);
 
 	connect(synthesisWindow_.get() , &SynthesisWindow::textSynthesized,
-			intonationWindow_.get(), &IntonationWindow::loadIntonationFromEventList);
-	connect(synthesisWindow_.get() , &SynthesisWindow::audioStarted,
-			intonationWindow_.get(), &IntonationWindow::handleAudioStarted);
-	connect(synthesisWindow_.get() , &SynthesisWindow::audioFinished,
-			intonationWindow_.get(), &IntonationWindow::handleAudioFinished);
-	connect(synthesisWindow_.get() , &SynthesisWindow::synthesisFinished,
-			intonationWindow_.get(), &IntonationWindow::handleSynthesisFinished);
+			intonationWindow_.get()           , &IntonationWindow::loadIntonationFromEventList);
 	connect(synthesisWindow_.get() , &SynthesisWindow::textSynthesized,
 			parameterModificationWindow_.get(), &ParameterModificationWindow::resetData);
+
+	connect(synthesisWindow_.get() , &SynthesisWindow::synthesisStarted,
+			intonationWindow_.get()           , &IntonationWindow::disableProcessingButtons);
+	connect(synthesisWindow_.get() , &SynthesisWindow::synthesisStarted,
+			parameterModificationWindow_.get(), &ParameterModificationWindow::disableWindow);
+
+	connect(synthesisWindow_.get() , &SynthesisWindow::synthesisFinished,
+			intonationWindow_.get()           , &IntonationWindow::enableProcessingButtons);
+	connect(synthesisWindow_.get() , &SynthesisWindow::synthesisFinished,
+			parameterModificationWindow_.get(), &ParameterModificationWindow::enableWindow);
 
 	connect(intonationWindow_.get(), &IntonationWindow::synthesisRequested,
 			synthesisWindow_.get() , &SynthesisWindow::synthesizeWithManualIntonation);
 	connect(intonationWindow_.get(), &IntonationWindow::synthesisToFileRequested,
 			synthesisWindow_.get() , &SynthesisWindow::synthesizeToFileWithManualIntonation);
+
+	connect(parameterModificationWindow_.get(), &ParameterModificationWindow::synthesisStarted,
+			synthesisWindow_.get() , &SynthesisWindow::disableProcessingButtons);
+	connect(parameterModificationWindow_.get(), &ParameterModificationWindow::synthesisStarted,
+			intonationWindow_.get(), &IntonationWindow::disableProcessingButtons);
+
+	connect(parameterModificationWindow_.get(), &ParameterModificationWindow::synthesisFinished,
+			synthesisWindow_.get() , &SynthesisWindow::enableProcessingButtons);
+	connect(parameterModificationWindow_.get(), &ParameterModificationWindow::synthesisFinished,
+			intonationWindow_.get(), &IntonationWindow::enableProcessingButtons);
 }
 
 MainWindow::~MainWindow()

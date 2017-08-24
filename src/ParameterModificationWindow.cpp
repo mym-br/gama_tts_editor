@@ -80,6 +80,8 @@ ParameterModificationWindow::ParameterModificationWindow(QWidget* parent)
 			this, &ParameterModificationWindow::sendModificationValue);
 	connect(&synthesisTimer_   , &QTimer::timeout,
 			this, &ParameterModificationWindow::checkSynthesis);
+
+	disableWindow();
 }
 
 ParameterModificationWindow::~ParameterModificationWindow()
@@ -97,6 +99,8 @@ ParameterModificationWindow::clear()
 void
 ParameterModificationWindow::setup(VTMControlModel::Model* model, Synthesis* synthesis)
 {
+	disableWindow();
+
 	if (!model || !synthesis || !synthesis->vtmController) {
 		clear();
 		return;
@@ -139,6 +143,32 @@ ParameterModificationWindow::resetData()
 	for (std::size_t i = 0, size = modifParamX_.size(); i < size; ++i) {
 		modifParamX_[i] = i * period * 1000.0; // convert to milliseconds
 	}
+
+	enableWindow();
+}
+
+void
+ParameterModificationWindow::enableInput()
+{
+	setInputEnabled(true);
+}
+
+void
+ParameterModificationWindow::disableInput()
+{
+	setInputEnabled(false);
+}
+
+void
+ParameterModificationWindow::enableWindow()
+{
+	setEnabled(true);
+}
+
+void
+ParameterModificationWindow::disableWindow()
+{
+	setEnabled(false);
 }
 
 void
@@ -155,11 +185,16 @@ ParameterModificationWindow::on_synthesizeButton_clicked()
 {
 	if (!model_) return;
 
+	emit synthesisStarted();
+	disableInput();
+
 	try {
 		synthesis_->paramModifSynth->startSynthesis(
 			synthesis_->vtmController->outputScale() * ui_->outputGainSpinBox->value());
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
+		enableInput();
+		emit synthesisFinished();
 		return;
 	}
 	synthesisTimer_.start(SYNTH_TIMER_INTERVAL_MS);
@@ -175,6 +210,9 @@ ParameterModificationWindow::on_synthesizeToFileButton_clicked()
 		return;
 	}
 
+	emit synthesisStarted();
+	disableInput();
+
 	try {
 		QString vtmParamFilePath;
 		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
@@ -188,10 +226,12 @@ ParameterModificationWindow::on_synthesizeToFileButton_clicked()
 					vtmParamList,
 					saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
 					filePath.toStdString().c_str());
-
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}
+
+	enableInput();
+	emit synthesisFinished();
 }
 
 void
@@ -224,11 +264,15 @@ ParameterModificationWindow::handleModificationStarted()
 	if (!model_) return;
 
 	if (state_ == State::stopped) {
+		emit synthesisStarted();
+		disableInput();
 		try {
 			synthesis_->paramModifSynth->startSynthesis(
 				synthesis_->vtmController->outputScale() * ui_->outputGainSpinBox->value());
 		} catch (const std::exception& exc) {
 			QMessageBox::critical(this, tr("Error"), exc.what());
+			enableInput();
+			emit synthesisFinished();
 			return;
 		}
 		modificationTimer_.start(MODIF_TIMER_INTERVAL_MS);
@@ -274,6 +318,9 @@ ParameterModificationWindow::sendModificationValue()
 		qDebug("Modification STOP");
 
 		showModifiedParameterData();
+
+		enableInput();
+		emit synthesisFinished();
 	}
 }
 
@@ -284,6 +331,8 @@ ParameterModificationWindow::checkSynthesis()
 	if (!synthesis_->paramModifSynth->checkSynthesis()) {
 		synthesisTimer_.stop();
 		qDebug("Synthesis STOP");
+		enableInput();
+		emit synthesisFinished();
 	}
 }
 
@@ -308,6 +357,21 @@ ParameterModificationWindow::showModifiedParameterData()
 	ui_->parameterCurveWidget->graph(1)->setData(modifParamX_, modifParamY_);
 	ui_->parameterCurveWidget->graph(1)->rescaleAxes(true);
 	ui_->parameterCurveWidget->replot();
+}
+
+void
+ParameterModificationWindow::setInputEnabled(bool enabled)
+{
+	ui_->parameterComboBox->setEnabled(enabled);
+	ui_->addRadioButton->setEnabled(enabled);
+	ui_->multiplyRadioButton->setEnabled(enabled);
+	ui_->amplitudeSpinBox->setEnabled(enabled);
+	ui_->outputGainSpinBox->setEnabled(enabled);
+	//ui_->parameterModificationWidget->setEnabled(enabled);
+	ui_->resetParameterButton->setEnabled(enabled);
+	ui_->synthesizeButton->setEnabled(enabled);
+	ui_->saveVTMParamCheckBox->setEnabled(enabled);
+	ui_->synthesizeToFileButton->setEnabled(enabled);
 }
 
 } // namespace GS

@@ -49,13 +49,14 @@ public:
 signals:
 	void textSynthesized();
 	void playAudioRequested(double sampleRate);
-	void audioFinished();
-	void audioStarted();
+	void synthesisStarted();
 	void synthesisFinished();
 public slots:
 	void setupParameterTable();
 	void synthesizeWithManualIntonation();
 	void synthesizeToFileWithManualIntonation(QString filePath);
+	void enableProcessingButtons();
+	void disableProcessingButtons();
 private slots:
 	void on_parseButton_clicked();
 	void on_synthesizeButton_clicked();
@@ -68,9 +69,6 @@ private slots:
 	void handleAudioFinished();
 	void resetZoom();
 private:
-	void enableProcessingButtons();
-	void disableProcessingButtons();
-
 	std::unique_ptr<Ui::SynthesisWindow> ui_;
 	VTMControlModel::Model* model_;
 	Synthesis* synthesis_;

@@ -165,6 +165,8 @@ SynthesisWindow::on_synthesizeButton_clicked()
 	if (phoneticString.trimmed().isEmpty()) {
 		return;
 	}
+
+	emit synthesisStarted();
 	disableProcessingButtons();
 
 	try {
@@ -188,13 +190,13 @@ SynthesisWindow::on_synthesizeButton_clicked()
 
 		ui_->parameterWidget->update();
 
-		emit audioStarted();
 		emit playAudioRequested(sampleRate);
 
 		emit textSynthesized();
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 		enableProcessingButtons();
+		emit synthesisFinished();
 	}
 }
 
@@ -212,6 +214,8 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 	if (filePath.isEmpty()) {
 		return;
 	}
+
+	emit synthesisStarted();
 	disableProcessingButtons();
 
 	try {
@@ -237,6 +241,7 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 	}
 
 	enableProcessingButtons();
+	emit synthesisFinished();
 }
 
 // Slot.
@@ -246,6 +251,8 @@ SynthesisWindow::synthesizeWithManualIntonation()
 	if (!synthesis_) {
 		return;
 	}
+
+	emit synthesisStarted();
 	disableProcessingButtons();
 
 	try {
@@ -270,11 +277,11 @@ SynthesisWindow::synthesizeWithManualIntonation()
 							buffer);
 		});
 
-		emit audioStarted();
 		emit playAudioRequested(sampleRate);
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 		enableProcessingButtons();
+		emit synthesisFinished();
 	}
 }
 
@@ -285,6 +292,8 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 	if (!synthesis_) {
 		return;
 	}
+
+	emit synthesisStarted();
 	disableProcessingButtons();
 
 	try {
@@ -310,6 +319,7 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 	}
 
 	enableProcessingButtons();
+	emit synthesisFinished();
 }
 
 void
@@ -369,8 +379,7 @@ SynthesisWindow::handleAudioError(QString msg)
 	QMessageBox::critical(this, tr("Error"), msg);
 
 	enableProcessingButtons();
-
-	emit audioFinished();
+	emit synthesisFinished();
 }
 
 // Slot.
@@ -378,8 +387,7 @@ void
 SynthesisWindow::handleAudioFinished()
 {
 	enableProcessingButtons();
-
-	emit audioFinished();
+	emit synthesisFinished();
 }
 
 void
@@ -389,6 +397,7 @@ SynthesisWindow::resetZoom()
 	ui_->yZoomSpinBox->setValue(1.0);
 }
 
+// Slot.
 void
 SynthesisWindow::enableProcessingButtons()
 {
@@ -397,6 +406,7 @@ SynthesisWindow::enableProcessingButtons()
 	ui_->synthesizeToFileButton->setEnabled(true);
 }
 
+// Slot.
 void
 SynthesisWindow::disableProcessingButtons()
 {
