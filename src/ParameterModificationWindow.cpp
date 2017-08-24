@@ -186,14 +186,14 @@ ParameterModificationWindow::on_synthesizeButton_clicked()
 	if (!model_) return;
 
 	emit synthesisStarted();
-	disableInput();
+	disableWindow();
 
 	try {
 		synthesis_->paramModifSynth->startSynthesis(
 			synthesis_->vtmController->outputScale() * ui_->outputGainSpinBox->value());
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
-		enableInput();
+		enableWindow();
 		emit synthesisFinished();
 		return;
 	}
@@ -211,7 +211,7 @@ ParameterModificationWindow::on_synthesizeToFileButton_clicked()
 	}
 
 	emit synthesisStarted();
-	disableInput();
+	disableWindow();
 
 	try {
 		QString vtmParamFilePath;
@@ -230,7 +230,7 @@ ParameterModificationWindow::on_synthesizeToFileButton_clicked()
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}
 
-	enableInput();
+	enableWindow();
 	emit synthesisFinished();
 }
 
@@ -331,7 +331,7 @@ ParameterModificationWindow::checkSynthesis()
 	if (!synthesis_->paramModifSynth->checkSynthesis()) {
 		synthesisTimer_.stop();
 		qDebug("Synthesis STOP");
-		enableInput();
+		enableWindow();
 		emit synthesisFinished();
 	}
 }
