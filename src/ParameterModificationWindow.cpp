@@ -138,6 +138,9 @@ void
 ParameterModificationWindow::on_resetParameterButton_clicked()
 {
 	if (!model_) return;
+
+	synthesis_->paramModifSynth->processor().resetParameter(ui_->parameterComboBox->currentIndex());
+	showModifiedParameterData();
 }
 
 void

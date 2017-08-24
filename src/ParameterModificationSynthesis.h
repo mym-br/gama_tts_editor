@@ -70,6 +70,7 @@ public:
 		template<typename T> void getModifiedParameter(unsigned int parameter, T& paramList) const;
 		template<typename T> void getParameter(unsigned int parameter, T& paramList) const;
 		void getModifiedParameterList(std::vector<std::vector<float>>& paramList) const;
+		void resetParameter(unsigned int parameter);
 
 		// Can be called by any thread.
 		bool running() const;

@@ -230,6 +230,21 @@ ParameterModificationSynthesis::Processor::getModifiedParameterList(std::vector<
 /*******************************************************************************
  *
  */
+void
+ParameterModificationSynthesis::Processor::resetParameter(unsigned int parameter)
+{
+	if (parameter >= numParameters_) {
+		THROW_EXCEPTION(InvalidParameterException, "Invalid parameter index:" << parameter << '.');
+	}
+
+	for (std::size_t i = 0, size = paramList_.size(); i < size; ++i) {
+		modifiedParamList_[i][parameter] = paramList_[i][parameter];
+	}
+}
+
+/*******************************************************************************
+ *
+ */
 bool
 ParameterModificationSynthesis::Processor::running() const
 {
