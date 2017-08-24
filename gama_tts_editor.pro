@@ -52,7 +52,6 @@ HEADERS += \
     src/TransitionPoint.h \
     src/TransitionWidget.h \
     src/ParameterModificationWidget.h \
-    src/ParameterModificationCurveWidget.h \
     src/ParameterModificationWindow.h \
     src/ParameterModificationSynthesis.h
 
@@ -91,7 +90,6 @@ SOURCES += \
     src/TransitionPoint.cpp \
     src/TransitionWidget.cpp \
     src/ParameterModificationWidget.cpp \
-    src/ParameterModificationCurveWidget.cpp \
     src/ParameterModificationWindow.cpp \
     src/ParameterModificationSynthesis.cpp
 

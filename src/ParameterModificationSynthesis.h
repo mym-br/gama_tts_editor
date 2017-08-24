@@ -43,6 +43,12 @@ public:
 		unsigned int parameter;
 		unsigned int operation; // 0:add 1:multiply
 		float value;
+
+		void clear() {
+			parameter = 0;
+			operation = 0;
+			value = 0.0;
+		}
 	};
 
 	class Processor {
@@ -61,6 +67,9 @@ public:
 		void resetData(const std::vector<std::vector<float>>& paramList);
 		bool validData() const;
 		void prepareSynthesis(jack_port_t* jackOutputPort, float gain);
+		template<typename T> void getModifiedParameter(unsigned int parameter, T& paramList) const;
+		template<typename T> void getParameter(unsigned int parameter, T& paramList) const;
+		void getModifiedParameterList(std::vector<std::vector<float>>& paramList) const;
 
 		// Can be called by any thread.
 		bool running() const;
@@ -96,7 +105,7 @@ public:
 			unsigned int operation, // 0:add 1:multiply
 			float value);
 
-	void resetData(const std::vector<std::vector<float>>& paramList);
+	Processor& processor() { return *processor_; }
 private:
 	enum {
 		PARAMETER_RINGBUFFER_SIZE = 8
@@ -108,6 +117,40 @@ private:
 	std::unique_ptr<Processor> processor_; // used by the JACK thread
 	std::unique_ptr<JackClient> jackClient_;
 };
+
+/*******************************************************************************
+ *
+ */
+template<typename T>
+void
+ParameterModificationSynthesis::Processor::getModifiedParameter(unsigned int parameter, T& paramList) const
+{
+	if (parameter >= numParameters_) {
+		THROW_EXCEPTION(InvalidParameterException, "Invalid parameter index:" << parameter << '.');
+	}
+
+	paramList.resize(modifiedParamList_.size());
+	for (std::size_t i = 0, size = modifiedParamList_.size(); i < size; ++i) {
+		paramList[i] = modifiedParamList_[i][parameter];
+	}
+}
+
+/*******************************************************************************
+ *
+ */
+template<typename T>
+void
+ParameterModificationSynthesis::Processor::getParameter(unsigned int parameter, T& paramList) const
+{
+	if (parameter >= numParameters_) {
+		THROW_EXCEPTION(InvalidParameterException, "Invalid parameter index:" << parameter << '.');
+	}
+
+	paramList.resize(paramList_.size());
+	for (std::size_t i = 0, size = paramList_.size(); i < size; ++i) {
+		paramList[i] = paramList_[i][parameter];
+	}
+}
 
 } // namespace GS
 

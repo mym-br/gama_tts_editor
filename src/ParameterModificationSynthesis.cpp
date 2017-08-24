@@ -96,9 +96,7 @@ ParameterModificationSynthesis::Processor::Processor(
 		THROW_EXCEPTION(MissingValueException, "Missing parameter ringbuffer.");
 	}
 
-	modif_.parameter = 0;
-	modif_.operation = 0;
-	modif_.value = 0.0;
+	modif_.clear();
 }
 
 /*******************************************************************************
@@ -213,6 +211,16 @@ ParameterModificationSynthesis::Processor::prepareSynthesis(jack_port_t* jackOut
 	gain_ = gain;
 	stepIndex_ = 0;
 	paramSetIndex_ = 1;
+	modif_.clear();
+}
+
+/*******************************************************************************
+ *
+ */
+void
+ParameterModificationSynthesis::Processor::getModifiedParameterList(std::vector<std::vector<float>>& paramList) const
+{
+	paramList = modifiedParamList_;
 }
 
 /*******************************************************************************
@@ -327,12 +335,6 @@ ParameterModificationSynthesis::modifyParameter(
 	}
 
 	return true;
-}
-
-void
-ParameterModificationSynthesis::resetData(const std::vector<std::vector<float>>& paramList)
-{
-	processor_->resetData(paramList);
 }
 
 } // namespace GS

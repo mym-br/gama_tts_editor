@@ -60,6 +60,14 @@ ParameterModificationWindow::ParameterModificationWindow(QWidget* parent)
 	ui_->outputGainSpinBox->setMaximum(1.0);
 	ui_->outputGainSpinBox->setValue(DEFAULT_OUTPUT_GAIN);
 
+	ui_->parameterCurveWidget->addGraph();
+	ui_->parameterCurveWidget->graph(0)->setPen(QPen(Qt::black));
+	ui_->parameterCurveWidget->graph(0)->setAntialiased(false);
+
+	ui_->parameterCurveWidget->addGraph();
+	ui_->parameterCurveWidget->graph(1)->setPen(QPen(Qt::blue));
+	ui_->parameterCurveWidget->graph(1)->setAntialiased(false);
+
 	connect(ui_->parameterModificationWidget, &ParameterModificationWidget::modificationStarted,
 			this, &ParameterModificationWindow::handleModificationStarted);
 	connect(ui_->parameterModificationWidget, &ParameterModificationWidget::offsetChanged,
@@ -117,7 +125,20 @@ ParameterModificationWindow::resetData()
 {
 	if (!model_) return;
 
-	synthesis_->paramModifSynth->resetData(synthesis_->vtmController->vtmParameterList());
+	synthesis_->paramModifSynth->processor().resetData(synthesis_->vtmController->vtmParameterList());
+
+	// Fill the x-axis in the parameter graph.
+	modifParamX_.resize(synthesis_->vtmController->vtmParameterList().size());
+	const double period = 1.0 / synthesis_->vtmController->vtmControlModelConfiguration().controlRate;
+	for (std::size_t i = 0, size = modifParamX_.size(); i < size; ++i) {
+		modifParamX_[i] = i * period * 1000.0; // convert to milliseconds
+	}
+}
+
+void
+ParameterModificationWindow::on_resetParameterButton_clicked()
+{
+	if (!model_) return;
 }
 
 void
@@ -133,7 +154,7 @@ ParameterModificationWindow::on_synthesizeToFileButton_clicked()
 }
 
 void
-ParameterModificationWindow::on_parameterComboBox_currentIndexChanged(int index)
+ParameterModificationWindow::on_parameterComboBox_currentIndexChanged(int /*index*/)
 {
 	if (!model_) return;
 }
@@ -189,7 +210,6 @@ ParameterModificationWindow::handleOffsetChanged(double offset)
 			modificationValue = 0.0;
 		}
 	}
-	ui_->testSpinBox->setValue(modificationValue);//TODO: remove test
 
 	modificationValue_ = modificationValue;
 }
@@ -206,7 +226,28 @@ ParameterModificationWindow::sendModificationValue()
 				modificationValue_)) {
 		state_ = State::stopped;
 		modificationTimer_.stop();
+
+		showModifiedParameterData();
 	}
+}
+
+void
+ParameterModificationWindow::showModifiedParameterData()
+{
+	if (!model_) {
+		ui_->parameterCurveWidget->graph(0)->clearData();
+		ui_->parameterCurveWidget->graph(1)->clearData();
+		return;
+	}
+
+	synthesis_->paramModifSynth->processor().getParameter(ui_->parameterComboBox->currentIndex(), paramY_);
+	synthesis_->paramModifSynth->processor().getModifiedParameter(ui_->parameterComboBox->currentIndex(), modifParamY_);
+
+	ui_->parameterCurveWidget->graph(0)->setData(modifParamX_, paramY_);
+	ui_->parameterCurveWidget->graph(0)->rescaleAxes();
+	ui_->parameterCurveWidget->graph(1)->setData(modifParamX_, modifParamY_);
+	ui_->parameterCurveWidget->graph(1)->rescaleAxes(true);
+	ui_->parameterCurveWidget->replot();
 }
 
 } // namespace GS

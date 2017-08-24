@@ -21,6 +21,7 @@
 #include <memory>
 
 #include <QTimer>
+#include <QVector>
 #include <QWidget>
 
 namespace Ui {
@@ -45,6 +46,7 @@ public:
 public slots:
 	void resetData();
 private slots:
+	void on_resetParameterButton_clicked();
 	void on_synthesizeButton_clicked();
 	void on_synthesizeToFileButton_clicked();
 	void on_parameterComboBox_currentIndexChanged(int index);
@@ -61,6 +63,8 @@ private:
 		running
 	};
 
+	void showModifiedParameterData();
+
 	std::unique_ptr<Ui::ParameterModificationWindow> ui_;
 	VTMControlModel::Model* model_;
 	Synthesis* synthesis_;
@@ -68,6 +72,9 @@ private:
 	State state_;
 	double modificationValue_;
 	QTimer modificationTimer_;
+	QVector<double> paramY_;
+	QVector<double> modifParamX_;
+	QVector<double> modifParamY_;
 };
 
 } // namespace GS
