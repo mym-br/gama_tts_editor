@@ -24,8 +24,8 @@ HEADERS += \
     src/DataEntryWindow.h \
     src/editor_global.h \
     src/interactive/AnalysisWindow.h \
-    src/interactive/Audio.h \
     src/interactive/FFTW.h \
+    src/interactive/InteractiveAudio.h \
     src/interactive/InteractiveVTMWindow.h \
     src/interactive/JackRingbuffer.h \
     src/interactive/ParameterLineEdit.h \
@@ -37,6 +37,9 @@ HEADERS += \
     src/IntonationWindow.h \
     src/JackClient.h \
     src/MainWindow.h \
+    src/ParameterModificationSynthesis.h \
+    src/ParameterModificationWidget.h \
+    src/ParameterModificationWindow.h \
     src/ParameterWidget.h \
     src/PostureEditorWindow.h \
     src/PrototypeManagerWindow.h \
@@ -50,10 +53,7 @@ HEADERS += \
     src/SynthesisWindow.h \
     src/TransitionEditorWindow.h \
     src/TransitionPoint.h \
-    src/TransitionWidget.h \
-    src/ParameterModificationWidget.h \
-    src/ParameterModificationWindow.h \
-    src/ParameterModificationSynthesis.h
+    src/TransitionWidget.h
 
 SOURCES += \
     src/AudioPlayer.cpp \
@@ -61,8 +61,8 @@ SOURCES += \
     src/Clipboard.cpp \
     src/DataEntryWindow.cpp \
     src/interactive/AnalysisWindow.cpp \
-    src/interactive/Audio.cpp \
     src/interactive/FFTW.cpp \
+    src/interactive/InteractiveAudio.cpp \
     src/interactive/InteractiveVTMWindow.cpp \
     src/interactive/JackRingbuffer.cpp \
     src/interactive/ParameterLineEdit.cpp \
@@ -75,6 +75,9 @@ SOURCES += \
     src/JackClient.cpp \
     src/main.cpp \
     src/MainWindow.cpp \
+    src/ParameterModificationSynthesis.cpp \
+    src/ParameterModificationWidget.cpp \
+    src/ParameterModificationWindow.cpp \
     src/ParameterWidget.cpp \
     src/PostureEditorWindow.cpp \
     src/PrototypeManagerWindow.cpp \
@@ -88,10 +91,7 @@ SOURCES += \
     src/SynthesisWindow.cpp \
     src/TransitionEditorWindow.cpp \
     src/TransitionPoint.cpp \
-    src/TransitionWidget.cpp \
-    src/ParameterModificationWidget.cpp \
-    src/ParameterModificationWindow.cpp \
-    src/ParameterModificationSynthesis.cpp
+    src/TransitionWidget.cpp
 
 FORMS += \
     ui/DataEntryWindow.ui \

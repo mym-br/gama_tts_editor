@@ -19,7 +19,7 @@
  *  based on simple_client.c from JACK 1.9.10.
  ***************************************************************************/
 
-#include "Audio.h"
+#include "InteractiveAudio.h"
 
 #include <cassert>
 #include <cstdlib>
@@ -48,10 +48,10 @@ extern "C" {
  * special realtime thread once for each audio cycle.
  */
 int
-jack_process_callback(jack_nframes_t nframes, void* arg)
+interactive_jack_process_callback(jack_nframes_t nframes, void* arg)
 {
 	try {
-		Audio::Processor* p = static_cast<Audio::Processor*>(arg);
+		InteractiveAudio::Processor* p = static_cast<InteractiveAudio::Processor*>(arg);
 		return p->process(nframes);
 	} catch (std::exception& exc) {
 		std::cerr << "[Audio/jack_process_callback] Caught exception: " << exc.what() << '.' << std::endl;
@@ -64,7 +64,7 @@ jack_process_callback(jack_nframes_t nframes, void* arg)
  * decides to disconnect the client.
  */
 void
-jack_shutdown_callback(void* /*arg*/)
+interactive_jack_shutdown_callback(void* /*arg*/)
 {
 	if (Log::debugEnabled) std::cout << "[Audio] jack_shutdown_callback()" << std::endl;
 }
@@ -80,7 +80,7 @@ namespace GS {
 /*******************************************************************************
  * Constructor.
  */
-Audio::Processor::Processor(std::size_t numberOfParameters)
+InteractiveAudio::Processor::Processor(std::size_t numberOfParameters)
 		: outputPort_{}
 		, vtmBufferPos_{}
 		, maxAbsSampleValue_{}
@@ -94,7 +94,7 @@ Audio::Processor::Processor(std::size_t numberOfParameters)
 /*******************************************************************************
  * Destructor.
  */
-Audio::Processor::~Processor()
+InteractiveAudio::Processor::~Processor()
 {
 }
 
@@ -102,7 +102,7 @@ Audio::Processor::~Processor()
  *
  */
 void
-Audio::Processor::reset(jack_port_t* outputPort, ProgramConfiguration& configuration,
+InteractiveAudio::Processor::reset(jack_port_t* outputPort, ProgramConfiguration& configuration,
 			JackRingbuffer& parameterRingbuffer, JackRingbuffer& analysisRingbuffer)
 {
 	outputPort_ = outputPort;
@@ -125,7 +125,7 @@ Audio::Processor::reset(jack_port_t* outputPort, ProgramConfiguration& configura
  *
  */
 float
-Audio::Processor::calcScale(const std::vector<float>& buffer) {
+InteractiveAudio::Processor::calcScale(const std::vector<float>& buffer) {
 	const float maxValue = VTM::Util::maximumAbsoluteValue(buffer);
 	if (maxValue > maxAbsSampleValue_) {
 		maxAbsSampleValue_ = maxValue;
@@ -137,7 +137,7 @@ Audio::Processor::calcScale(const std::vector<float>& buffer) {
  *
  */
 int
-Audio::Processor::process(jack_nframes_t nframes)
+InteractiveAudio::Processor::process(jack_nframes_t nframes)
 {
 	if (!vocalTractModel_) {
 		return 1; // end
@@ -218,7 +218,7 @@ Audio::Processor::process(jack_nframes_t nframes)
 /*******************************************************************************
  * Constructor.
  */
-Audio::Audio(ProgramConfiguration& configuration)
+InteractiveAudio::InteractiveAudio(ProgramConfiguration& configuration)
 		: state_{State::stopped}
 		, configuration_{configuration}
 		, processor_{configuration_.dynamicParamList.size()}
@@ -238,7 +238,7 @@ Audio::Audio(ProgramConfiguration& configuration)
  *   values.
  */
 void
-Audio::start()
+InteractiveAudio::start()
 {
 	if (state_ == State::started) {
 		stop();
@@ -246,9 +246,9 @@ Audio::start()
 
 	auto newJackClient = std::make_unique<JackClient>(CLIENT_NAME);
 
-	newJackClient->setProcessCallback(jack_process_callback, &processor_);
+	newJackClient->setProcessCallback(interactive_jack_process_callback, &processor_);
 
-	newJackClient->setShutdownCallback(jack_shutdown_callback, nullptr);
+	newJackClient->setShutdownCallback(interactive_jack_shutdown_callback, nullptr);
 
 	jack_port_t* outputPort = newJackClient->registerPort("output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 
@@ -289,7 +289,7 @@ Audio::start()
  * Stops the connection to the JACK server.
  */
 void
-Audio::stop()
+InteractiveAudio::stop()
 {
 	if (state_ == State::stopped) return;
 

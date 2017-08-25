@@ -62,7 +62,7 @@ InteractiveVTMWindow::InteractiveVTMWindow(const char* configDirPath, bool mainW
 		, dynamicParamEditList_(  configuration_->dynamicParamNameList.size())
 		, staticParamSliderList_( configuration_->staticParamNameList.size())
 		, staticParamEditList_(   configuration_->staticParamNameList.size())
-		, audio_{std::make_unique<Audio>(*configuration_)}
+		, audio_{std::make_unique<InteractiveAudio>(*configuration_)}
 		, dynamicParameterValueChanged_{false}
 		, analysisWindow_{std::make_unique<AnalysisWindow>()}
 {
@@ -302,7 +302,7 @@ InteractiveVTMWindow::startAudio()
 		transferAllDynamicParameters();
 		audio_->start();
 
-		analysisWindow_->setData(audio_->sampleRate(), &audio_->analysisRingbuffer(), Audio::MAX_NUM_SAMPLES_FOR_ANALYSIS);
+		analysisWindow_->setData(audio_->sampleRate(), &audio_->analysisRingbuffer(), InteractiveAudio::MAX_NUM_SAMPLES_FOR_ANALYSIS);
 	} catch (std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), tr("Could not start audio. Reason: %1").arg(exc.what()));
 	}
@@ -599,7 +599,7 @@ InteractiveVTMWindow::reload()
 		transferAllDynamicParameters();
 		audio_->start();
 
-		analysisWindow_->setData(audio_->sampleRate(), &audio_->analysisRingbuffer(), Audio::MAX_NUM_SAMPLES_FOR_ANALYSIS);
+		analysisWindow_->setData(audio_->sampleRate(), &audio_->analysisRingbuffer(), InteractiveAudio::MAX_NUM_SAMPLES_FOR_ANALYSIS);
 	} catch (std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), tr("Could not start audio. Reason: %1").arg(exc.what()));
 	}

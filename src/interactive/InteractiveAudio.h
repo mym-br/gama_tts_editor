@@ -15,8 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef AUDIO_H_
-#define AUDIO_H_
+#ifndef INTERACTIVE_AUDIO_H_
+#define INTERACTIVE_AUDIO_H_
 
 #include <cstddef> /* std::size_t */
 #include <memory>
@@ -33,7 +33,7 @@ namespace GS {
 
 struct ProgramConfiguration;
 
-class Audio {
+class InteractiveAudio {
 public:
 	enum {
 		PARAMETER_RINGBUFFER_SIZE = 32,
@@ -64,7 +64,7 @@ public:
 		std::vector<VTM::MovingAverageFilter<float>> paramFilters_;
 	};
 
-	Audio(ProgramConfiguration& configuration);
+	InteractiveAudio(ProgramConfiguration& configuration);
 
 	void start();
 	void stop();
@@ -78,8 +78,8 @@ private:
 		stopped
 	};
 
-	Audio(const Audio&) = delete;
-	Audio& operator=(const Audio&) = delete;
+	InteractiveAudio(const InteractiveAudio&) = delete;
+	InteractiveAudio& operator=(const InteractiveAudio&) = delete;
 
 	State state_;
 	ProgramConfiguration& configuration_;
@@ -92,4 +92,4 @@ private:
 
 } /* namespace GS */
 
-#endif /* AUDIO_H_ */
+#endif /* INTERACTIVE_AUDIO_H_ */

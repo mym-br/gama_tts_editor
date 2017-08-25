@@ -24,7 +24,7 @@
 #include <QMainWindow>
 #include <QString>
 
-#include "Audio.h"
+#include "InteractiveAudio.h"
 #include "ProgramConfiguration.h"
 #include "VocalTractModelParameterValue.h"
 
@@ -87,7 +87,7 @@ private:
 	std::vector<ParameterLineEdit*> dynamicParamEditList_;
 	std::vector<ParameterSlider*>   staticParamSliderList_;
 	std::vector<ParameterLineEdit*> staticParamEditList_;
-	std::unique_ptr<Audio> audio_;
+	std::unique_ptr<InteractiveAudio> audio_;
 	QString currentParametersFileName_;
 	VocalTractModelParameterValue dynamicParameterValue_;
 	bool dynamicParameterValueChanged_;
