@@ -27,7 +27,6 @@ HEADERS += \
     src/interactive/FFTW.h \
     src/interactive/InteractiveAudio.h \
     src/interactive/InteractiveVTMWindow.h \
-    src/interactive/JackRingbuffer.h \
     src/interactive/ParameterLineEdit.h \
     src/interactive/ParameterSlider.h \
     src/interactive/ProgramConfiguration.h \
@@ -36,6 +35,7 @@ HEADERS += \
     src/IntonationWidget.h \
     src/IntonationWindow.h \
     src/JackClient.h \
+    src/JackRingbuffer.h \
     src/MainWindow.h \
     src/ParameterModificationSynthesis.h \
     src/ParameterModificationWidget.h \
@@ -64,7 +64,6 @@ SOURCES += \
     src/interactive/FFTW.cpp \
     src/interactive/InteractiveAudio.cpp \
     src/interactive/InteractiveVTMWindow.cpp \
-    src/interactive/JackRingbuffer.cpp \
     src/interactive/ParameterLineEdit.cpp \
     src/interactive/ParameterSlider.cpp \
     src/interactive/ProgramConfiguration.cpp \
@@ -73,6 +72,7 @@ SOURCES += \
     src/IntonationWidget.cpp \
     src/IntonationWindow.cpp \
     src/JackClient.cpp \
+    src/JackRingbuffer.cpp \
     src/main.cpp \
     src/MainWindow.cpp \
     src/ParameterModificationSynthesis.cpp \
