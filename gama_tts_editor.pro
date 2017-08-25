@@ -31,7 +31,6 @@ HEADERS += \
     src/interactive/ParameterLineEdit.h \
     src/interactive/ParameterSlider.h \
     src/interactive/ProgramConfiguration.h \
-    src/interactive/qcustomplot/qcustomplot.h \
     src/interactive/SignalDFT.h \
     src/IntonationParametersWindow.h \
     src/IntonationWidget.h \
@@ -41,6 +40,7 @@ HEADERS += \
     src/ParameterWidget.h \
     src/PostureEditorWindow.h \
     src/PrototypeManagerWindow.h \
+    src/qcustomplot/qcustomplot.h \
     src/qt_model/CategoryModel.h \
     src/qt_model/ParameterModel.h \
     src/qt_model/SymbolModel.h \
@@ -68,7 +68,6 @@ SOURCES += \
     src/interactive/ParameterLineEdit.cpp \
     src/interactive/ParameterSlider.cpp \
     src/interactive/ProgramConfiguration.cpp \
-    src/interactive/qcustomplot/qcustomplot.cpp \
     src/interactive/SignalDFT.cpp \
     src/IntonationParametersWindow.cpp \
     src/IntonationWidget.cpp \
@@ -79,6 +78,7 @@ SOURCES += \
     src/ParameterWidget.cpp \
     src/PostureEditorWindow.cpp \
     src/PrototypeManagerWindow.cpp \
+    src/qcustomplot/qcustomplot.cpp \
     src/qt_model/CategoryModel.cpp \
     src/qt_model/ParameterModel.cpp \
     src/qt_model/SymbolModel.cpp \
@@ -109,8 +109,8 @@ FORMS += \
 
 INCLUDEPATH += \
     src \
-    src/interactive/ \
-    src/interactive/qcustomplot \
+    src/interactive \
+    src/qcustomplot \
     src/qt_model
 
 unix {
