@@ -37,7 +37,11 @@ public:
 	explicit ParameterWidget(QWidget* parent=0);
 
 	virtual QSize sizeHint() const;
-	void updateData(VTMControlModel::EventList* eventList, VTMControlModel::Model* model);
+	void updateData(
+		const VTMControlModel::EventList* eventList,
+		const VTMControlModel::Model* model,
+		const std::vector<float>* speechSignal,
+		const double* speechSamplerate);
 	void changeParameterSelection(unsigned int paramIndex, bool selected);
 	double xZoomMin() const { return 0.1; }
 	double xZoomMax() const { return 10.0; }
@@ -61,6 +65,8 @@ private:
 
 	const VTMControlModel::EventList* eventList_;
 	const VTMControlModel::Model* model_;
+	const std::vector<float>* speechSignal_;
+	const double* speechSamplerate_;
 	double timeScale_;
 	double graphHeight_;
 	bool modelUpdated_;

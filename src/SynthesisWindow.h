@@ -19,6 +19,7 @@
 #define SYNTHESIS_WINDOW_H
 
 #include <memory>
+#include <vector>
 
 #include <QString>
 #include <QThread>
@@ -69,11 +70,16 @@ private slots:
 	void handleAudioFinished();
 	void resetZoom();
 private:
+	void clearSpeechSignal();
+	void setSpeechSignal();
+
 	std::unique_ptr<Ui::SynthesisWindow> ui_;
 	VTMControlModel::Model* model_;
 	Synthesis* synthesis_;
 	QThread audioThread_;
 	AudioWorker* audioWorker_;
+	std::vector<float> speechSignal_;
+	double speechSamplerate_;
 };
 
 } // namespace GS

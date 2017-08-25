@@ -34,13 +34,14 @@
 #include "EventList.h"
 #include "Model.h"
 
-#define MARGIN 10.0
-#define DEFAULT_GRAPH_HEIGHT 120.0
-#define MININUM_WIDTH 1024
-#define MININUM_HEIGHT 768
-#define TEXT_MARGIN 5.0
-#define DEFAULT_TIME_SCALE 0.7
-#define POINT_RADIUS 2.0
+#define MARGIN (10.0)
+#define SPEECH_SIGNAL_HEIGHT (100.0)
+#define DEFAULT_GRAPH_HEIGHT (120.0)
+#define MININUM_WIDTH (1024)
+#define MININUM_HEIGHT (768)
+#define TEXT_MARGIN (5.0)
+#define DEFAULT_TIME_SCALE (0.7)
+#define POINT_RADIUS (2.0)
 #define GRAPH_HIDE_TOLERANCE (0.5)
 
 
@@ -51,6 +52,8 @@ ParameterWidget::ParameterWidget(QWidget* parent)
 		: QWidget{parent}
 		, eventList_{}
 		, model_{}
+		, speechSignal_{}
+		, speechSamplerate_{}
 		, timeScale_{DEFAULT_TIME_SCALE}
 		, graphHeight_{DEFAULT_GRAPH_HEIGHT}
 		, modelUpdated_{}
@@ -122,16 +125,26 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 	setMinimumWidth(totalWidth_);
 	setMinimumHeight(totalHeight_);
 
-	const double headerBottomY = 2.0 * textTotalHeight_ + MARGIN;
+	const double headerBottomY = MARGIN * 2.0 + SPEECH_SIGNAL_HEIGHT + 2.0 * textTotalHeight_;
 	const QPalette pal;
 
 	if (!selectedParamList_.empty()) {
+		// Speech signal.
+		if (speechSignal_ && !speechSignal_->empty()) {
+			const double xCoef = (1000.0 / *speechSamplerate_) * timeScale_; // multiply by 1000.0 to convert to ms
+			QPointF prevPoint{xBase, MARGIN + 0.5 * SPEECH_SIGNAL_HEIGHT + verticalScrollbarValue_};
+			for (std::size_t i = 0, size = speechSignal_->size(); i < size; ++i) {
+				const double x = xBase + i * xCoef;
+				const double y = MARGIN + ((*speechSignal_)[i] + 1.0) * 0.5 * SPEECH_SIGNAL_HEIGHT + verticalScrollbarValue_;
+				painter.drawLine(prevPoint, QPointF{x, y});
+				prevPoint.setX(x);
+				prevPoint.setY(y);
+			}
+		}
 
 		postureTimeList_.clear();
 
-		painter.setPen(Qt::black);
-
-		const double yPosture = MARGIN + textTotalHeight_ + textYOffset + verticalScrollbarValue_;
+		const double yPosture = MARGIN * 2.0 + SPEECH_SIGNAL_HEIGHT + textTotalHeight_ + textYOffset + verticalScrollbarValue_;
 		unsigned int postureIndex = 0;
 		for (const VTMControlModel::Event_ptr& ev : eventList_->list()) {
 			const double x = xBase + ev->time * timeScale_;
@@ -158,7 +171,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 			}
 		}
 
-		const double yRuleText = MARGIN + textYOffset + verticalScrollbarValue_;
+		const double yRuleText = MARGIN * 2.0 + SPEECH_SIGNAL_HEIGHT + textYOffset + verticalScrollbarValue_;
 
 		for (int i = 0; i < eventList_->numberOfRules(); ++i) {
 			const auto* ruleData = eventList_->getRuleDataAtIndex(i);
@@ -182,8 +195,8 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 				const double xPost2 = xBase + postureTime2 * timeScale_;
 				// Rule frame.
 				painter.drawRect(QRectF(
-						QPointF(xPost1, MARGIN + verticalScrollbarValue_),
-						QPointF(xPost2, MARGIN + textTotalHeight_ + verticalScrollbarValue_)));
+						QPointF(xPost1, MARGIN * 2.0 + SPEECH_SIGNAL_HEIGHT + verticalScrollbarValue_),
+						QPointF(xPost2, MARGIN * 2.0 + SPEECH_SIGNAL_HEIGHT + textTotalHeight_ + verticalScrollbarValue_)));
 				// Rule number.
 				painter.drawText(QPointF(xPost1 + TEXT_MARGIN, yRuleText), QString::number(ruleData->number));
 			}
@@ -347,7 +360,7 @@ ParameterWidget::mouseDoubleClickEvent(QMouseEvent* /*event*/)
 double
 ParameterWidget::getGraphBaseY(unsigned int index)
 {
-	return 2.0 * textTotalHeight_ + (MARGIN + graphHeight_) * (index + 1U);
+	return MARGIN + SPEECH_SIGNAL_HEIGHT + 2.0 * textTotalHeight_ + (MARGIN + graphHeight_) * (index + 1U);
 }
 
 QSize
@@ -357,10 +370,16 @@ ParameterWidget::sizeHint() const
 }
 
 void
-ParameterWidget::updateData(VTMControlModel::EventList* eventList, VTMControlModel::Model* model)
+ParameterWidget::updateData(
+		const VTMControlModel::EventList* eventList,
+		const VTMControlModel::Model* model,
+		const std::vector<float>* speechSignal,
+		const double* speechSamplerate)
 {
-	eventList_ = eventList;
-	model_ = model;
+	eventList_        = eventList;
+	model_            = model;
+	speechSignal_     = speechSignal;
+	speechSamplerate_ = speechSamplerate;
 
 	modelUpdated_ = true;
 

@@ -40,6 +40,7 @@ public:
 	// These functions can be called by the main thread.
 	template<typename T> void fillBuffer(T f);
 	void play(double sampleRate); // will block until the end of the playback
+	void copyBuffer(std::vector<float>& out);
 private:
 	AudioPlayer(const AudioPlayer&) = delete;
 	AudioPlayer& operator=(const AudioPlayer&) = delete;

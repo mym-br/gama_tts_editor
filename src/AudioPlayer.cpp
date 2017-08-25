@@ -115,6 +115,14 @@ AudioPlayer::play(double sampleRate)
 	} while (jackOutputPort_ && jack_port_connected(jackOutputPort_) > 0);
 }
 
+void
+AudioPlayer::copyBuffer(std::vector<float>& out)
+{
+	std::lock_guard<std::mutex> lock(bufferMutex_);
+
+	out = buffer_;
+}
+
 int
 AudioPlayer::callback(jack_nframes_t nframes)
 {

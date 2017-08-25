@@ -17,6 +17,7 @@
 
 #include "SynthesisWindow.h"
 
+#include <cmath> /* rint */
 #include <memory>
 #include <string>
 
@@ -47,6 +48,7 @@ SynthesisWindow::SynthesisWindow(QWidget* parent)
 		, model_{}
 		, synthesis_{}
 		, audioWorker_{}
+		, speechSamplerate_{}
 {
 	ui_->setupUi(this);
 
@@ -104,7 +106,7 @@ void
 SynthesisWindow::clear()
 {
 	ui_->parameterTableWidget->setRowCount(0);
-	ui_->parameterWidget->updateData(nullptr, nullptr);
+	ui_->parameterWidget->updateData(nullptr, nullptr, nullptr, nullptr);
 	synthesis_ = nullptr;
 	model_ = nullptr;
 }
@@ -121,7 +123,7 @@ SynthesisWindow::setup(VTMControlModel::Model* model, Synthesis* synthesis)
 		model_ = model;
 		synthesis_ = synthesis;
 
-		ui_->parameterWidget->updateData(&synthesis_->vtmController->eventList(), model_);
+		ui_->parameterWidget->updateData(&synthesis_->vtmController->eventList(), model_, &speechSignal_, &speechSamplerate_);
 
 		setupParameterTable();
 	} catch (...) {
@@ -188,10 +190,10 @@ SynthesisWindow::on_synthesizeButton_clicked()
 							buffer);
 		});
 
+		clearSpeechSignal();
 		ui_->parameterWidget->update();
 
 		emit playAudioRequested(sampleRate);
-
 		emit textSynthesized();
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
@@ -233,6 +235,7 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 						saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
 						filePath.toStdString().c_str());
 
+		clearSpeechSignal();
 		ui_->parameterWidget->update();
 
 		emit textSynthesized();
@@ -277,6 +280,9 @@ SynthesisWindow::synthesizeWithManualIntonation()
 							buffer);
 		});
 
+		clearSpeechSignal();
+		ui_->parameterWidget->update();
+
 		emit playAudioRequested(sampleRate);
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
@@ -314,6 +320,8 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 						saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
 						filePath.toStdString().c_str());
 
+		clearSpeechSignal();
+		ui_->parameterWidget->update();
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}
@@ -386,6 +394,9 @@ SynthesisWindow::handleAudioError(QString msg)
 void
 SynthesisWindow::handleAudioFinished()
 {
+	setSpeechSignal();
+	ui_->parameterWidget->update();
+
 	enableProcessingButtons();
 	emit synthesisFinished();
 }
@@ -395,6 +406,26 @@ SynthesisWindow::resetZoom()
 {
 	ui_->xZoomSpinBox->setValue(1.0);
 	ui_->yZoomSpinBox->setValue(1.0);
+}
+
+void
+SynthesisWindow::clearSpeechSignal()
+{
+	speechSignal_.clear();
+	speechSamplerate_ = 0.0;
+}
+
+void
+SynthesisWindow::setSpeechSignal()
+{
+	audioWorker_->player().copyBuffer(speechSignal_);
+
+	// Adjust the sample rate because the Controller rounds the control period.
+	const double controlPeriod = synthesis_->vtmController->vtmInternalSampleRate() /
+					synthesis_->vtmController->vtmControlModelConfiguration().controlRate;
+	const double roundedControlPeriod = std::rint(controlPeriod);
+	speechSamplerate_ = synthesis_->vtmController->outputSampleRate() * (roundedControlPeriod / controlPeriod);
+	qDebug("Adjusted speech sample rate: %f", speechSamplerate_);
 }
 
 // Slot.
