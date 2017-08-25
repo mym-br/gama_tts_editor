@@ -486,41 +486,31 @@ InteractiveVTMWindow::about()
 		"This program uses code from:\n\n"
 
 		"- The Gnuspeech project (http://www.gnu.org/software/gnuspeech/).\n\n"
-
 		"  Provided by David R. Hill, Leonard Manzara and Craig Schock.\n\n"
-
 		"  Gnuspeech is distributed under the terms of the GNU General Public License\n"
 		"  as published by the Free Software Foundation, either version 3 of the\n"
 		"  License, or (at your option) any later version.\n\n"
 
 		"- Qt (http://www.qt.io/).\n\n"
-
 		"  Provided by Digia Plc.\n\n"
-
 		"  Qt Free Edition is distributed under the terms of the GNU LGPLv2.1 or LGPLv3,\n"
 		"  depending on the library (see http://www.qt.io/faq/).\n\n"
 
 		"- QCustomPlot (http://www.qcustomplot.com/).\n\n"
-
 		"  Provided by Emanuel Eichhammer.\n\n"
-
 		"  QCustomPlot is distributed under the terms of the GNU General Public License\n"
 		"  as published by the Free Software Foundation, either version 3 of the\n"
 		"  License, or (at your option) any later version.\n\n"
 
 		"- FFTW (http://www.fftw.org/).\n\n"
-
 		"  Provided by Matteo Frigo and Massachusetts Institute of Technology.\n\n"
-
 		"  FFTW is free software; you can redistribute it and/or modify it under the\n"
 		"  terms of the GNU General Public License as published by the Free Software\n"
 		"  Foundation; either version 2 of the License, or (at your option) any\n"
 		"  later version.\n\n"
 
 		"- JACK Audio Connection Kit (http://jackaudio.org/).\n\n"
-
 		"  Provided by Paul Davis, Stephane Letz, Jack O'Quinn, Torben Hohn and others.\n\n"
-
 		"  The JACK library is free software; you can redistribute it and/or modify\n"
 		"  it under the terms of the GNU Lesser General Public License as published by\n"
 		"  the Free Software Foundation; either version 2.1 of the License, or\n"
