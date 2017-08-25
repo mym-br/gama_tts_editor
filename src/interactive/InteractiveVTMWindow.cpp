@@ -56,7 +56,7 @@ namespace GS {
 InteractiveVTMWindow::InteractiveVTMWindow(const char* configDirPath, bool mainWindow, QWidget* parent)
 		: QMainWindow{parent}
 		, mainWindow_{mainWindow}
-		, configuration_{std::make_unique<ProgramConfiguration>(configDirPath)}
+		, configuration_{std::make_unique<InteractiveVTMConfiguration>(configDirPath)}
 		, transferTimer_{}
 		, dynamicParamSliderList_(configuration_->dynamicParamNameList.size())
 		, dynamicParamEditList_(  configuration_->dynamicParamNameList.size())

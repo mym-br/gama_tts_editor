@@ -26,10 +26,10 @@ HEADERS += \
     src/interactive/AnalysisWindow.h \
     src/interactive/FFTW.h \
     src/interactive/InteractiveAudio.h \
+    src/interactive/InteractiveVTMConfiguration.h \
     src/interactive/InteractiveVTMWindow.h \
     src/interactive/ParameterLineEdit.h \
     src/interactive/ParameterSlider.h \
-    src/interactive/ProgramConfiguration.h \
     src/interactive/SignalDFT.h \
     src/IntonationParametersWindow.h \
     src/IntonationWidget.h \
@@ -63,10 +63,10 @@ SOURCES += \
     src/interactive/AnalysisWindow.cpp \
     src/interactive/FFTW.cpp \
     src/interactive/InteractiveAudio.cpp \
+    src/interactive/InteractiveVTMConfiguration.cpp \
     src/interactive/InteractiveVTMWindow.cpp \
     src/interactive/ParameterLineEdit.cpp \
     src/interactive/ParameterSlider.cpp \
-    src/interactive/ProgramConfiguration.cpp \
     src/interactive/SignalDFT.cpp \
     src/IntonationParametersWindow.cpp \
     src/IntonationWidget.cpp \

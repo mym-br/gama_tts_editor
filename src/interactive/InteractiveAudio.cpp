@@ -27,7 +27,7 @@
 
 #include "Exception.h"
 #include "Log.h"
-#include "ProgramConfiguration.h"
+#include "InteractiveVTMConfiguration.h"
 #include "VocalTractModelParameterValue.h"
 #include "VTMUtil.h"
 
@@ -102,7 +102,7 @@ InteractiveAudio::Processor::~Processor()
  *
  */
 void
-InteractiveAudio::Processor::reset(jack_port_t* outputPort, ProgramConfiguration& configuration,
+InteractiveAudio::Processor::reset(jack_port_t* outputPort, InteractiveVTMConfiguration& configuration,
 			JackRingbuffer& parameterRingbuffer, JackRingbuffer& analysisRingbuffer)
 {
 	outputPort_ = outputPort;
@@ -218,7 +218,7 @@ InteractiveAudio::Processor::process(jack_nframes_t nframes)
 /*******************************************************************************
  * Constructor.
  */
-InteractiveAudio::InteractiveAudio(ProgramConfiguration& configuration)
+InteractiveAudio::InteractiveAudio(InteractiveVTMConfiguration& configuration)
 		: state_{State::stopped}
 		, configuration_{configuration}
 		, processor_{configuration_.dynamicParamList.size()}

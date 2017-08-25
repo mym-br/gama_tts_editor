@@ -25,7 +25,7 @@
 #include <QString>
 
 #include "InteractiveAudio.h"
-#include "ProgramConfiguration.h"
+#include "InteractiveVTMConfiguration.h"
 #include "VocalTractModelParameterValue.h"
 
 
@@ -81,7 +81,7 @@ private:
 	void transferAllDynamicParameters();
 
 	bool mainWindow_;
-	std::unique_ptr<ProgramConfiguration> configuration_;
+	std::unique_ptr<InteractiveVTMConfiguration> configuration_;
 	QTimer* transferTimer_;
 	std::vector<ParameterSlider*>   dynamicParamSliderList_;
 	std::vector<ParameterLineEdit*> dynamicParamEditList_;

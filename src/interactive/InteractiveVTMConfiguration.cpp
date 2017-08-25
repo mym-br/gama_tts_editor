@@ -15,7 +15,7 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#include "ProgramConfiguration.h"
+#include "InteractiveVTMConfiguration.h"
 
 #include <sstream>
 
@@ -33,7 +33,7 @@ namespace GS {
 /*******************************************************************************
  * Constructor.
  */
-ProgramConfiguration::ProgramConfiguration(const char* configDirPath)
+InteractiveVTMConfiguration::InteractiveVTMConfiguration(const char* configDirPath)
 		: configDirPath{configDirPath}
 		, data{std::make_unique<ConfigurationData>(this->configDirPath + ("/" CONFIG_FILE))}
 		, dynamicParamNameList(data->value<unsigned int>("num_dynamic_parameters"))
@@ -93,9 +93,9 @@ ProgramConfiguration::ProgramConfiguration(const char* configDirPath)
 
 
 void
-ProgramConfiguration::reload()
+InteractiveVTMConfiguration::reload()
 {
-	ProgramConfiguration newConfig{configDirPath.c_str()};
+	InteractiveVTMConfiguration newConfig{configDirPath.c_str()};
 
 	if (newConfig.dynamicParamNameList.size() != dynamicParamNameList.size()) {
 		THROW_EXCEPTION(InvalidValueException, "The number of dynamic parameters is different.");
@@ -108,25 +108,25 @@ ProgramConfiguration::reload()
 }
 
 float
-ProgramConfiguration::staticParameter(int parameter)
+InteractiveVTMConfiguration::staticParameter(int parameter)
 {
 	return vtmData->value<float>(staticParamNameList[parameter]);
 }
 
 void
-ProgramConfiguration::setStaticParameter(int parameter, float value)
+InteractiveVTMConfiguration::setStaticParameter(int parameter, float value)
 {
 	vtmData->put(staticParamNameList[parameter], value);
 }
 
 void
-ProgramConfiguration::setOutputRate(float value)
+InteractiveVTMConfiguration::setOutputRate(float value)
 {
 	vtmData->put("output_rate", value);
 }
 
 std::string
-ProgramConfiguration::vtmConfigFilePath() const
+InteractiveVTMConfiguration::vtmConfigFilePath() const
 {
 	std::ostringstream path;
 	path << configDirPath << '/' << data->value<std::string>("vtm_config_file");
@@ -134,7 +134,7 @@ ProgramConfiguration::vtmConfigFilePath() const
 }
 
 std::string
-ProgramConfiguration::voiceConfigFilePath() const
+InteractiveVTMConfiguration::voiceConfigFilePath() const
 {
 	std::ostringstream path;
 	path << configDirPath << '/' << data->value<std::string>("voice_config_file");

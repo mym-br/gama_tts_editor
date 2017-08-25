@@ -15,8 +15,8 @@
  *  along with this program.  If not, see <http://www.gnu.org/licenses/>.  *
  ***************************************************************************/
 
-#ifndef PROGRAM_CONFIGURATION_H_
-#define PROGRAM_CONFIGURATION_H_
+#ifndef INTERACTIVE_VTM_CONFIGURATION_H_
+#define INTERACTIVE_VTM_CONFIGURATION_H_
 
 #include <memory>
 #include <string>
@@ -28,7 +28,7 @@
 
 namespace GS {
 
-struct ProgramConfiguration {
+struct InteractiveVTMConfiguration {
 public:
 	std::string configDirPath;
 	std::unique_ptr<ConfigurationData> data;
@@ -45,7 +45,7 @@ public:
 	std::vector<float>       staticParamMinList;
 	std::vector<float>       staticParamMaxList;
 
-	ProgramConfiguration(const char* configDirPath);
+	InteractiveVTMConfiguration(const char* configDirPath);
 
 	// Reloads the configuration file.
 	// If an error occurs, the old data will remain on this object.
@@ -61,4 +61,4 @@ private:
 
 } /* namespace GS */
 
-#endif /* PROGRAM_CONFIGURATION_H_ */
+#endif /* INTERACTIVE_VTM_CONFIGURATION_H_ */

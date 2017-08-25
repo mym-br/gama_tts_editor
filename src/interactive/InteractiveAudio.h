@@ -31,7 +31,7 @@
 
 namespace GS {
 
-struct ProgramConfiguration;
+struct InteractiveVTMConfiguration;
 
 class InteractiveAudio {
 public:
@@ -49,7 +49,7 @@ public:
 		int process(jack_nframes_t nframes);
 
 		// Can be called by the main thread only when the JACK thread is not running.
-		void reset(jack_port_t* outputPort, ProgramConfiguration& configuration,
+		void reset(jack_port_t* outputPort, InteractiveVTMConfiguration& configuration,
 				JackRingbuffer& parameterRingbuffer, JackRingbuffer& analysisRingbuffer);
 	private:
 		float calcScale(const std::vector<float>& buffer);
@@ -64,7 +64,7 @@ public:
 		std::vector<VTM::MovingAverageFilter<float>> paramFilters_;
 	};
 
-	InteractiveAudio(ProgramConfiguration& configuration);
+	InteractiveAudio(InteractiveVTMConfiguration& configuration);
 
 	void start();
 	void stop();
@@ -82,7 +82,7 @@ private:
 	InteractiveAudio& operator=(const InteractiveAudio&) = delete;
 
 	State state_;
-	ProgramConfiguration& configuration_;
+	InteractiveVTMConfiguration& configuration_;
 	Processor processor_; // must be accessed only by the JACK thread
 	std::unique_ptr<JackRingbuffer> parameterRingbuffer_;
 	std::unique_ptr<JackRingbuffer> analysisRingbuffer_;
