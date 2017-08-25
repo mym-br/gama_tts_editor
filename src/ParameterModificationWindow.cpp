@@ -144,6 +144,8 @@ ParameterModificationWindow::resetData()
 		modifParamX_[i] = i * period * 1000.0; // convert to milliseconds
 	}
 
+	showModifiedParameterData();
+
 	enableWindow();
 }
 
