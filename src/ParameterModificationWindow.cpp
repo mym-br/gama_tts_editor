@@ -341,7 +341,7 @@ ParameterModificationWindow::checkSynthesis()
 void
 ParameterModificationWindow::showModifiedParameterData()
 {
-	if (!model_) {
+	if (!model_ || modifParamX_.isEmpty()) {
 		ui_->parameterCurveWidget->graph(0)->clearData();
 		ui_->parameterCurveWidget->graph(1)->clearData();
 		return;
@@ -351,7 +351,14 @@ ParameterModificationWindow::showModifiedParameterData()
 	synthesis_->paramModifSynth->processor().getParameter(parameter, paramY_);
 	synthesis_->paramModifSynth->processor().getModifiedParameter(parameter, modifParamY_);
 
+	if (paramY_.isEmpty() || modifParamY_.isEmpty()) {
+		ui_->parameterCurveWidget->graph(0)->clearData();
+		ui_->parameterCurveWidget->graph(1)->clearData();
+		return;
+	}
+
 	ui_->parameterCurveWidget->graph(0)->setData(modifParamX_, paramY_);
+	ui_->parameterCurveWidget->graph(0)->keyAxis()->setRange(modifParamX_.first(), modifParamX_.last());
 	ui_->parameterCurveWidget->graph(0)->valueAxis()->setRange(
 				model_->parameterList()[parameter].minimum(),
 				model_->parameterList()[parameter].maximum());
