@@ -276,26 +276,31 @@ PostureEditorWindow::on_parametersTable_itemChanged(QTableWidgetItem* item)
 		const VTMControlModel::Parameter& parameter = model_->parameterList()[row];
 
 		bool ok;
-		float newValue = item->data(Qt::DisplayRole).toFloat(&ok);
-		bool acceptValue = true;
+		float value = item->data(Qt::DisplayRole).toFloat(&ok);
+		bool updateValue = true, valueChanged = false;
 		if (!ok) {
-			newValue = posture.getParameterTarget(row);
-			acceptValue = false;
+			value = posture.getParameterTarget(row);
+			updateValue = false;
+			valueChanged = true;
 		}
-		if (newValue < parameter.minimum()) {
-			newValue = parameter.minimum();
-			acceptValue = false;
-		} else if (newValue > parameter.maximum()) {
-			newValue = parameter.maximum();
-			acceptValue = false;
+		if (value < parameter.minimum()) {
+			value = parameter.minimum();
+			updateValue = true;
+			valueChanged = true;
+		} else if (value > parameter.maximum()) {
+			value = parameter.maximum();
+			updateValue = true;
+			valueChanged = true;
 		}
-		if (acceptValue) {
-			posture.setParameterTarget(row, newValue);
-		} else {
-			QSignalBlocker blocker(ui_->parametersTable);
-			item->setData(Qt::DisplayRole, newValue);
+		if (updateValue) {
+			posture.setParameterTarget(row, value);
 		}
-		if (newValue != parameter.defaultValue()) {
+
+		QSignalBlocker blocker(ui_->parametersTable);
+		if (valueChanged) {
+			item->setData(Qt::DisplayRole, value);
+		}
+		if (value != parameter.defaultValue()) {
 			QFont boldFont = font();
 			boldFont.setBold(true);
 			item->setData(Qt::FontRole, boldFont);
@@ -342,26 +347,31 @@ PostureEditorWindow::on_symbolsTable_itemChanged(QTableWidgetItem* item)
 		const VTMControlModel::Symbol& symbol = model_->symbolList()[row];
 
 		bool ok;
-		float newValue = item->data(Qt::DisplayRole).toFloat(&ok);
-		bool acceptValue = true;
+		float value = item->data(Qt::DisplayRole).toFloat(&ok);
+		bool updateValue = true, valueChanged = false;
 		if (!ok) {
-			newValue = posture.getSymbolTarget(row);
-			acceptValue = false;
+			value = posture.getSymbolTarget(row);
+			updateValue = false;
+			valueChanged = true;
 		}
-		if (newValue < symbol.minimum()) {
-			newValue = symbol.minimum();
-			acceptValue = false;
-		} else if (newValue > symbol.maximum()) {
-			newValue = symbol.maximum();
-			acceptValue = false;
+		if (value < symbol.minimum()) {
+			value = symbol.minimum();
+			updateValue = true;
+			valueChanged = true;
+		} else if (value > symbol.maximum()) {
+			value = symbol.maximum();
+			updateValue = true;
+			valueChanged = true;
 		}
-		if (acceptValue) {
-			posture.setSymbolTarget(row, newValue);
-		} else {
-			QSignalBlocker blocker(ui_->symbolsTable);
-			item->setData(Qt::DisplayRole, newValue);
+		if (updateValue) {
+			posture.setSymbolTarget(row, value);
 		}
-		if (newValue != symbol.defaultValue()) {
+
+		QSignalBlocker blocker(ui_->symbolsTable);
+		if (valueChanged) {
+			item->setData(Qt::DisplayRole, value);
+		}
+		if (value != symbol.defaultValue()) {
 			QFont boldFont = font();
 			boldFont.setBold(true);
 			item->setData(Qt::FontRole, boldFont);
