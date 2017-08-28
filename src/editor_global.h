@@ -21,7 +21,7 @@
 #define EDITOR_NAME "GamaTTS:Editor"
 #define EDITOR_VERSION "2017_08_25"
 
-#define INTERACTIVE_NAME "GamaTTS:Interactive"
+#define INTERACTIVE_NAME "Interactive VTM"
 #define INTERACTIVE_VERSION EDITOR_VERSION
 
 #endif /* EDITOR_GLOBAL_H_ */
