@@ -104,39 +104,67 @@ ParameterModel::setData(const QModelIndex& index, const QVariant& value, int rol
 	if (model_ == nullptr || !index.isValid() || role != Qt::EditRole) {
 		return false;
 	}
-	unsigned int row = index.row();
+	const unsigned int row = index.row();
 	if (row >= model_->parameterList().size()) {
 		return false;
 	}
 
+	VTMControlModel::Parameter& param = model_->parameterList()[row];
 	switch (index.column()) {
 	case 0:
 		{
 			std::string name = value.toString().toStdString();
-			if (model_->parameterList()[row].name() == name) {
+			if (param.name() == name) {
 				return false;
 			}
 			if (model_->findParameterName(name)) {
 				emit errorOccurred(tr("Duplicate parameter: %1").arg(name.c_str()));
 				return false;
 			}
-			model_->parameterList()[row].setName(name);
+			param.setName(name);
 			emit dataChanged(index, index);
 			emit parameterChanged();
 			return true;
 		}
 	case 1:
-		model_->parameterList()[row].setMinimum(value.toFloat());
+		{
+			bool ok;
+			float number = value.toFloat(&ok);
+			if (!ok) return false;
+			if (number > param.maximum()) {
+				emit errorOccurred(tr("The minimum value can't be greater than the maximum."));
+				return false;
+			}
+			param.setMinimum(number);
+		}
 		emit dataChanged(index, index);
 		emit parameterChanged();
 		return true;
 	case 2:
-		model_->parameterList()[row].setMaximum(value.toFloat());
+		{
+			bool ok;
+			float number = value.toFloat(&ok);
+			if (!ok) return false;
+			if (number < param.minimum()) {
+				emit errorOccurred(tr("The maximum value can't be less than the minimum."));
+				return false;
+			}
+			param.setMaximum(number);
+		}
 		emit dataChanged(index, index);
 		emit parameterChanged();
 		return true;
 	case 3:
-		model_->parameterList()[row].setDefaultValue(value.toFloat());
+		{
+			bool ok;
+			float number = value.toFloat(&ok);
+			if (!ok) return false;
+			if (number < param.minimum() || number > param.maximum()) {
+				emit errorOccurred(tr("The default value must be between the minimum and the maximum."));
+				return false;
+			}
+			param.setDefaultValue(number);
+		}
 		emit dataChanged(index, index);
 		emit parameterChanged();
 		return true;

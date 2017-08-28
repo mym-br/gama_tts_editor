@@ -109,34 +109,62 @@ SymbolModel::setData(const QModelIndex& index, const QVariant& value, int role)
 		return false;
 	}
 
+	VTMControlModel::Symbol& symbol = model_->symbolList()[row];
 	switch (index.column()) {
 	case 0:
 		{
 			std::string name = value.toString().toStdString();
-			if (model_->symbolList()[row].name() == name) {
+			if (symbol.name() == name) {
 				return false;
 			}
 			if (model_->findSymbolName(name)) {
 				emit errorOccurred(tr("Duplicate symbol: %1").arg(name.c_str()));
 				return false;
 			}
-			model_->symbolList()[row].setName(name);
+			symbol.setName(name);
 			emit dataChanged(index, index);
 			emit symbolChanged();
 			return true;
 		}
 	case 1:
-		model_->symbolList()[row].setMinimum(value.toFloat());
+		{
+			bool ok;
+			float number = value.toFloat(&ok);
+			if (!ok) return false;
+			if (number > symbol.maximum()) {
+				emit errorOccurred(tr("The minimum value can't be greater than the maximum."));
+				return false;
+			}
+			symbol.setMinimum(number);
+		}
 		emit dataChanged(index, index);
 		emit symbolChanged();
 		return true;
 	case 2:
-		model_->symbolList()[row].setMaximum(value.toFloat());
+		{
+			bool ok;
+			float number = value.toFloat(&ok);
+			if (!ok) return false;
+			if (number < symbol.minimum()) {
+				emit errorOccurred(tr("The maximum value can't be less than the minimum."));
+				return false;
+			}
+			symbol.setMaximum(number);
+		}
 		emit dataChanged(index, index);
 		emit symbolChanged();
 		return true;
 	case 3:
-		model_->symbolList()[row].setDefaultValue(value.toFloat());
+		{
+			bool ok;
+			float number = value.toFloat(&ok);
+			if (!ok) return false;
+			if (number < symbol.minimum() || number > symbol.maximum()) {
+				emit errorOccurred(tr("The default value must be between the minimum and the maximum."));
+				return false;
+			}
+			symbol.setDefaultValue(number);
+		}
 		emit dataChanged(index, index);
 		emit symbolChanged();
 		return true;
