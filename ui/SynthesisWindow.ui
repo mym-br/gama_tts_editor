@@ -439,14 +439,12 @@
   <tabstop>phoneticStringTextEdit</tabstop>
   <tabstop>tempoSpinBox</tabstop>
   <tabstop>saveVTMParamCheckBox</tabstop>
+  <tabstop>referenceButton</tabstop>
   <tabstop>synthesizeButton</tabstop>
   <tabstop>synthesizeToFileButton</tabstop>
   <tabstop>parameterTableWidget</tabstop>
-  <tabstop>parameterScrollArea</tabstop>
   <tabstop>xZoomSpinBox</tabstop>
   <tabstop>yZoomSpinBox</tabstop>
-  <tabstop>timeLineEdit</tabstop>
-  <tabstop>valueLineEdit</tabstop>
  </tabstops>
  <resources/>
  <connections/>
