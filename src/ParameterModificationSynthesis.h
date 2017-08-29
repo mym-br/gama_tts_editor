@@ -104,7 +104,7 @@ public:
 		unsigned int numberOfParameters,
 		double controlRate,
 		const ConfigurationData& vtmConfigData);
-	~ParameterModificationSynthesis() {}
+	~ParameterModificationSynthesis();
 
 	void startSynthesis(float gain);
 
