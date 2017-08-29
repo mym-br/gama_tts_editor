@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2015 Marcelo Y. Matuda                                       *
+ *  Copyright 2015, 2017 Marcelo Y. Matuda                                 *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -20,6 +20,7 @@
 
 #include <memory>
 
+#include "AppConfig.h"
 #include <QString>
 
 
@@ -33,15 +34,17 @@ class Model;
 class ParameterModificationSynthesis;
 
 struct Synthesis {
-	QString projectDir;
+	const AppConfig& appConfig;
 	std::unique_ptr<VTMControlModel::Controller> vtmController;
 	std::unique_ptr<ParameterModificationSynthesis> paramModifSynth;
+	std::unique_ptr<VTMControlModel::Model> refModel;
+	std::unique_ptr<VTMControlModel::Controller> refVtmController;
 
-	Synthesis();
+	Synthesis(const AppConfig& appConfigRef);
 	~Synthesis();
 
 	void clear();
-	void setup(const QString& newProjectDir, VTMControlModel::Model* model);
+	void setup(VTMControlModel::Model* model);
 };
 
 } // namespace GS

@@ -207,7 +207,7 @@ ParameterModificationWindow::on_synthesizeToFileButton_clicked()
 {
 	if (!model_) return;
 
-	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), synthesis_->projectDir, tr("WAV files (*.wav)"));
+	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), synthesis_->appConfig.projectDir, tr("WAV files (*.wav)"));
 	if (filePath.isEmpty()) {
 		return;
 	}
@@ -219,7 +219,7 @@ ParameterModificationWindow::on_synthesizeToFileButton_clicked()
 		QString vtmParamFilePath;
 		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
 		if (saveVTMParam) {
-			vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+			vtmParamFilePath = synthesis_->appConfig.projectDir + VTM_PARAM_FILE_NAME;
 		}
 
 		std::vector<std::vector<float>> vtmParamList;

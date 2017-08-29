@@ -35,6 +35,7 @@ namespace GS {
 
 struct Synthesis;
 namespace VTMControlModel {
+class Controller;
 class Model;
 }
 class AudioWorker;
@@ -60,6 +61,7 @@ public slots:
 	void disableProcessingButtons();
 private slots:
 	void on_parseButton_clicked();
+	void on_referenceButton_clicked();
 	void on_synthesizeButton_clicked();
 	void on_synthesizeToFileButton_clicked();
 	void on_parameterTableWidget_cellChanged(int row, int column);
@@ -71,7 +73,9 @@ private slots:
 	void resetZoom();
 private:
 	void clearSpeechSignal();
-	void setSpeechSignal();
+	void setSpeechSignal(VTMControlModel::Controller& controller);
+	void setProcessingButtonsEnabled(bool enabled);
+	void setupParameterWidget(bool reference=false);
 
 	std::unique_ptr<Ui::SynthesisWindow> ui_;
 	VTMControlModel::Model* model_;

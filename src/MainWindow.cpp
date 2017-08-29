@@ -61,7 +61,7 @@ MainWindow::MainWindow(QWidget* parent)
 		: QMainWindow{parent}
 		, config_{}
 		, model_{}
-		, synthesis_{std::make_unique<Synthesis>()}
+		, synthesis_{std::make_unique<Synthesis>(config_)}
 		, ui_{std::make_unique<Ui::MainWindow>()}
 		, dataEntryWindow_{std::make_unique<DataEntryWindow>()}
 		, interactiveVTMWindow_{}
@@ -373,7 +373,7 @@ MainWindow::openModel()
 		model_ = std::make_unique<VTMControlModel::Model>();
 		model_->load(config_.projectDir.toStdString().c_str(), config_.dataFileName.toStdString().c_str());
 
-		synthesis_->setup(config_.projectDir, model_.get());
+		synthesis_->setup(model_.get());
 
 		dataEntryWindow_->resetModel(model_.get());
 		postureEditorWindow_->resetModel(model_.get());
@@ -403,7 +403,7 @@ MainWindow::openModel()
 		postureEditorWindow_->resetModel(nullptr);
 		dataEntryWindow_->resetModel(nullptr);
 
-		synthesis_->setup(QString(), nullptr);
+		synthesis_->setup(nullptr);
 
 		model_.reset();
 
@@ -434,7 +434,7 @@ MainWindow::updateSynthesis()
 	if (!model_) return;
 
 	try {
-		synthesis_->setup(config_.projectDir, model_.get());
+		synthesis_->setup(model_.get());
 
 		synthesisWindow_->setup(model_.get(), synthesis_.get());
 		intonationWindow_->setup(synthesis_.get());

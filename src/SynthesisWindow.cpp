@@ -114,22 +114,15 @@ SynthesisWindow::clear()
 void
 SynthesisWindow::setup(VTMControlModel::Model* model, Synthesis* synthesis)
 {
-	if (model == nullptr || synthesis == nullptr) {
+	if (!model || !synthesis) {
 		clear();
 		return;
 	}
 
-	try {
-		model_ = model;
-		synthesis_ = synthesis;
+	model_ = model;
+	synthesis_ = synthesis;
 
-		ui_->parameterWidget->updateData(&synthesis_->vtmController->eventList(), model_, &speechSignal_, &speechSamplerate_);
-
-		setupParameterTable();
-	} catch (...) {
-		clear();
-		throw;
-	}
+	setupParameterWidget(false);
 }
 
 void
@@ -145,7 +138,7 @@ SynthesisWindow::on_parseButton_clicked()
 	disableProcessingButtons();
 
 	try {
-		auto textParser = TextParser::TextParser::getInstance(synthesis_->projectDir.toStdString());
+		auto textParser = TextParser::TextParser::getInstance(synthesis_->appConfig.projectDir.toStdString());
 		std::string phoneticString = textParser->parse(text.toUtf8().constData());
 		ui_->phoneticStringTextEdit->setPlainText(phoneticString.c_str());
 	} catch (const Exception& exc) {
@@ -155,6 +148,62 @@ SynthesisWindow::on_parseButton_clicked()
 	}
 
 	on_synthesizeButton_clicked();
+}
+
+void
+SynthesisWindow::on_referenceButton_clicked()
+{
+	if (!synthesis_) {
+		return;
+	}
+	QString phoneticString = ui_->phoneticStringTextEdit->toPlainText();
+	if (phoneticString.trimmed().isEmpty()) {
+		return;
+	}
+
+	emit synthesisStarted();
+	disableProcessingButtons();
+
+	try {
+		QString vtmParamFilePath;
+		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
+		if (saveVTMParam) {
+			vtmParamFilePath = synthesis_->appConfig.projectDir + VTM_PARAM_FILE_NAME;
+		}
+
+		synthesis_->refModel = std::make_unique<VTMControlModel::Model>();
+		synthesis_->refModel->load(
+					synthesis_->appConfig.projectDir.toStdString().c_str(),
+					synthesis_->appConfig.dataFileName.toStdString().c_str());
+		if (synthesis_->refModel->parameterList().size() != model_->parameterList().size()) {
+			QMessageBox::critical(this, tr("Error"), "The reference model has not the same number of parameters as the current model.");
+			enableProcessingButtons();
+			emit synthesisFinished();
+			return;
+		}
+
+		synthesis_->refVtmController = std::make_unique<VTMControlModel::Controller>(
+							synthesis_->appConfig.projectDir.toStdString().c_str(),
+							*synthesis_->refModel);
+		VTMControlModel::Configuration& config = synthesis_->refVtmController->vtmControlModelConfiguration();
+		config.tempo = ui_->tempoSpinBox->value();
+
+		audioWorker_->player().fillBuffer([&](std::vector<float>& buffer) {
+			synthesis_->refVtmController->synthesizePhoneticStringToBuffer(
+								phoneticString.toStdString(),
+								saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
+								buffer);
+		});
+
+		setupParameterWidget(true);
+
+		emit playAudioRequested(synthesis_->refVtmController->outputSampleRate());
+		emit textSynthesized();
+	} catch (const Exception& exc) {
+		QMessageBox::critical(this, tr("Error"), exc.what());
+		enableProcessingButtons();
+		emit synthesisFinished();
+	}
 }
 
 void
@@ -175,13 +224,11 @@ SynthesisWindow::on_synthesizeButton_clicked()
 		QString vtmParamFilePath;
 		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
 		if (saveVTMParam) {
-			vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+			vtmParamFilePath = synthesis_->appConfig.projectDir + VTM_PARAM_FILE_NAME;
 		}
 
 		VTMControlModel::Configuration& config = synthesis_->vtmController->vtmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();
-
-		const double sampleRate = synthesis_->vtmController->outputSampleRate();
 
 		audioWorker_->player().fillBuffer([&](std::vector<float>& buffer) {
 			synthesis_->vtmController->synthesizePhoneticStringToBuffer(
@@ -190,10 +237,9 @@ SynthesisWindow::on_synthesizeButton_clicked()
 							buffer);
 		});
 
-		clearSpeechSignal();
-		ui_->parameterWidget->update();
+		setupParameterWidget(false);
 
-		emit playAudioRequested(sampleRate);
+		emit playAudioRequested(synthesis_->vtmController->outputSampleRate());
 		emit textSynthesized();
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
@@ -212,7 +258,7 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 	if (phoneticString.trimmed().isEmpty()) {
 		return;
 	}
-	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), synthesis_->projectDir, tr("WAV files (*.wav)"));
+	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), synthesis_->appConfig.projectDir, tr("WAV files (*.wav)"));
 	if (filePath.isEmpty()) {
 		return;
 	}
@@ -224,19 +270,18 @@ SynthesisWindow::on_synthesizeToFileButton_clicked()
 		QString vtmParamFilePath;
 		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
 		if (saveVTMParam) {
-			vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+			vtmParamFilePath = synthesis_->appConfig.projectDir + VTM_PARAM_FILE_NAME;
 		}
 
 		VTMControlModel::Configuration& config = synthesis_->vtmController->vtmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();
 
 		synthesis_->vtmController->synthesizePhoneticStringToFile(
-						phoneticString.toStdString().c_str(),
+						phoneticString.toStdString(),
 						saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
 						filePath.toStdString().c_str());
 
-		clearSpeechSignal();
-		ui_->parameterWidget->update();
+		setupParameterWidget(false);
 
 		emit textSynthesized();
 	} catch (const Exception& exc) {
@@ -266,12 +311,10 @@ SynthesisWindow::synthesizeWithManualIntonation()
 		eventList.clearMacroIntonation();
 		eventList.prepareMacroIntonationInterpolation();
 
-		const double sampleRate = synthesis_->vtmController->outputSampleRate();
-
 		QString vtmParamFilePath;
 		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
 		if (saveVTMParam) {
-			vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+			vtmParamFilePath = synthesis_->appConfig.projectDir + VTM_PARAM_FILE_NAME;
 		}
 
 		audioWorker_->player().fillBuffer([&](std::vector<float>& buffer) {
@@ -280,10 +323,9 @@ SynthesisWindow::synthesizeWithManualIntonation()
 							buffer);
 		});
 
-		clearSpeechSignal();
-		ui_->parameterWidget->update();
+		setupParameterWidget(false);
 
-		emit playAudioRequested(sampleRate);
+		emit playAudioRequested(synthesis_->vtmController->outputSampleRate());
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 		enableProcessingButtons();
@@ -313,15 +355,15 @@ SynthesisWindow::synthesizeToFileWithManualIntonation(QString filePath)
 		QString vtmParamFilePath;
 		bool saveVTMParam = ui_->saveVTMParamCheckBox->isChecked();
 		if (saveVTMParam) {
-			vtmParamFilePath = synthesis_->projectDir + VTM_PARAM_FILE_NAME;
+			vtmParamFilePath = synthesis_->appConfig.projectDir + VTM_PARAM_FILE_NAME;
 		}
 
 		synthesis_->vtmController->synthesizeFromEventListToFile(
 						saveVTMParam ? vtmParamFilePath.toStdString().c_str() : nullptr,
 						filePath.toStdString().c_str());
 
-		clearSpeechSignal();
-		ui_->parameterWidget->update();
+		setupParameterWidget(false);
+
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 	}
@@ -394,7 +436,11 @@ SynthesisWindow::handleAudioError(QString msg)
 void
 SynthesisWindow::handleAudioFinished()
 {
-	setSpeechSignal();
+	if (synthesis_->refVtmController) {
+		setSpeechSignal(*synthesis_->refVtmController);
+	} else {
+		setSpeechSignal(*synthesis_->vtmController);
+	}
 	ui_->parameterWidget->update();
 
 	enableProcessingButtons();
@@ -416,34 +462,56 @@ SynthesisWindow::clearSpeechSignal()
 }
 
 void
-SynthesisWindow::setSpeechSignal()
+SynthesisWindow::setSpeechSignal(VTMControlModel::Controller& controller)
 {
 	audioWorker_->player().copyBuffer(speechSignal_);
 
 	// Adjust the sample rate because the Controller rounds the control period.
-	const double controlPeriod = synthesis_->vtmController->vtmInternalSampleRate() /
-					synthesis_->vtmController->vtmControlModelConfiguration().controlRate;
+	const double controlPeriod = controller.vtmInternalSampleRate() /
+					controller.vtmControlModelConfiguration().controlRate;
 	const double roundedControlPeriod = std::rint(controlPeriod);
-	speechSamplerate_ = synthesis_->vtmController->outputSampleRate() * (roundedControlPeriod / controlPeriod);
+	speechSamplerate_ = controller.outputSampleRate() * (roundedControlPeriod / controlPeriod);
 	qDebug("Adjusted speech sample rate: %f", speechSamplerate_);
+}
+
+void
+SynthesisWindow::setProcessingButtonsEnabled(bool enabled)
+{
+	ui_->parseButton->setEnabled(enabled);
+	ui_->referenceButton->setEnabled(enabled);
+	ui_->synthesizeButton->setEnabled(enabled);
+	ui_->synthesizeToFileButton->setEnabled(enabled);
 }
 
 // Slot.
 void
 SynthesisWindow::enableProcessingButtons()
 {
-	ui_->parseButton->setEnabled(true);
-	ui_->synthesizeButton->setEnabled(true);
-	ui_->synthesizeToFileButton->setEnabled(true);
+	setProcessingButtonsEnabled(true);
 }
 
 // Slot.
 void
 SynthesisWindow::disableProcessingButtons()
 {
-	ui_->parseButton->setEnabled(false);
-	ui_->synthesizeButton->setEnabled(false);
-	ui_->synthesizeToFileButton->setEnabled(false);
+	setProcessingButtonsEnabled(false);
+}
+
+void
+SynthesisWindow::setupParameterWidget(bool reference)
+{
+	clearSpeechSignal();
+	if (reference) {
+		ui_->parameterWidget->updateData(&synthesis_->refVtmController->eventList(), synthesis_->refModel.get(),
+							&speechSignal_, &speechSamplerate_);
+	} else {
+		ui_->parameterWidget->updateData(&synthesis_->vtmController->eventList(), model_,
+							&speechSignal_, &speechSamplerate_);
+		synthesis_->refVtmController.reset();
+		synthesis_->refModel.reset();
+	}
+	setupParameterTable();
+	ui_->parameterWidget->update();
 }
 
 } // namespace GS

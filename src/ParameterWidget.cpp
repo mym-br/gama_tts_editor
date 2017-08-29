@@ -391,6 +391,8 @@ ParameterWidget::updateData(
 void
 ParameterWidget::changeParameterSelection(unsigned int paramIndex, bool selected)
 {
+	if (!model_) return;
+
 	if (selected) {
 		if (paramIndex < model_->parameterList().size()) {
 			bool found = false;

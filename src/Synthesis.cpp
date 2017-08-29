@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2015 Marcelo Y. Matuda                                       *
+ *  Copyright 2015, 2017 Marcelo Y. Matuda                                 *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -24,7 +24,12 @@
 
 namespace GS {
 
-Synthesis::Synthesis()
+Synthesis::Synthesis(const AppConfig& appConfigRef)
+	: appConfig{appConfigRef}
+	, vtmController{}
+	, paramModifSynth{}
+	, refModel{}
+	, refVtmController{}
 {
 }
 
@@ -35,20 +40,21 @@ Synthesis::~Synthesis()
 void
 Synthesis::clear()
 {
+	refVtmController.reset();
+	refModel.reset();
+	paramModifSynth.reset();
 	vtmController.reset();
-	projectDir.clear();
 }
 
 void
-Synthesis::setup(const QString& newProjectDir, VTMControlModel::Model* model)
+Synthesis::setup(VTMControlModel::Model* model)
 {
 	if (!model) {
 		clear();
 		return;
 	}
 	try {
-		projectDir = newProjectDir;
-		vtmController = std::make_unique<VTMControlModel::Controller>(projectDir.toStdString().c_str(), *model);
+		vtmController = std::make_unique<VTMControlModel::Controller>(appConfig.projectDir.toStdString().c_str(), *model);
 	} catch (...) {
 		clear();
 		throw;

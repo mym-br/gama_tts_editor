@@ -90,7 +90,7 @@ IntonationWindow::on_synthesizeToFileButton_clicked()
 
 	if (synthesis_ == nullptr) return;
 
-	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), synthesis_->projectDir, tr("WAV files (*.wav)"));
+	QString filePath = QFileDialog::getSaveFileName(this, tr("Save file"), synthesis_->appConfig.projectDir, tr("WAV files (*.wav)"));
 	if (filePath.isEmpty()) {
 		return;
 	}
