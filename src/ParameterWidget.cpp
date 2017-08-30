@@ -135,7 +135,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 			QPointF prevPoint{xBase, MARGIN + 0.5 * SPEECH_SIGNAL_HEIGHT + verticalScrollbarValue_};
 			for (std::size_t i = 0, size = speechSignal_->size(); i < size; ++i) {
 				const double x = xBase + i * xCoef;
-				const double y = MARGIN + ((*speechSignal_)[i] + 1.0) * 0.5 * SPEECH_SIGNAL_HEIGHT + verticalScrollbarValue_;
+				const double y = MARGIN + (1.0 - (*speechSignal_)[i]) * 0.5 * SPEECH_SIGNAL_HEIGHT + verticalScrollbarValue_;
 				painter.drawLine(prevPoint, QPointF{x, y});
 				prevPoint.setX(x);
 				prevPoint.setY(y);
