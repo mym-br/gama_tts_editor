@@ -77,6 +77,7 @@ ParameterLineEdit::reset(float minimumValue, float maximumValue, float value)
 	setParameterValue(value);
 }
 
+// Slot.
 void
 ParameterLineEdit::setParameterValue(float value)
 {
@@ -88,6 +89,7 @@ ParameterLineEdit::setParameterValue(float value)
 	emit parameterValueChanged(value_);
 }
 
+// Slot.
 void
 ParameterLineEdit::setParameterValueFromSlider(float value)
 {
@@ -98,6 +100,7 @@ ParameterLineEdit::setParameterValueFromSlider(float value)
 	emit parameterValueChanged(parameter_, value_);
 }
 
+// Slot.
 void
 ParameterLineEdit::getValueFromEditedText()
 {

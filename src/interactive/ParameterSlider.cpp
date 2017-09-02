@@ -81,7 +81,7 @@ ParameterSlider::sliderValueToParameterValue(int value)
 }
 
 /*******************************************************************************
- *
+ * Slot.
  */
 void
 ParameterSlider::getSliderValue(int value)
@@ -92,7 +92,7 @@ ParameterSlider::getSliderValue(int value)
 }
 
 /*******************************************************************************
- *
+ * Slot.
  */
 void
 ParameterSlider::setParameterValue(float value)
