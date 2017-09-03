@@ -307,7 +307,7 @@ TransitionWidget::paintEvent(QPaintEvent*)
 					painter.drawRect(QRectF(QPointF(timeToX(point1.time), y1), QPointF(timeToX(point2.time), y2)));
 					painter.drawText(
 						QPointF(timeToX(point1.time) + SLOPE_TEXT_MARGIN, yText),
-						QString("%1").arg(point1.slope, 0, 'f', 1));
+						QString::number(point1.slope, 'f', 1));
 				}
 			}
 		}
