@@ -48,6 +48,9 @@ private:
 	ParameterLineEdit(const ParameterLineEdit&) = delete;
 	ParameterLineEdit& operator=(const ParameterLineEdit&) = delete;
 
+	void setValue(float value);
+	void showValue();
+
 	int parameter_;
 	float minimumValue_;
 	float maximumValue_;

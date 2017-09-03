@@ -28,7 +28,7 @@
 namespace {
 
 constexpr float EPSILON = 1.0e-10f;
-constexpr int NUM_DECIMALS = 4;
+constexpr int NUM_SIGNIFICANT_DIGITS = 5;
 
 }
 
@@ -46,9 +46,8 @@ ParameterLineEdit::ParameterLineEdit(int parameter, float minimumValue, float ma
 	}
 
 	setFont(QFont("monospace"));
-
 	QFontMetrics fm = fontMetrics();
-	setFixedWidth(fm.width("-0.0000 "));
+	setFixedWidth(fm.width(" -0.0000 "));
 
 	QDoubleValidator* v = new QDoubleValidator(this); // not using range, because it does not work well with single precision values
 	v->setNotation(QDoubleValidator::StandardNotation);
@@ -81,9 +80,8 @@ ParameterLineEdit::reset(float minimumValue, float maximumValue, float value)
 void
 ParameterLineEdit::setParameterValue(float value)
 {
-	const float boundValue = qBound(minimumValue_, value, maximumValue_);
-	value_ = boundValue;
-	setText(QString("%1").arg(boundValue, 0, 'g', NUM_DECIMALS));
+	setValue(value);
+	showValue();
 
 	emit parameterValueChanged(parameter_, value_);
 	emit parameterValueChanged(value_);
@@ -93,9 +91,8 @@ ParameterLineEdit::setParameterValue(float value)
 void
 ParameterLineEdit::setParameterValueFromSlider(float value)
 {
-	const float boundValue = qBound(minimumValue_, value, maximumValue_);
-	value_ = boundValue;
-	setText(QString("%1").arg(boundValue, 0, 'g', NUM_DECIMALS));
+	setValue(value);
+	showValue();
 
 	emit parameterValueChanged(parameter_, value_);
 }
@@ -109,6 +106,19 @@ ParameterLineEdit::getValueFromEditedText()
 	if (ok) {
 		setParameterValue(value);
 	}
+}
+
+void
+ParameterLineEdit::setValue(float value)
+{
+	value_ = qBound(minimumValue_, value, maximumValue_);
+}
+
+void
+ParameterLineEdit::showValue()
+{
+	setText(QString::number(value_, 'g', NUM_SIGNIFICANT_DIGITS));
+	setCursorPosition(0);
 }
 
 } /* namespace GS */
