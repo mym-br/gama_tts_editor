@@ -13,32 +13,25 @@
   - FFTW - single precision (tested with version 3.3.4).
 
   - GamaTTS (use the latest version).
-    For local install, the source must be in ../gama_tts and the build directory
+    The source files must be in ../gama_tts and the build directory
     must be ../gama_tts-build.
 
-- Local install:
+- Build (Linux):
 
-  qmake
+  qmake-qt5
   make
+
+- Test:
 
   - Start the JACK server using QjackCtl.
+    Note: The sampling rate in JACK must be equal to the value of the parameter
+          "output_rate" in the file vtm.config (default: 44100).
 
-  # Test.
-  LD_LIBRARY_PATH=../gama_tts-build ./gama_tts_editor
+  - Execute:
 
-- System install:
+  ./gama_tts_editor
 
-  qmake
-  make
+- Install to system (optional, Linux):
+
   make install
-  #make install INSTALL_ROOT=/tmp/install
-
-  - Start the JACK server using QjackCtl.
-
-  # Test.
-  gama_tts_editor
-
-- Note:
-
-  - The sampling rate in JACK must be equal to the value of the parameter
-    "output_rate" in the file vtm.config (default: 44100).
+  #make install INSTALL_ROOT=/tmp/dist

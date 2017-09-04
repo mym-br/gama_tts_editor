@@ -117,17 +117,18 @@ unix {
     !macx {
         QMAKE_CXXFLAGS += -Wall -Wextra
 
-        exists(../gama_tts/CMakeLists.txt) {
-            message(Using local GamaTTS)
-            INCLUDEPATH += \
-                ../gama_tts/src \
-                ../gama_tts/src/text_parser \
-                ../gama_tts/src/vtm \
-                ../gama_tts/src/vtm_control_model
-            LIBS += -L../gama_tts-build -lgamatts
+        INCLUDEPATH += \
+            ../gama_tts/src \
+            ../gama_tts/src/text_parser \
+            ../gama_tts/src/vtm \
+            ../gama_tts/src/vtm_control_model
+
+        CONFIG(debug, debug|release) {
+            PRE_TARGETDEPS += ../gama_tts-build-debug/libgamatts.a
+            LIBS += -L../gama_tts-build-debug -lgamatts
         } else {
-            message(Using system GamaTTS)
-            PKGCONFIG += gama_tts
+            PRE_TARGETDEPS += ../gama_tts-build/libgamatts.a
+            LIBS += -L../gama_tts-build -lgamatts
         }
 
         isEmpty(INSTALL_PREFIX) {
