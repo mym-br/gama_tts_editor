@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>GamaTTS:Editor</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resource/gama_tts_editor.qrc">
+    <normaloff>:/img/window_icon.png</normaloff>:/img/window_icon.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <property name="sizePolicy">
     <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -244,6 +248,8 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="../resource/gama_tts_editor.qrc"/>
+ </resources>
  <connections/>
 </ui>

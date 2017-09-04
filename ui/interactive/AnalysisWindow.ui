@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Analysis</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../../resource/gama_tts_editor.qrc">
+    <normaloff>:/img/window_icon.png</normaloff>:/img/window_icon.png</iconset>
+  </property>
   <layout class="QHBoxLayout" name="horizontalLayout_2" stretch="0,1">
    <item>
     <widget class="QWidget" name="widget_2" native="true">
@@ -168,6 +172,8 @@
   <tabstop>minDecibelLevelComboBox</tabstop>
   <tabstop>cursorFreqSpinBox</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../resource/gama_tts_editor.qrc"/>
+ </resources>
  <connections/>
 </ui>

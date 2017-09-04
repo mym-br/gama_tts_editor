@@ -66,6 +66,8 @@ InteractiveVTMWindow::InteractiveVTMWindow(const char* configDirPath, bool mainW
 		, dynamicParameterValueChanged_{false}
 		, analysisWindow_{std::make_unique<AnalysisWindow>()}
 {
+	setWindowIcon(QIcon{":/img/window_icon.png"});
+
 	// Configure the QMainWindow.
 	QWidget* widget = new QWidget();
 	widget->setMinimumWidth(1300);

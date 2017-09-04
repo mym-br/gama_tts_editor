@@ -142,3 +142,6 @@ unix {
 MOC_DIR = tmp
 OBJECTS_DIR = tmp
 UI_DIR = tmp
+
+RESOURCES += \
+    resource/gama_tts_editor.qrc

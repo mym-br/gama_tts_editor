@@ -13,6 +13,10 @@
   <property name="windowTitle">
    <string>Data entry</string>
   </property>
+  <property name="windowIcon">
+   <iconset resource="../resource/gama_tts_editor.qrc">
+    <normaloff>:/img/window_icon.png</normaloff>:/img/window_icon.png</iconset>
+  </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
     <widget class="QTabWidget" name="tabWidget">
@@ -539,6 +543,8 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resource/gama_tts_editor.qrc"/>
+ </resources>
  <connections/>
 </ui>
