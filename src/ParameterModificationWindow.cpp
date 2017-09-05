@@ -315,6 +315,7 @@ ParameterModificationWindow::sendModificationValue()
 					ParameterModificationSynthesis::OPER_ADD :
 					ParameterModificationSynthesis::OPER_MULTIPLY,
 				modificationValue_)) {
+		ui_->parameterModificationWidget->stop();
 		state_ = State::stopped;
 		modificationTimer_.stop();
 		qDebug("Modification STOP");

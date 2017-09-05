@@ -26,10 +26,19 @@ namespace GS {
 
 ParameterModificationWidget::ParameterModificationWidget(QWidget* parent)
 		: QWidget{parent}
+		, state_{State::stopped}
+		, mouseX_{0}
 {
 	setMouseTracking(true);
 	setBackgroundRole(QPalette::Base);
 	setAutoFillBackground(true);
+}
+
+void
+ParameterModificationWidget::stop()
+{
+	state_ = State::stopped;
+	update();
 }
 
 void
@@ -45,19 +54,32 @@ ParameterModificationWidget::paintEvent(QPaintEvent* /*event*/)
 	painter.drawLine(xEnd, 0, xEnd, yEnd);
 	painter.drawLine(0, yEnd, xEnd, yEnd);
 	painter.drawLine(xCenter, 0, xCenter, yEnd);
+
+	if (state_ == State::running) {
+		const int yCenter = height() / 2;
+		painter.drawLine(xCenter, 0, mouseX_, yCenter);
+		painter.drawLine(xCenter, yEnd, mouseX_, yCenter);
+	}
 }
 
 void
 ParameterModificationWidget::mouseMoveEvent(QMouseEvent* event)
 {
-	emit offsetChanged(offset(event->x()));
+	if (state_ == State::running) {
+		mouseX_ = event->x();
+		emit offsetChanged(offset(mouseX_));
+		update();
+	}
 }
 
 void
 ParameterModificationWidget::mousePressEvent(QMouseEvent* event)
 {
 	emit modificationStarted();
-	emit offsetChanged(offset(event->x()));
+	mouseX_ = event->x();
+	emit offsetChanged(offset(mouseX_));
+	state_ = State::running;
+	update();
 }
 
 double

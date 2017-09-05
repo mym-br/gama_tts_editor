@@ -26,6 +26,8 @@ class ParameterModificationWidget : public QWidget {
 	Q_OBJECT
 public:
 	explicit ParameterModificationWidget(QWidget* parent=nullptr);
+
+	void stop();
 signals:
 	void modificationStarted();
 	void offsetChanged(double offset);
@@ -34,7 +36,15 @@ protected:
 	virtual void mouseMoveEvent(QMouseEvent* event);
 	virtual void mousePressEvent(QMouseEvent *event);
 private:
+	enum class State {
+		stopped,
+		running
+	};
+
 	double offset(int xMouse);
+
+	State state_;
+	int mouseX_;
 };
 
 } // namespace GS
