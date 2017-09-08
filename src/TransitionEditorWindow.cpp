@@ -129,8 +129,8 @@ TransitionEditorWindow::clear()
 void
 TransitionEditorWindow::resetModel(VTMControlModel::Model* model)
 {
+	clear();
 	if (model == nullptr) {
-		clear();
 		model_ = nullptr;
 	} else {
 		model_ = model;
