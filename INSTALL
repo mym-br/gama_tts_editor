@@ -2,9 +2,8 @@
 - Requirements:
 
   - A C++ compiler with C++14 support.
-    The following compilers have been tested:
-    - GCC 5.4 (Linux+GNU x86_64).
-    - GCC 7.1 (Linux+GNU x86_64).
+    The following compiler has been tested:
+    - GCC 5.5 (Linux+GNU x86_64).
 
   - Qt 5 (tested with version 5.7.1).
 
@@ -30,8 +29,3 @@
   - Execute:
 
   ./gama_tts_editor
-
-- Install to system (optional, Linux):
-
-  make install
-  #make install INSTALL_ROOT=/tmp/dist
