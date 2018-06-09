@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2008, 2014, 2017 Marcelo Y. Matuda                           *
+ *  Copyright 2008, 2014, 2017, 2018 Marcelo Y. Matuda                     *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -19,7 +19,7 @@
 #define EDITOR_GLOBAL_H_
 
 #define EDITOR_NAME "GamaTTS:Editor"
-#define EDITOR_VERSION "2017_09_07"
+#define EDITOR_VERSION "2018_06_09"
 
 #define INTERACTIVE_NAME "Interactive VTM"
 #define INTERACTIVE_VERSION EDITOR_VERSION
