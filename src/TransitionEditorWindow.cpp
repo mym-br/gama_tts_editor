@@ -57,15 +57,15 @@ namespace GS {
 
 TransitionEditorWindow::TransitionEditorWindow(QWidget* parent)
 		: QWidget(parent)
-		, ui_{std::make_unique<Ui::TransitionEditorWindow>()}
-		, special_{false}
-		, model_{}
-		, transition_{}
-		, transitionType_{VTMControlModel::Transition::Type::invalid}
-		, ruleDuration_{}
-		, ruleMark1_{}
-		, ruleMark2_{}
-		, ruleMark3_{}
+		, ui_(std::make_unique<Ui::TransitionEditorWindow>())
+		, special_()
+		, model_()
+		, transition_()
+		, transitionType_(VTMControlModel::Transition::Type::invalid)
+		, ruleDuration_()
+		, ruleMark1_()
+		, ruleMark2_()
+		, ruleMark3_()
 {
 	ui_->setupUi(this);
 

@@ -29,8 +29,8 @@
 namespace GS {
 
 SymbolModel::SymbolModel(QObject* parent)
-		: QAbstractTableModel{parent}
-		, model_{}
+		: QAbstractTableModel(parent)
+		, model_()
 {
 }
 

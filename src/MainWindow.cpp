@@ -58,23 +58,23 @@
 namespace GS {
 
 MainWindow::MainWindow(QWidget* parent)
-		: QMainWindow{parent}
-		, config_{}
-		, model_{}
-		, synthesis_{std::make_unique<Synthesis>(config_)}
-		, ui_{std::make_unique<Ui::MainWindow>()}
-		, dataEntryWindow_{std::make_unique<DataEntryWindow>()}
-		, interactiveVTMWindow_{}
-		, intonationWindow_{std::make_unique<IntonationWindow>()}
-		, intonationParametersWindow_{std::make_unique<IntonationParametersWindow>()}
-		, parameterModificationWindow_{std::make_unique<ParameterModificationWindow>()}
-		, postureEditorWindow_{std::make_unique<PostureEditorWindow>()}
-		, prototypeManagerWindow_{std::make_unique<PrototypeManagerWindow>()}
-		, specialTransitionEditorWindow_{std::make_unique<TransitionEditorWindow>()}
-		, ruleManagerWindow_{std::make_unique<RuleManagerWindow>()}
-		, ruleTesterWindow_{std::make_unique<RuleTesterWindow>()}
-		, synthesisWindow_{std::make_unique<SynthesisWindow>()}
-		, transitionEditorWindow_{std::make_unique<TransitionEditorWindow>()}
+		: QMainWindow(parent)
+		, config_()
+		, model_()
+		, synthesis_(std::make_unique<Synthesis>(config_))
+		, ui_(std::make_unique<Ui::MainWindow>())
+		, dataEntryWindow_(std::make_unique<DataEntryWindow>())
+		, interactiveVTMWindow_()
+		, intonationWindow_(std::make_unique<IntonationWindow>())
+		, intonationParametersWindow_(std::make_unique<IntonationParametersWindow>())
+		, parameterModificationWindow_(std::make_unique<ParameterModificationWindow>())
+		, postureEditorWindow_(std::make_unique<PostureEditorWindow>())
+		, prototypeManagerWindow_(std::make_unique<PrototypeManagerWindow>())
+		, specialTransitionEditorWindow_(std::make_unique<TransitionEditorWindow>())
+		, ruleManagerWindow_(std::make_unique<RuleManagerWindow>())
+		, ruleTesterWindow_(std::make_unique<RuleTesterWindow>())
+		, synthesisWindow_(std::make_unique<SynthesisWindow>())
+		, transitionEditorWindow_(std::make_unique<TransitionEditorWindow>())
 {
 	ui_->setupUi(this);
 

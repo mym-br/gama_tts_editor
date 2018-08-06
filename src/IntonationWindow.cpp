@@ -33,8 +33,8 @@ namespace GS {
 
 IntonationWindow::IntonationWindow(QWidget* parent)
 		: QWidget(parent)
-		, ui_{std::make_unique<Ui::IntonationWindow>()}
-		, synthesis_{}
+		, ui_(std::make_unique<Ui::IntonationWindow>())
+		, synthesis_()
 {
 	ui_->setupUi(this);
 

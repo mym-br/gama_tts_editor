@@ -81,12 +81,12 @@ namespace GS {
  * Constructor.
  */
 InteractiveAudio::Processor::Processor(std::size_t numberOfParameters)
-		: outputPort_{}
-		, vtmBufferPos_{}
-		, maxAbsSampleValue_{}
-		, vocalTractModel_{}
-		, parameterRingbuffer_{}
-		, analysisRingbuffer_{}
+		: outputPort_()
+		, vtmBufferPos_()
+		, maxAbsSampleValue_()
+		, vocalTractModel_()
+		, parameterRingbuffer_()
+		, analysisRingbuffer_()
 		, paramValues_(numberOfParameters, 0.0)
 {
 }
@@ -219,14 +219,14 @@ InteractiveAudio::Processor::process(jack_nframes_t nframes)
  * Constructor.
  */
 InteractiveAudio::InteractiveAudio(InteractiveVTMConfiguration& configuration)
-		: state_{State::stopped}
-		, configuration_{configuration}
-		, processor_{configuration_.dynamicParamList.size()}
-		, parameterRingbuffer_{std::make_unique<JackRingbuffer>(PARAMETER_RINGBUFFER_SIZE * sizeof(VocalTractModelParameterValue))}
+		: state_(State::stopped)
+		, configuration_(configuration)
+		, processor_(configuration_.dynamicParamList.size())
+		, parameterRingbuffer_(std::make_unique<JackRingbuffer>(PARAMETER_RINGBUFFER_SIZE * sizeof(VocalTractModelParameterValue)))
 		// +1 because the ringbuffer keeps at least one position open.
-		, analysisRingbuffer_{std::make_unique<JackRingbuffer>(MAX_NUM_SAMPLES_FOR_ANALYSIS * sizeof(jack_default_audio_sample_t) + 1)}
-		, jackClient_{}
-		, sampleRate_{}
+		, analysisRingbuffer_(std::make_unique<JackRingbuffer>(MAX_NUM_SAMPLES_FOR_ANALYSIS * sizeof(jack_default_audio_sample_t) + 1))
+		, jackClient_()
+		, sampleRate_()
 {
 }
 

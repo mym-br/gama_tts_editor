@@ -29,8 +29,8 @@
 namespace GS {
 
 ParameterModel::ParameterModel(QObject* parent)
-		: QAbstractTableModel{parent}
-		, model_{}
+		: QAbstractTableModel(parent)
+		, model_()
 {
 }
 

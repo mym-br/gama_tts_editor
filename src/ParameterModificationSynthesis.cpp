@@ -85,18 +85,18 @@ ParameterModificationSynthesis::Processor::Processor(
 			JackRingbuffer* parameterRingbuffer,
 			const ConfigurationData& vtmConfigData,
 			double controlRate)
-		: numParameters_{numberOfParameters}
-		, outputPort_{}
-		, vtmBufferPos_{}
-		, parameterRingbuffer_{parameterRingbuffer}
-		, vocalTractModel_{VTM::VocalTractModel::getInstance(vtmConfigData, false)}
+		: numParameters_(numberOfParameters)
+		, outputPort_()
+		, vtmBufferPos_()
+		, parameterRingbuffer_(parameterRingbuffer)
+		, vocalTractModel_(VTM::VocalTractModel::getInstance(vtmConfigData, false))
 		, currentParam_(numParameters_)
 		, delta_(numParameters_)
-		, gain_{}
-		, stepIndex_{}
-		, paramSetIndex_{1}
-		, controlSteps_{static_cast<unsigned int>(std::rint(vocalTractModel_->internalSampleRate() / controlRate))}
-		, modifFilter_{static_cast<float>(vocalTractModel_->internalSampleRate()), PARAMETER_FILTER_PERIOD_SEC}
+		, gain_()
+		, stepIndex_()
+		, paramSetIndex_(1)
+		, controlSteps_(static_cast<unsigned int>(std::rint(vocalTractModel_->internalSampleRate() / controlRate)))
+		, modifFilter_(static_cast<float>(vocalTractModel_->internalSampleRate()), PARAMETER_FILTER_PERIOD_SEC)
 {
 	if (!parameterRingbuffer_) {
 		THROW_EXCEPTION(MissingValueException, "Missing parameter ringbuffer.");
@@ -271,13 +271,13 @@ ParameterModificationSynthesis::ParameterModificationSynthesis(
 			unsigned int numberOfParameters,
 			double controlRate,
 			const ConfigurationData& vtmConfigData)
-		: parameterRingbuffer_{std::make_unique<JackRingbuffer>(PARAMETER_RINGBUFFER_SIZE * sizeof(Modification))}
-		, processor_{std::make_unique<Processor>(
+		: parameterRingbuffer_(std::make_unique<JackRingbuffer>(PARAMETER_RINGBUFFER_SIZE * sizeof(Modification)))
+		, processor_(std::make_unique<Processor>(
 					numberOfParameters,
 					parameterRingbuffer_.get(),
 					vtmConfigData,
-					controlRate)}
-		, jackClient_{}
+					controlRate))
+		, jackClient_()
 {
 }
 

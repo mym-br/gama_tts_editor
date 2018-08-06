@@ -25,11 +25,11 @@
 namespace GS {
 
 Synthesis::Synthesis(const AppConfig& appConfigRef)
-	: appConfig{appConfigRef}
-	, vtmController{}
-	, paramModifSynth{}
-	, refModel{}
-	, refVtmController{}
+	: appConfig(appConfigRef)
+	, vtmController()
+	, paramModifSynth()
+	, refModel()
+	, refVtmController()
 {
 }
 

@@ -39,10 +39,10 @@
 namespace GS {
 
 RuleManagerWindow::RuleManagerWindow(QWidget* parent)
-		: QWidget{parent}
-		, ui_{std::make_unique<Ui::RuleManagerWindow>()}
-		, model_{}
-		, selectedRule_{}
+		: QWidget(parent)
+		, ui_(std::make_unique<Ui::RuleManagerWindow>())
+		, model_()
+		, selectedRule_()
 {
 	ui_->setupUi(this);
 

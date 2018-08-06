@@ -81,21 +81,21 @@ std::vector<const char*> specialTransitionYLabels = {
 namespace GS {
 
 TransitionWidget::TransitionWidget(QWidget* parent)
-		: QWidget{parent}
-		, special_{}
-		, dataUpdated_{}
-		, textYOffset_{}
-		, slopeTextYOffset_{}
-		, leftMargin_{}
-		, yStep_{}
-		, graphWidth_{}
-		, transitionType_{VTMControlModel::Transition::Type::invalid}
-		, pointList_{}
-		, ruleDuration_{}
-		, mark1_{}
-		, mark2_{}
-		, mark3_{}
-		, selectedPointIndex_{-1}
+		: QWidget(parent)
+		, special_()
+		, dataUpdated_()
+		, textYOffset_()
+		, slopeTextYOffset_()
+		, leftMargin_()
+		, yStep_()
+		, graphWidth_()
+		, transitionType_(VTMControlModel::Transition::Type::invalid)
+		, pointList_()
+		, ruleDuration_()
+		, mark1_()
+		, mark2_()
+		, mark3_()
+		, selectedPointIndex_(-1)
 {
 	QPalette pal;
 	pal.setColor(QPalette::Window, Qt::white);

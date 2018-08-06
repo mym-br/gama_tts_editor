@@ -30,8 +30,8 @@
 namespace GS {
 
 CategoryModel::CategoryModel(QObject* parent)
-		: QAbstractTableModel{parent}
-		, model_{}
+		: QAbstractTableModel(parent)
+		, model_()
 {
 }
 

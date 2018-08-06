@@ -36,9 +36,9 @@ namespace GS {
 
 ParameterLineEdit::ParameterLineEdit(int parameter, float minimumValue, float maximumValue, float value, QWidget* parent)
 		: QLineEdit(parent)
-		, parameter_{parameter}
-		, minimumValue_{minimumValue}
-		, maximumValue_{maximumValue}
+		, parameter_(parameter)
+		, minimumValue_(minimumValue)
+		, maximumValue_(maximumValue)
 {
 	if (maximumValue < minimumValue + EPSILON) {
 		THROW_EXCEPTION(InvalidValueException, "[ParameterSlider] The maximum value must be greater than the minimum value (parameter: "

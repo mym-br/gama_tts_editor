@@ -41,9 +41,9 @@ namespace GS {
 
 PostureEditorWindow::PostureEditorWindow(QWidget* parent)
 		: QWidget(parent)
-		, ui_{std::make_unique<Ui::PostureEditorWindow>()}
-		, model_{}
-		, postureNameRegExp_{"[^\\x0000-\\x0020\\x007f'_*./0-9]+"}
+		, ui_(std::make_unique<Ui::PostureEditorWindow>())
+		, model_()
+		, postureNameRegExp_("[^\\x0000-\\x0020\\x007f'_*./0-9]+")
 {
 	ui_->setupUi(this);
 

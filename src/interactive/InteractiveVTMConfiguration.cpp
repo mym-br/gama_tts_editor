@@ -34,8 +34,8 @@ namespace GS {
  * Constructor.
  */
 InteractiveVTMConfiguration::InteractiveVTMConfiguration(const char* configDirPath)
-		: configDirPath{configDirPath}
-		, data{std::make_unique<ConfigurationData>(this->configDirPath + ("/" CONFIG_FILE))}
+		: configDirPath(configDirPath)
+		, data(std::make_unique<ConfigurationData>(this->configDirPath + ("/" CONFIG_FILE)))
 		, dynamicParamNameList(data->value<unsigned int>("num_dynamic_parameters"))
 		, dynamicParamLabelList(dynamicParamNameList.size())
 		, dynamicParamMinList(  dynamicParamNameList.size())

@@ -42,14 +42,14 @@
 namespace GS {
 
 ParameterModificationWindow::ParameterModificationWindow(QWidget* parent)
-		: QWidget{parent}
-		, ui_{std::make_unique<Ui::ParameterModificationWindow>()}
-		, model_{}
-		, synthesis_{}
-		, prevAmplitude_{DEFAULT_AMPLITUDE}
-		, state_{State::stopped}
-		, modificationValue_{}
-		, modificationTimer_{this}
+		: QWidget(parent)
+		, ui_(std::make_unique<Ui::ParameterModificationWindow>())
+		, model_()
+		, synthesis_()
+		, prevAmplitude_(DEFAULT_AMPLITUDE)
+		, state_(State::stopped)
+		, modificationValue_()
+		, modificationTimer_(this)
 {
 	ui_->setupUi(this);
 

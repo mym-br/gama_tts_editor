@@ -69,8 +69,8 @@ player_jack_shutdown_callback(void* arg)
 namespace GS {
 
 AudioPlayer::AudioPlayer()
-		: bufferIndex_{}
-		, jackOutputPort_{}
+		: bufferIndex_()
+		, jackOutputPort_()
 {
 }
 

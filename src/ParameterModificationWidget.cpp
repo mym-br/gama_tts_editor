@@ -25,9 +25,9 @@
 namespace GS {
 
 ParameterModificationWidget::ParameterModificationWidget(QWidget* parent)
-		: QWidget{parent}
-		, state_{State::stopped}
-		, mouseX_{0}
+		: QWidget(parent)
+		, state_(State::stopped)
+		, mouseX_()
 {
 	setMouseTracking(true);
 	setBackgroundRole(QPalette::Base);

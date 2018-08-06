@@ -40,8 +40,8 @@ namespace GS {
  */
 ParameterSlider::ParameterSlider(float minimumValue, float maximumValue, QWidget* parent)
 		: QSlider(Qt::Horizontal, parent)
-		, minimumValue_{minimumValue}
-		, maximumValue_{maximumValue}
+		, minimumValue_(minimumValue)
+		, maximumValue_(maximumValue)
 {
 	if (maximumValue < minimumValue + EPSILON) {
 		THROW_EXCEPTION(InvalidValueException, "[ParameterSlider] The maximum value must be greater than the minimum value (min: "

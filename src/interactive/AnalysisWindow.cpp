@@ -57,14 +57,14 @@ constexpr unsigned int FFT_SIZE = 65536;
 namespace GS {
 
 AnalysisWindow::AnalysisWindow(QWidget *parent)
-		: QWidget{parent}
-		, ui_{std::make_unique<Ui::AnalysisWindow>()}
-		, sampleRate_{}
-		, analysisRingbuffer_{}
-		, analysisRingbufferNumSamples_{}
-		, timer_{new QTimer(this)}
-		, state_{State::stopped}
-		, signalDFT_{std::make_unique<SignalDFT>(FFT_SIZE)}
+		: QWidget(parent)
+		, ui_(std::make_unique<Ui::AnalysisWindow>())
+		, sampleRate_()
+		, analysisRingbuffer_()
+		, analysisRingbufferNumSamples_()
+		, timer_(new QTimer(this))
+		, state_(State::stopped)
+		, signalDFT_(std::make_unique<SignalDFT>(FFT_SIZE))
 {
 	ui_->setupUi(this);
 

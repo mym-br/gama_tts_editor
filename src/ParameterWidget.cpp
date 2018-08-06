@@ -49,21 +49,21 @@
 namespace GS {
 
 ParameterWidget::ParameterWidget(QWidget* parent)
-		: QWidget{parent}
-		, eventList_{}
-		, model_{}
-		, speechSignal_{}
-		, speechSamplerate_{}
-		, timeScale_{DEFAULT_TIME_SCALE}
-		, graphHeight_{DEFAULT_GRAPH_HEIGHT}
-		, modelUpdated_{}
-		, labelWidth_{}
-		, maxLabelSize_{}
-		, totalWidth_{MININUM_WIDTH}
-		, totalHeight_{MININUM_HEIGHT}
-		, verticalScrollbarValue_{}
-		, horizontalScrollbarValue_{}
-		, textTotalHeight_{}
+		: QWidget(parent)
+		, eventList_()
+		, model_()
+		, speechSignal_()
+		, speechSamplerate_()
+		, timeScale_(DEFAULT_TIME_SCALE)
+		, graphHeight_(DEFAULT_GRAPH_HEIGHT)
+		, modelUpdated_()
+		, labelWidth_()
+		, maxLabelSize_()
+		, totalWidth_(MININUM_WIDTH)
+		, totalHeight_(MININUM_HEIGHT)
+		, verticalScrollbarValue_()
+		, horizontalScrollbarValue_()
+		, textTotalHeight_()
 {
 	setMinimumWidth(totalWidth_);
 	setMinimumHeight(totalHeight_);

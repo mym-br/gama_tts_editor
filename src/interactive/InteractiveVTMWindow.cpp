@@ -54,17 +54,17 @@ namespace GS {
  * Constructor.
  */
 InteractiveVTMWindow::InteractiveVTMWindow(const char* configDirPath, bool mainWindow, QWidget* parent)
-		: QMainWindow{parent}
-		, mainWindow_{mainWindow}
-		, configuration_{std::make_unique<InteractiveVTMConfiguration>(configDirPath)}
-		, transferTimer_{}
+		: QMainWindow(parent)
+		, mainWindow_(mainWindow)
+		, configuration_(std::make_unique<InteractiveVTMConfiguration>(configDirPath))
+		, transferTimer_()
 		, dynamicParamSliderList_(configuration_->dynamicParamNameList.size())
 		, dynamicParamEditList_(  configuration_->dynamicParamNameList.size())
 		, staticParamSliderList_( configuration_->staticParamNameList.size())
 		, staticParamEditList_(   configuration_->staticParamNameList.size())
-		, audio_{std::make_unique<InteractiveAudio>(*configuration_)}
-		, dynamicParameterValueChanged_{false}
-		, analysisWindow_{std::make_unique<AnalysisWindow>()}
+		, audio_(std::make_unique<InteractiveAudio>(*configuration_))
+		, dynamicParameterValueChanged_()
+		, analysisWindow_(std::make_unique<AnalysisWindow>())
 {
 	setWindowIcon(QIcon{":/img/window_icon.png"});
 
@@ -111,7 +111,7 @@ InteractiveVTMWindow::initMenu()
 
 	QAction* loadDynamicParametersAction = new QAction(tr("Load Dynamic Parameters"), this);
 	QAction* saveDynamicParametersAction = new QAction(tr("Save Dynamic Parameters"), this);
-	QAction* exitAction {};
+	QAction* exitAction{};
 	if (mainWindow_) {
 		exitAction = new QAction(tr("E&xit"), this);
 	}

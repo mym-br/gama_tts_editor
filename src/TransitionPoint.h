@@ -46,13 +46,13 @@ struct TransitionPoint {
 	float slope;
 
 	TransitionPoint()
-		: type{VTMControlModel::Transition::Point::Type::invalid}
-		, value{}
-		, timeExpression{}
-		, freeTime{}
-		, time{}
-		, hasSlope{}
-		, slope{} {}
+		: type(VTMControlModel::Transition::Point::Type::invalid)
+		, value()
+		, timeExpression()
+		, freeTime()
+		, time()
+		, hasSlope()
+		, slope() {}
 
 	static void copyPointsFromTransition(const VTMControlModel::Transition& transition, std::vector<TransitionPoint>& pointList);
 	static void sortPointListByTypeAndTime(std::vector<TransitionPoint>& pointList);
