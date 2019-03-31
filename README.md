@@ -7,6 +7,8 @@ This is the editor for the articulatory database in GamaTTS.
 GamaTTS:Editor is an approximate clone of Monet, an editor in the [Gnuspeech][]
 project.
 
+[Gnuspeech]: http://www.gnu.org/software/gnuspeech/
+
 External code
 -------------
 
@@ -16,6 +18,8 @@ the GNU GPLv3 or later.
 
 This software includes code from [QCustomPlot][], provided by Emanuel
 Eichhammer. QCustomPlot is licensed under the GNU GPLv3 or later.
+
+[QCustomPlot]: http://www.qcustomplot.com/
 
 Status
 ------
@@ -34,6 +38,3 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 COPYING file for more details.
-
-[Gnuspeech]: http://www.gnu.org/software/gnuspeech/
-[QCustomPlot]: http://www.qcustomplot.com/
