@@ -3,13 +3,13 @@
 
   - A C++ compiler with C++14 support.
     The following compiler has been tested:
-    - GCC 5.5 (Linux+GNU x86_64).
+    - GCC 8.3 (Linux+GNU x86_64).
 
-  - Qt 5 (tested with version 5.7.1).
+  - Qt 5 (tested with version 5.11).
 
-  - JACK Audio Connection Kit (tested with version 1.9.10).
+  - JACK Audio Connection Kit (tested with version 1.9.12).
 
-  - FFTW - single precision (tested with version 3.3.4).
+  - FFTW - single precision (tested with version 3.3.8).
 
   - GamaTTS (use the latest version).
     The source files must be in ../gama_tts and the build directory
@@ -17,7 +17,7 @@
 
 - Build (Linux):
 
-  qmake-qt5
+  qmake
   make
 
 - Test:
