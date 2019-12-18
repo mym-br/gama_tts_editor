@@ -416,7 +416,7 @@ InteractiveVTMWindow::loadDynamicParameters()
 						configuration_->dynamicParamMaxList[i]);
 		}
 	} catch (std::exception& exc) {
-		QMessageBox::critical(this, tr("Error"), tr("Could not load the dynamic parameters file %1. Reason: %2").arg(fileName).arg(exc.what()));
+		QMessageBox::critical(this, tr("Error"), tr("Could not load the dynamic parameters file %1. Reason: %2").arg(fileName, exc.what()));
 		return;
 	}
 
