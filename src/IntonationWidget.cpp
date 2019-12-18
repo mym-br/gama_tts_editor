@@ -21,6 +21,7 @@
 #include "IntonationWidget.h"
 
 #include <algorithm> /* max, min */
+#include <array>
 #include <cmath> /* abs */
 
 #include <QKeyEvent>
@@ -53,7 +54,7 @@
 
 namespace {
 
-std::vector<const char*> yLabels = {
+constexpr std::array<const char*, 16> yLabels = {
 	" 10",
 	"  8",
 	"  6",

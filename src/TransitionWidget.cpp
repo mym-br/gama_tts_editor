@@ -22,6 +22,7 @@
 
 #include "TransitionWidget.h"
 
+#include <array>
 #include <cmath> /* fabs */
 
 #include <QMouseEvent>
@@ -43,7 +44,7 @@
 
 namespace {
 
-std::vector<const char*> transitionYLabels = {
+constexpr std::array<const char*, 14> transitionYLabels = {
 	"   %",
 	" 110",
 	" 100",
@@ -59,7 +60,7 @@ std::vector<const char*> transitionYLabels = {
 	"   0",
 	" -10"
 };
-std::vector<const char*> specialTransitionYLabels = {
+constexpr std::array<const char*, 14> specialTransitionYLabels = {
 	"   %",
 	" 120",
 	" 100",
