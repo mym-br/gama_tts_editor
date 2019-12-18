@@ -28,7 +28,9 @@
 
 namespace GS {
 
-class FFTWException : public Exception {};
+struct FFTWException : std::runtime_error {
+	using std::runtime_error::runtime_error;
+};
 
 // The default plan flag is FFTW_MEASURE, with which deterministic results are
 // obtained during an execution, but if the program is stopped and started,

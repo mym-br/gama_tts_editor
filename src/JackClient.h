@@ -30,7 +30,9 @@
 
 namespace GS {
 
-struct JackClientException : public virtual Exception {};
+struct JackClientException : std::runtime_error {
+	using std::runtime_error::runtime_error;
+};
 
 struct JackPorts {
 public:

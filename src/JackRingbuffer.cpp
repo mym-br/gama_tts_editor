@@ -23,7 +23,9 @@
 
 namespace GS {
 
-struct JackRingbufferException : public virtual Exception {};
+struct JackRingbufferException : std::runtime_error {
+	using std::runtime_error::runtime_error;
+};
 
 JackRingbuffer::JackRingbuffer(size_t ringbufferSize)
 		: ringbuffer_(NULL)
