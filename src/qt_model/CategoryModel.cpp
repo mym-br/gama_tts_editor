@@ -59,7 +59,7 @@ CategoryModel::data(const QModelIndex& index, int role) const
 	}
 
 	switch (role) {
-	case Qt::DisplayRole: // falls through
+	case Qt::DisplayRole:
 	case Qt::EditRole:
 		if (index.column() == 0) {
 			return static_cast<int>(model_->categoryList()[row].use_count()) - 1;
