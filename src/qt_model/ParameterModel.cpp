@@ -61,16 +61,12 @@ ParameterModel::data(const QModelIndex& index, int role) const
 		switch (index.column()) {
 		case 0:
 			return model_->parameterList()[row].name().c_str();
-			break;
 		case 1:
 			return model_->parameterList()[row].minimum();
-			break;
 		case 2:
 			return model_->parameterList()[row].maximum();
-			break;
 		case 3:
 			return model_->parameterList()[row].defaultValue();
-			break;
 		}
 	}
 	return QVariant();
