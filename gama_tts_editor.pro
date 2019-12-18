@@ -4,7 +4,7 @@ QT += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4) {
     QT += widgets printsupport
-    CONFIG += c++14
+    CONFIG += warn_on
 } else {
     error(Qt 4 is not supported.)
 }
@@ -145,3 +145,5 @@ UI_DIR = tmp
 
 RESOURCES += \
     resource/gama_tts_editor.qrc
+
+QMAKE_CXXFLAGS += -std=c++17
