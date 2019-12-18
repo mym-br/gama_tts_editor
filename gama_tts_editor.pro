@@ -124,11 +124,9 @@ unix {
             ../gama_tts/src/vtm_control_model
 
         CONFIG(debug, debug|release) {
-            PRE_TARGETDEPS += ../gama_tts-build-debug/libgamatts.a
-            LIBS += -L../gama_tts-build-debug -lgamatts
+            LIBS += -L../gama_tts-build-debug -l:libgamatts.a
         } else {
-            PRE_TARGETDEPS += ../gama_tts-build/libgamatts.a
-            LIBS += -L../gama_tts-build -lgamatts
+            LIBS += -L../gama_tts-build -l:libgamatts.a
         }
 
         isEmpty(INSTALL_PREFIX) {
