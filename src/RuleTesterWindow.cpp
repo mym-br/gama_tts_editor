@@ -64,16 +64,13 @@ RuleTesterWindow::on_testButton_clicked()
 	if (model_ == nullptr) return;
 
 	std::vector<VTMControlModel::RuleExpressionData> ruleExpressionData;
-	bool post1Marked = false;
-	bool post2Marked = false;
-	bool post3Marked = false;
-	bool post4Marked = false;
 
 	QString posture1Text = ui_->posture1LineEdit->text().trimmed();
 	if (posture1Text.isEmpty()) {
 		clearResults();
 		return;
 	}
+	bool post1Marked = false;
 	if (posture1Text.endsWith('\'')) {
 		posture1Text.remove(posture1Text.size() - 1, 1);
 		post1Marked = true;
@@ -92,6 +89,7 @@ RuleTesterWindow::on_testButton_clicked()
 		clearResults();
 		return;
 	}
+	bool post2Marked = false;
 	if (posture2Text.endsWith('\'')) {
 		posture2Text.remove(posture2Text.size() - 1, 1);
 		post2Marked = true;
@@ -107,6 +105,7 @@ RuleTesterWindow::on_testButton_clicked()
 
 	QString posture3Text = ui_->posture3LineEdit->text().trimmed();
 	if (!posture3Text.isEmpty()) {
+		bool post3Marked = false;
 		if (posture3Text.endsWith('\'')) {
 			posture3Text.remove(posture3Text.size() - 1, 1);
 			post3Marked = true;
@@ -122,6 +121,7 @@ RuleTesterWindow::on_testButton_clicked()
 
 		QString posture4Text = ui_->posture4LineEdit->text().trimmed();
 		if (!posture4Text.isEmpty()) {
+			bool post4Marked = false;
 			if (posture4Text.endsWith('\'')) {
 				posture4Text.remove(posture4Text.size() - 1, 1);
 				post4Marked = true;

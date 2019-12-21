@@ -189,9 +189,6 @@ RuleManagerWindow::on_updateButton_clicked()
 	QTableWidgetItem* currItem = ui_->rulesTable->currentItem();
 	if (currItem == nullptr) return;
 
-	int currRow = currItem->row();
-	VTMControlModel::Rule& rule = *model_->ruleList()[currRow];
-
 	QString exp1 = ui_->expression1LineEdit->text().trimmed();
 	QString exp2 = ui_->expression2LineEdit->text().trimmed();
 	QString exp3 = ui_->expression3LineEdit->text().trimmed();
@@ -212,7 +209,9 @@ RuleManagerWindow::on_updateButton_clicked()
 	if (numExpr == 4) {
 		exprList.push_back(exp4.toStdString());
 	}
+	const int currRow = currItem->row();
 	try {
+		VTMControlModel::Rule& rule = *model_->ruleList()[currRow];
 		rule.setBooleanExpressionList(exprList, *model_);
 	} catch (const Exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());

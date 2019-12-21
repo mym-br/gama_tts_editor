@@ -60,9 +60,7 @@ struct FFTWPlan {
 		//fftw_plan plan;
 	//};
 
-	FFTWPlan() : type(TYPE_INVALID) {
-		planF = nullptr;
-	}
+	FFTWPlan() : type(TYPE_INVALID), planF() { }
 
 	void reset() {
 		type = TYPE_INVALID;
