@@ -319,11 +319,11 @@ TransitionWidget::paintEvent(QPaintEvent*)
 			for (const auto& point : *pointList_) {
 				if (static_cast<int>(point.type) > static_cast<int>(transitionType_)) continue;
 				if (i == selectedPointIndex_) {
-					double x = timeToX(point.time);
-					double y = valueToY(point.value);
+					double px = timeToX(point.time);
+					double py = valueToY(point.value);
 					painter.drawRect(QRectF(
-						 QPointF(x - SELECTION_SIZE, y - SELECTION_SIZE),
-						 QPointF(x + SELECTION_SIZE, y + SELECTION_SIZE)));
+						 QPointF(px - SELECTION_SIZE, py - SELECTION_SIZE),
+						 QPointF(px + SELECTION_SIZE, py + SELECTION_SIZE)));
 				}
 				++i;
 			}
