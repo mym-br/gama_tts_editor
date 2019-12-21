@@ -47,7 +47,7 @@ private:
 
 class JackClient {
 public:
-	JackClient(const char* clientName);
+	explicit JackClient(const char* clientName);
 	~JackClient();
 
 	void setProcessCallback(JackProcessCallback callback, void* arg);

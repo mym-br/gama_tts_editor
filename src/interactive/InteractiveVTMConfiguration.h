@@ -45,7 +45,7 @@ public:
 	std::vector<float>       staticParamMinList;
 	std::vector<float>       staticParamMaxList;
 
-	InteractiveVTMConfiguration(const char* configDirPath);
+	explicit InteractiveVTMConfiguration(const char* configDirPath);
 
 	// Reloads the configuration file.
 	// If an error occurs, the old data will remain on this object.

@@ -26,7 +26,7 @@ namespace GS {
 
 class JackRingbuffer {
 public:
-	JackRingbuffer(size_t ringbufferSize);
+	explicit JackRingbuffer(size_t ringbufferSize);
 	~JackRingbuffer();
 
 	size_t readSpace();

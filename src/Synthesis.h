@@ -40,7 +40,7 @@ struct Synthesis {
 	std::unique_ptr<VTMControlModel::Model> refModel;
 	std::unique_ptr<VTMControlModel::Controller> refVtmController;
 
-	Synthesis(const AppConfig& appConfigRef);
+	explicit Synthesis(const AppConfig& appConfigRef);
 	~Synthesis();
 
 	void clear();

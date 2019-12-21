@@ -42,7 +42,7 @@ public:
 
 	class Processor {
 	public:
-		Processor(std::size_t numberOfParameters);
+		explicit Processor(std::size_t numberOfParameters);
 		~Processor();
 
 		// Called only by the JACK thread.
@@ -64,7 +64,7 @@ public:
 		std::vector<VTM::MovingAverageFilter<float>> paramFilters_;
 	};
 
-	InteractiveAudio(InteractiveVTMConfiguration& configuration);
+	explicit InteractiveAudio(InteractiveVTMConfiguration& configuration);
 
 	void start();
 	void stop();

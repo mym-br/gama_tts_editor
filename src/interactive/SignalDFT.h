@@ -29,7 +29,7 @@ namespace GS {
 class SignalDFT {
 public:
 	// size is expected to be a power of two.
-	SignalDFT(unsigned int n);
+	explicit SignalDFT(unsigned int n);
 	~SignalDFT();
 
 	// Returns the absolute value of the spectrum.
