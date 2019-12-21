@@ -34,7 +34,8 @@ class EventList;
 class ParameterWidget : public QWidget {
 	Q_OBJECT
 public:
-	explicit ParameterWidget(QWidget* parent=0);
+	explicit ParameterWidget(QWidget* parent=nullptr);
+	virtual ~ParameterWidget();
 
 	virtual QSize sizeHint() const;
 	void updateData(
@@ -61,6 +62,11 @@ protected:
 	virtual void mouseMoveEvent(QMouseEvent* event);
 	virtual void mouseDoubleClickEvent(QMouseEvent *event);
 private:
+	ParameterWidget(const ParameterWidget&) = delete;
+	ParameterWidget& operator=(const ParameterWidget&) = delete;
+	ParameterWidget(ParameterWidget&&) = delete;
+	ParameterWidget& operator=(ParameterWidget&&) = delete;
+
 	double getGraphBaseY(unsigned int index);
 
 	const VTMControlModel::EventList* eventList_;

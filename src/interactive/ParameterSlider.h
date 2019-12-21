@@ -30,7 +30,7 @@ class ParameterSlider : public QSlider {
 	Q_OBJECT
 public:
 	ParameterSlider(float minimumValue, float maximumValue, QWidget* parent);
-	virtual ~ParameterSlider();
+	virtual ~ParameterSlider() = default;
 
 	void reset(float minimumValue, float maximumValue);
 signals:
@@ -46,6 +46,8 @@ private:
 
 	ParameterSlider(const ParameterSlider&) = delete;
 	ParameterSlider& operator=(const ParameterSlider&) = delete;
+	ParameterSlider(ParameterSlider&&) = delete;
+	ParameterSlider& operator=(ParameterSlider&&) = delete;
 
 	int parameterValueToSliderValue(float value);
 	float sliderValueToParameterValue(int value);

@@ -42,8 +42,8 @@ class Rule;
 class RuleManagerWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit RuleManagerWindow(QWidget* parent=0);
-	~RuleManagerWindow();
+	explicit RuleManagerWindow(QWidget* parent=nullptr);
+	virtual ~RuleManagerWindow();
 
 	void resetModel(VTMControlModel::Model* model);
 signals:
@@ -77,6 +77,11 @@ private slots:
 	void on_equationsTree_itemClicked(QTreeWidgetItem* item, int column);
 	void on_updateCommentButton_clicked();
 private:
+	RuleManagerWindow(const RuleManagerWindow&) = delete;
+	RuleManagerWindow& operator=(const RuleManagerWindow&) = delete;
+	RuleManagerWindow(RuleManagerWindow&&) = delete;
+	RuleManagerWindow& operator=(RuleManagerWindow&&) = delete;
+
 	void setupRulesList();
 	void clearRuleData();
 	void showRuleStatistics(const VTMControlModel::Rule& rule);

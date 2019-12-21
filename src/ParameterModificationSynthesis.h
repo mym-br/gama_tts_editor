@@ -34,9 +34,6 @@ class ConfigurationData;
 namespace VTM {
 class VocalTractModel;
 }
-namespace VTMControlModel {
-class Controller;
-}
 
 class ParameterModificationSynthesis {
 public:
@@ -83,6 +80,11 @@ public:
 		// Can be called by any thread.
 		bool running() const;
 	private:
+		Processor(const Processor&) = delete;
+		Processor& operator=(const Processor&) = delete;
+		Processor(Processor&&) = delete;
+		Processor& operator=(Processor&&) = delete;
+
 		unsigned int numParameters_;
 		std::atomic<jack_port_t*> outputPort_;
 		std::size_t vtmBufferPos_;
@@ -104,7 +106,7 @@ public:
 		unsigned int numberOfParameters,
 		double controlRate,
 		const ConfigurationData& vtmConfigData);
-	~ParameterModificationSynthesis();
+	~ParameterModificationSynthesis() = default;
 
 	void startSynthesis(float gain);
 
@@ -122,6 +124,11 @@ private:
 	enum {
 		PARAMETER_RINGBUFFER_SIZE = 8
 	};
+
+	ParameterModificationSynthesis(const ParameterModificationSynthesis&) = delete;
+	ParameterModificationSynthesis& operator=(const ParameterModificationSynthesis&) = delete;
+	ParameterModificationSynthesis(ParameterModificationSynthesis&&) = delete;
+	ParameterModificationSynthesis& operator=(ParameterModificationSynthesis&&) = delete;
 
 	void stop();
 

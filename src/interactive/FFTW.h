@@ -154,6 +154,11 @@ public:
 		}
 	}
 private:
+	FFTW(const FFTW&) = delete;
+	FFTW& operator=(const FFTW&) = delete;
+	FFTW(FFTW&&) = delete;
+	FFTW& operator=(FFTW&&) = delete;
+
 	static std::mutex mutex_;
 };
 

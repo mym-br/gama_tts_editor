@@ -36,7 +36,8 @@ public:
 		NUM_COLUMNS = 4
 	};
 
-	explicit ParameterModel(QObject* parent=0);
+	explicit ParameterModel(QObject* parent=nullptr);
+	virtual ~ParameterModel();
 
 	virtual int rowCount(const QModelIndex& parent=QModelIndex()) const;
 	virtual int columnCount(const QModelIndex& parent=QModelIndex()) const;
@@ -61,6 +62,8 @@ signals:
 private:
 	ParameterModel(const ParameterModel&) = delete;
 	ParameterModel& operator=(const ParameterModel&) = delete;
+	ParameterModel(ParameterModel&&) = delete;
+	ParameterModel& operator=(ParameterModel&&) = delete;
 
 	VTMControlModel::Model* model_;
 };

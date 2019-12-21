@@ -41,8 +41,10 @@ public:
 	JackPorts() : list(NULL) { }
 	~JackPorts() { jack_free(list); }
 private:
-	JackPorts(JackPorts&);
-	JackPorts& operator=(JackPorts&);
+	JackPorts(const JackPorts&) = delete;
+	JackPorts& operator=(const JackPorts&) = delete;
+	JackPorts(JackPorts&&) = delete;
+	JackPorts& operator=(JackPorts&&) = delete;
 };
 
 class JackClient {
@@ -62,6 +64,11 @@ public:
 
 	static const char* portName(const jack_port_t* port);
 private:
+	JackClient(const JackClient&) = delete;
+	JackClient& operator=(const JackClient&) = delete;
+	JackClient(JackClient&&) = delete;
+	JackClient& operator=(JackClient&&) = delete;
+
 	jack_client_t* client_;
 };
 

@@ -282,13 +282,6 @@ ParameterModificationSynthesis::ParameterModificationSynthesis(
 }
 
 /*******************************************************************************
- * Destructor.
- */
-ParameterModificationSynthesis::~ParameterModificationSynthesis()
-{
-}
-
-/*******************************************************************************
  * Starts the synthesis and the connection to the JACK server.
  */
 void

@@ -41,8 +41,8 @@ class Model;
 class DataEntryWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit DataEntryWindow(QWidget* parent=0);
-	~DataEntryWindow();
+	explicit DataEntryWindow(QWidget* parent=nullptr);
+	virtual ~DataEntryWindow();
 
 	void resetModel(VTMControlModel::Model* model);
 signals:
@@ -75,6 +75,11 @@ private slots:
 
 	void showError(QString msg);
 private:
+	DataEntryWindow(const DataEntryWindow&) = delete;
+	DataEntryWindow& operator=(const DataEntryWindow&) = delete;
+	DataEntryWindow(DataEntryWindow&&) = delete;
+	DataEntryWindow& operator=(DataEntryWindow&&) = delete;
+
 	std::unique_ptr<Ui::DataEntryWindow> ui_;
 	CategoryModel* categoryModel_;
 	ParameterModel* parameterModel_;

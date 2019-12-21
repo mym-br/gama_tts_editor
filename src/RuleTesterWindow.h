@@ -37,14 +37,19 @@ class Model;
 class RuleTesterWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit RuleTesterWindow(QWidget* parent=0);
-	~RuleTesterWindow();
+	explicit RuleTesterWindow(QWidget* parent=nullptr);
+	virtual ~RuleTesterWindow();
 
 	void resetModel(VTMControlModel::Model* model);
 private slots:
 	void on_shiftButton_clicked();
 	void on_testButton_clicked();
 private:
+	RuleTesterWindow(const RuleTesterWindow&) = delete;
+	RuleTesterWindow& operator=(const RuleTesterWindow&) = delete;
+	RuleTesterWindow(RuleTesterWindow&&) = delete;
+	RuleTesterWindow& operator=(RuleTesterWindow&&) = delete;
+
 	void clearResults();
 
 	std::unique_ptr<Ui::RuleTesterWindow> ui_;

@@ -39,7 +39,7 @@ class ParameterModificationWindow : public QWidget {
 	Q_OBJECT
 public:
 	explicit ParameterModificationWindow(QWidget* parent=nullptr);
-	~ParameterModificationWindow();
+	virtual ~ParameterModificationWindow();
 
 	void clear();
 	void setup(VTMControlModel::Model* model, Synthesis* synthesis);
@@ -71,6 +71,11 @@ private:
 		stopped,
 		running
 	};
+
+	ParameterModificationWindow(const ParameterModificationWindow&) = delete;
+	ParameterModificationWindow& operator=(const ParameterModificationWindow&) = delete;
+	ParameterModificationWindow(ParameterModificationWindow&&) = delete;
+	ParameterModificationWindow& operator=(ParameterModificationWindow&&) = delete;
 
 	void showModifiedParameterData();
 	void setInputEnabled(bool enabled);

@@ -28,8 +28,8 @@ namespace GS {
 class ParameterLineEdit : public QLineEdit {
 	Q_OBJECT
 public:
-	ParameterLineEdit(int parameter, float minimumValue, float maximumValue, float value, QWidget* parent = nullptr);
-	virtual ~ParameterLineEdit();
+	ParameterLineEdit(int parameter, float minimumValue, float maximumValue, float value, QWidget* parent=nullptr);
+	virtual ~ParameterLineEdit() = default;
 
 	void reset(float minimumValue, float maximumValue, float value);
 	float parameterValue() const { return value_; }
@@ -47,6 +47,8 @@ private slots:
 private:
 	ParameterLineEdit(const ParameterLineEdit&) = delete;
 	ParameterLineEdit& operator=(const ParameterLineEdit&) = delete;
+	ParameterLineEdit(ParameterLineEdit&&) = delete;
+	ParameterLineEdit& operator=(ParameterLineEdit&&) = delete;
 
 	void setValue(float value);
 	void showValue();

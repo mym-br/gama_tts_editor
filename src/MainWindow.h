@@ -51,8 +51,8 @@ class Model;
 class MainWindow : public QMainWindow {
 	Q_OBJECT
 public:
-	explicit MainWindow(QWidget* parent=0);
-	~MainWindow();
+	explicit MainWindow(QWidget* parent=nullptr);
+	virtual ~MainWindow();
 protected:
 	virtual void closeEvent(QCloseEvent* event);
 private slots:
@@ -76,6 +76,11 @@ private slots:
 	void updateSynthesis();
 	void destroyInteractiveVTMWindow();
 private:
+	MainWindow(const MainWindow&) = delete;
+	MainWindow& operator=(const MainWindow&) = delete;
+	MainWindow(MainWindow&&) = delete;
+	MainWindow& operator=(MainWindow&&) = delete;
+
 	bool openModel();
 	bool saveModel();
 

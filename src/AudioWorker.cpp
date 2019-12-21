@@ -28,10 +28,6 @@ AudioWorker::AudioWorker(QObject* parent)
 {
 }
 
-AudioWorker::~AudioWorker()
-{
-}
-
 // Slot.
 void
 AudioWorker::playAudio(double sampleRate)

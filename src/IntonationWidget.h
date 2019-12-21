@@ -38,7 +38,8 @@ class EventList;
 class IntonationWidget : public QWidget {
 	Q_OBJECT
 public:
-	explicit IntonationWidget(QWidget* parent=0);
+	explicit IntonationWidget(QWidget* parent=nullptr);
+	virtual ~IntonationWidget();
 
 	virtual QSize sizeHint() const;
 	void updateData(VTMControlModel::EventList* eventList);
@@ -62,6 +63,11 @@ protected:
 	virtual void mousePressEvent(QMouseEvent* event);
 	virtual void keyPressEvent(QKeyEvent* event);
 private:
+	IntonationWidget(const IntonationWidget&) = delete;
+	IntonationWidget& operator=(const IntonationWidget&) = delete;
+	IntonationWidget(IntonationWidget&&) = delete;
+	IntonationWidget& operator=(IntonationWidget&&) = delete;
+
 	double valueToY(double value);
 	double timeToX(double time);
 	double yToValue(double y);

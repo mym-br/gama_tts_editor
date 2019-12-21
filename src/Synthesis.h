@@ -42,6 +42,10 @@ struct Synthesis {
 
 	explicit Synthesis(const AppConfig& appConfigRef);
 	~Synthesis();
+	Synthesis(const Synthesis&) = delete;
+	Synthesis& operator=(const Synthesis&) = delete;
+	Synthesis(Synthesis&&) = delete;
+	Synthesis& operator=(Synthesis&&) = delete;
 
 	void clear();
 	void setup(VTMControlModel::Model* model);

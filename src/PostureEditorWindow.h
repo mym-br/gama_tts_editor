@@ -43,8 +43,8 @@ class Posture;
 class PostureEditorWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit PostureEditorWindow(QWidget* parent=0);
-	~PostureEditorWindow();
+	explicit PostureEditorWindow(QWidget* parent=nullptr);
+	virtual ~PostureEditorWindow();
 
 	void resetModel(VTMControlModel::Model* model);
 signals:
@@ -67,6 +67,11 @@ private slots:
 	void on_copyParametersButton_clicked();
 	void on_pasteParametersButton_clicked();
 private:
+	PostureEditorWindow(const PostureEditorWindow&) = delete;
+	PostureEditorWindow& operator=(const PostureEditorWindow&) = delete;
+	PostureEditorWindow(PostureEditorWindow&&) = delete;
+	PostureEditorWindow& operator=(PostureEditorWindow&&) = delete;
+
 	void setupPosturesTable();
 	void clearPostureData();
 	void setupCategoriesTable(const VTMControlModel::Posture& posture);

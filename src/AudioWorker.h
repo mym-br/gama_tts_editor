@@ -30,8 +30,8 @@ namespace GS {
 class AudioWorker : public QObject {
 	Q_OBJECT
 public:
-	explicit AudioWorker(QObject* parent=0);
-	~AudioWorker();
+	explicit AudioWorker(QObject* parent=nullptr);
+	virtual ~AudioWorker() = default;
 
 	AudioPlayer& player() { return player_; }
 signals:
@@ -42,6 +42,8 @@ public slots:
 private:
 	AudioWorker(const AudioWorker&) = delete;
 	AudioWorker& operator=(const AudioWorker&) = delete;
+	AudioWorker(AudioWorker&&) = delete;
+	AudioWorker& operator=(AudioWorker&&) = delete;
 
 	AudioPlayer player_;
 };

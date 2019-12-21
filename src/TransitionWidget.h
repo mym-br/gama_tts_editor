@@ -32,7 +32,8 @@ namespace GS {
 class TransitionWidget : public QWidget {
 	Q_OBJECT
 public:
-	explicit TransitionWidget(QWidget* parent=0);
+	explicit TransitionWidget(QWidget* parent=nullptr);
+	virtual ~TransitionWidget() = default;
 
 	void setSpecial() { special_ = true; }
 	void clear();
@@ -53,6 +54,11 @@ protected:
 	virtual void mouseDoubleClickEvent(QMouseEvent* event);
 	virtual void mousePressEvent(QMouseEvent* event);
 private:
+	TransitionWidget(const TransitionWidget&) = delete;
+	TransitionWidget& operator=(const TransitionWidget&) = delete;
+	TransitionWidget(TransitionWidget&&) = delete;
+	TransitionWidget& operator=(TransitionWidget&&) = delete;
+
 	void updateScales();
 	double valueToY(double value);
 	double timeToX(double time);

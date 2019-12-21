@@ -35,14 +35,19 @@ struct Synthesis;
 class IntonationParametersWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit IntonationParametersWindow(QWidget* parent=0);
-	~IntonationParametersWindow();
+	explicit IntonationParametersWindow(QWidget* parent=nullptr);
+	virtual ~IntonationParametersWindow();
 
 	void clear();
 	void setup(Synthesis* synthesis);
 private slots:
 	void on_updateButton_clicked();
 private:
+	IntonationParametersWindow(const IntonationParametersWindow&) = delete;
+	IntonationParametersWindow& operator=(const IntonationParametersWindow&) = delete;
+	IntonationParametersWindow(IntonationParametersWindow&&) = delete;
+	IntonationParametersWindow& operator=(IntonationParametersWindow&&) = delete;
+
 	std::unique_ptr<Ui::IntonationParametersWindow> ui_;
 	Synthesis* synthesis_;
 };

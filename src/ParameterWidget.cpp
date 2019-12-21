@@ -71,6 +71,10 @@ ParameterWidget::ParameterWidget(QWidget* parent)
 	setMouseTracking(true);
 }
 
+ParameterWidget::~ParameterWidget()
+{
+}
+
 // Note: with no antialiasing, the coordinates in QPointF are rounded to the nearest integer.
 void
 ParameterWidget::paintEvent(QPaintEvent* /*event*/)

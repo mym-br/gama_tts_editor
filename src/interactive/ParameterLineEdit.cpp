@@ -58,10 +58,6 @@ ParameterLineEdit::ParameterLineEdit(int parameter, float minimumValue, float ma
 	connect(this, &ParameterLineEdit::editingFinished, this, &ParameterLineEdit::getValueFromEditedText);
 }
 
-ParameterLineEdit::~ParameterLineEdit()
-{
-}
-
 void
 ParameterLineEdit::reset(float minimumValue, float maximumValue, float value)
 {

@@ -43,7 +43,7 @@ public:
 	class Processor {
 	public:
 		explicit Processor(std::size_t numberOfParameters);
-		~Processor();
+		~Processor() = default;
 
 		// Called only by the JACK thread.
 		int process(jack_nframes_t nframes);
@@ -52,6 +52,11 @@ public:
 		void reset(jack_port_t* outputPort, InteractiveVTMConfiguration& configuration,
 				JackRingbuffer& parameterRingbuffer, JackRingbuffer& analysisRingbuffer);
 	private:
+		Processor(const Processor&) = delete;
+		Processor& operator=(const Processor&) = delete;
+		Processor(Processor&&) = delete;
+		Processor& operator=(Processor&&) = delete;
+
 		float calcScale(const std::vector<float>& buffer);
 
 		jack_port_t* outputPort_;
@@ -65,6 +70,7 @@ public:
 	};
 
 	explicit InteractiveAudio(InteractiveVTMConfiguration& configuration);
+	~InteractiveAudio() = default;
 
 	void start();
 	void stop();
@@ -80,6 +86,8 @@ private:
 
 	InteractiveAudio(const InteractiveAudio&) = delete;
 	InteractiveAudio& operator=(const InteractiveAudio&) = delete;
+	InteractiveAudio(InteractiveAudio&&) = delete;
+	InteractiveAudio& operator=(InteractiveAudio&&) = delete;
 
 	State state_;
 	InteractiveVTMConfiguration& configuration_;

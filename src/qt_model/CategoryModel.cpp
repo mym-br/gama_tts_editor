@@ -35,6 +35,10 @@ CategoryModel::CategoryModel(QObject* parent)
 {
 }
 
+CategoryModel::~CategoryModel()
+{
+}
+
 int
 CategoryModel::rowCount(const QModelIndex& /*parent*/) const
 {

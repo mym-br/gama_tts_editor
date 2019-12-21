@@ -92,13 +92,6 @@ InteractiveAudio::Processor::Processor(std::size_t numberOfParameters)
 }
 
 /*******************************************************************************
- * Destructor.
- */
-InteractiveAudio::Processor::~Processor()
-{
-}
-
-/*******************************************************************************
  *
  */
 void

@@ -36,7 +36,8 @@ public:
 		NUM_COLUMNS = 4
 	};
 
-	explicit SymbolModel(QObject* parent=0);
+	explicit SymbolModel(QObject* parent=nullptr);
+	virtual ~SymbolModel();
 
 	virtual int rowCount(const QModelIndex& parent=QModelIndex()) const;
 	virtual int columnCount(const QModelIndex& parent=QModelIndex()) const;
@@ -61,6 +62,8 @@ signals:
 private:
 	SymbolModel(const SymbolModel&) = delete;
 	SymbolModel& operator=(const SymbolModel&) = delete;
+	SymbolModel(SymbolModel&&) = delete;
+	SymbolModel& operator=(SymbolModel&&) = delete;
 
 	VTMControlModel::Model* model_;
 };

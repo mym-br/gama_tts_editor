@@ -33,8 +33,8 @@ struct Synthesis;
 class IntonationWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit IntonationWindow(QWidget* parent=0);
-	~IntonationWindow();
+	explicit IntonationWindow(QWidget* parent=nullptr);
+	virtual ~IntonationWindow();
 
 	void clear();
 	void setup(Synthesis* synthesis);
@@ -58,6 +58,11 @@ private slots:
 		double beatOffset,
 		double absoluteTime);
 private:
+	IntonationWindow(const IntonationWindow&) = delete;
+	IntonationWindow& operator=(const IntonationWindow&) = delete;
+	IntonationWindow(IntonationWindow&&) = delete;
+	IntonationWindow& operator=(IntonationWindow&&) = delete;
+
 	std::unique_ptr<Ui::IntonationWindow> ui_;
 	Synthesis* synthesis_;
 };

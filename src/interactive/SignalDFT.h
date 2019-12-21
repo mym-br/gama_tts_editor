@@ -40,8 +40,10 @@ public:
 	unsigned int size() const { return n_; }
 	unsigned int outputSize() const { return outputN_; }
 private:
-	SignalDFT(SignalDFT&);
-	SignalDFT& operator=(SignalDFT&);
+	SignalDFT(const SignalDFT&) = delete;
+	SignalDFT& operator=(const SignalDFT&) = delete;
+	SignalDFT(SignalDFT&&) = delete;
+	SignalDFT& operator=(SignalDFT&&) = delete;
 
 	unsigned int n_;
 	unsigned int outputN_;

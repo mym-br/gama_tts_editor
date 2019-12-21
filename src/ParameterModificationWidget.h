@@ -26,6 +26,7 @@ class ParameterModificationWidget : public QWidget {
 	Q_OBJECT
 public:
 	explicit ParameterModificationWidget(QWidget* parent=nullptr);
+	virtual ~ParameterModificationWidget() = default;
 
 	void stop();
 signals:
@@ -40,6 +41,11 @@ private:
 		stopped,
 		running
 	};
+
+	ParameterModificationWidget(const ParameterModificationWidget&) = delete;
+	ParameterModificationWidget& operator=(const ParameterModificationWidget&) = delete;
+	ParameterModificationWidget(ParameterModificationWidget&&) = delete;
+	ParameterModificationWidget& operator=(ParameterModificationWidget&&) = delete;
 
 	double offset(int xMouse);
 

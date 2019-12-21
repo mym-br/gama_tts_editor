@@ -44,8 +44,8 @@ class Transition;
 class PrototypeManagerWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit PrototypeManagerWindow(QWidget* parent=0);
-	~PrototypeManagerWindow();
+	explicit PrototypeManagerWindow(QWidget* parent=nullptr);
+	virtual ~PrototypeManagerWindow();
 
 	void resetModel(VTMControlModel::Model* model);
 signals:
@@ -87,6 +87,11 @@ private slots:
 	void on_specialTransitionsTree_itemChanged(QTreeWidgetItem* item, int column);
 	void on_specialTransitionsTree_currentItemChanged(QTreeWidgetItem* current, QTreeWidgetItem* previous);
 private:
+	PrototypeManagerWindow(const PrototypeManagerWindow&) = delete;
+	PrototypeManagerWindow& operator=(const PrototypeManagerWindow&) = delete;
+	PrototypeManagerWindow(PrototypeManagerWindow&&) = delete;
+	PrototypeManagerWindow& operator=(PrototypeManagerWindow&&) = delete;
+
 	void clearEquationData();
 	void clearTransitionData();
 	void clearSpecialTransitionData();

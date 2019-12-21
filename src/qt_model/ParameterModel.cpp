@@ -34,6 +34,10 @@ ParameterModel::ParameterModel(QObject* parent)
 {
 }
 
+ParameterModel::~ParameterModel()
+{
+}
+
 int
 ParameterModel::rowCount(const QModelIndex& /*parent*/) const
 {

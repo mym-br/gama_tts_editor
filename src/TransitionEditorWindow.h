@@ -43,8 +43,8 @@ class Transition;
 class TransitionEditorWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit TransitionEditorWindow(QWidget* parent=0);
-	~TransitionEditorWindow();
+	explicit TransitionEditorWindow(QWidget* parent=nullptr);
+	virtual ~TransitionEditorWindow();
 
 	void setSpecial();
 	void resetModel(VTMControlModel::Model* model);
@@ -69,6 +69,11 @@ private slots:
 protected:
 	virtual void closeEvent(QCloseEvent* event);
 private:
+	TransitionEditorWindow(const TransitionEditorWindow&) = delete;
+	TransitionEditorWindow& operator=(const TransitionEditorWindow&) = delete;
+	TransitionEditorWindow(TransitionEditorWindow&&) = delete;
+	TransitionEditorWindow& operator=(TransitionEditorWindow&&) = delete;
+
 	void fillDefaultParameters();
 	void updateTransitionWidget();
 	void updatePointsTable();

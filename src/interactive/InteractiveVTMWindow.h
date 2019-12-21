@@ -43,7 +43,7 @@ class ParameterSlider;
 class InteractiveVTMWindow : public QMainWindow {
 	Q_OBJECT
 public:
-	InteractiveVTMWindow(const char* configDirPath, bool mainWindow = true, QWidget* parent = 0);
+	InteractiveVTMWindow(const char* configDirPath, bool mainWindow=true, QWidget* parent=nullptr);
 	virtual ~InteractiveVTMWindow();
 protected:
 	virtual void closeEvent(QCloseEvent* event);
@@ -72,6 +72,8 @@ private:
 
 	InteractiveVTMWindow(const InteractiveVTMWindow&) = delete;
 	InteractiveVTMWindow& operator=(const InteractiveVTMWindow&) = delete;
+	InteractiveVTMWindow(InteractiveVTMWindow&&) = delete;
+	InteractiveVTMWindow& operator=(InteractiveVTMWindow&&) = delete;
 
 	void initMenu();
 	QWidget* initButtons(QWidget* parent);

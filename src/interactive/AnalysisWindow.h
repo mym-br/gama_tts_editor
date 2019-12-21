@@ -42,8 +42,8 @@ class SignalDFT;
 class AnalysisWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit AnalysisWindow(QWidget* parent=0);
-	~AnalysisWindow();
+	explicit AnalysisWindow(QWidget* parent=nullptr);
+	virtual ~AnalysisWindow();
 
 	void setData(unsigned int sampleRate, JackRingbuffer* analysisRingbuffer, size_t analysisRingbufferNumSamples);
 	void stop();
@@ -58,6 +58,11 @@ private:
 		stopped,
 		enabled
 	};
+
+	AnalysisWindow(const AnalysisWindow&) = delete;
+	AnalysisWindow& operator=(const AnalysisWindow&) = delete;
+	AnalysisWindow(AnalysisWindow&&) = delete;
+	AnalysisWindow& operator=(AnalysisWindow&&) = delete;
 
 	void setupWindow();
 	void plotCursor();

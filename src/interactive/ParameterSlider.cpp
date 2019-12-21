@@ -56,13 +56,6 @@ ParameterSlider::ParameterSlider(float minimumValue, float maximumValue, QWidget
 }
 
 /*******************************************************************************
- * Destructor.
- */
-ParameterSlider::~ParameterSlider()
-{
-}
-
-/*******************************************************************************
  *
  */
 int

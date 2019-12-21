@@ -45,8 +45,10 @@ public:
 
 	void reset(); // not thread safe
 private:
-	JackRingbuffer(JackRingbuffer&);
-	JackRingbuffer& operator=(JackRingbuffer&);
+	JackRingbuffer(const JackRingbuffer&) = delete;
+	JackRingbuffer& operator=(const JackRingbuffer&) = delete;
+	JackRingbuffer(JackRingbuffer&&) = delete;
+	JackRingbuffer& operator=(JackRingbuffer&&) = delete;
 
 	jack_ringbuffer_t* ringbuffer_;
 };

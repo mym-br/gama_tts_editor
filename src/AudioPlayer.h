@@ -32,6 +32,7 @@ namespace GS {
 class AudioPlayer {
 public:
 	AudioPlayer();
+	~AudioPlayer() = default;
 
 	// Called only by the JACK thread.
 	int callback(jack_nframes_t nframes);
@@ -44,6 +45,8 @@ public:
 private:
 	AudioPlayer(const AudioPlayer&) = delete;
 	AudioPlayer& operator=(const AudioPlayer&) = delete;
+	AudioPlayer(AudioPlayer&&) = delete;
+	AudioPlayer& operator=(AudioPlayer&&) = delete;
 
 	std::vector<float> buffer_;
 	std::size_t bufferIndex_;

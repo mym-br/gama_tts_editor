@@ -97,6 +97,10 @@ IntonationWidget::IntonationWidget(QWidget* parent)
 	setFocusPolicy(Qt::StrongFocus); // enable key events
 }
 
+IntonationWidget::~IntonationWidget()
+{
+}
+
 // Note: with no antialiasing, the coordinates in QPointF are rounded to the nearest integer.
 void
 IntonationWidget::paintEvent(QPaintEvent*)

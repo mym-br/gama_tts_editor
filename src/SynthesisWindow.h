@@ -43,8 +43,8 @@ class AudioWorker;
 class SynthesisWindow : public QWidget {
 	Q_OBJECT
 public:
-	explicit SynthesisWindow(QWidget* parent=0);
-	~SynthesisWindow();
+	explicit SynthesisWindow(QWidget* parent=nullptr);
+	virtual ~SynthesisWindow();
 
 	void clear();
 	void setup(VTMControlModel::Model* model, Synthesis* synthesis);
@@ -72,6 +72,11 @@ private slots:
 	void handleAudioFinished();
 	void resetZoom();
 private:
+	SynthesisWindow(const SynthesisWindow&) = delete;
+	SynthesisWindow& operator=(const SynthesisWindow&) = delete;
+	SynthesisWindow(SynthesisWindow&&) = delete;
+	SynthesisWindow& operator=(SynthesisWindow&&) = delete;
+
 	void clearSpeechSignal();
 	void setSpeechSignal(VTMControlModel::Controller& controller);
 	void setProcessingButtonsEnabled(bool enabled);

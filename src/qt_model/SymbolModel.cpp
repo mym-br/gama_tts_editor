@@ -34,6 +34,10 @@ SymbolModel::SymbolModel(QObject* parent)
 {
 }
 
+SymbolModel::~SymbolModel()
+{
+}
+
 int
 SymbolModel::rowCount(const QModelIndex& /*parent*/) const
 {

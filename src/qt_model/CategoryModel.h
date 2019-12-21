@@ -36,7 +36,8 @@ public:
 		NUM_COLUMNS = 2
 	};
 
-	explicit CategoryModel(QObject* parent=0);
+	explicit CategoryModel(QObject* parent=nullptr);
+	virtual ~CategoryModel();
 
 	virtual int rowCount(const QModelIndex& parent=QModelIndex()) const;
 	virtual int columnCount(const QModelIndex& parent=QModelIndex()) const;
@@ -63,6 +64,8 @@ public slots:
 private:
 	CategoryModel(const CategoryModel&) = delete;
 	CategoryModel& operator=(const CategoryModel&) = delete;
+	CategoryModel(CategoryModel&&) = delete;
+	CategoryModel& operator=(CategoryModel&&) = delete;
 
 	VTMControlModel::Model* model_;
 };

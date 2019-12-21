@@ -22,6 +22,7 @@
 #include <string>
 #include <vector>
 
+#include "Equation.h"
 #include "Transition.h"
 
 
