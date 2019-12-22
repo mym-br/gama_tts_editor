@@ -15,7 +15,7 @@
     The source files must be in ../gama_tts and the build directory
     must be ../gama_tts-build.
 
-- Build (Linux):
+- Build (Linux+GNU):
 
   qmake
   make
@@ -24,8 +24,11 @@
 
   - Start the JACK server using QjackCtl.
     Note: The sampling rate in JACK must be equal to the value of the parameter
-          "output_rate" in the file vtm.config (default: 44100).
+          "output_rate" in the file vtm.config located in ../gama_tts/data
+          (default: 44100).
 
   - Execute:
 
-  ./gama_tts_editor
+    ./gama_tts_editor &
+
+  - Go to File/Open and select the file ../gama_tts/data/english/vtm5/artic.xml.
