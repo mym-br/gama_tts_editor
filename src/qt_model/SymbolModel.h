@@ -37,7 +37,7 @@ public:
 	};
 
 	explicit SymbolModel(QObject* parent=nullptr);
-	virtual ~SymbolModel();
+	virtual ~SymbolModel() = default;
 
 	virtual int rowCount(const QModelIndex& parent=QModelIndex()) const;
 	virtual int columnCount(const QModelIndex& parent=QModelIndex()) const;

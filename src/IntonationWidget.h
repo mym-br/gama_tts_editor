@@ -39,7 +39,7 @@ class IntonationWidget : public QWidget {
 	Q_OBJECT
 public:
 	explicit IntonationWidget(QWidget* parent=nullptr);
-	virtual ~IntonationWidget();
+	virtual ~IntonationWidget() = default;
 
 	virtual QSize sizeHint() const;
 	void updateData(VTMControlModel::EventList* eventList);

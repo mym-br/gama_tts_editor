@@ -37,7 +37,7 @@ public:
 	};
 
 	explicit CategoryModel(QObject* parent=nullptr);
-	virtual ~CategoryModel();
+	virtual ~CategoryModel() = default;
 
 	virtual int rowCount(const QModelIndex& parent=QModelIndex()) const;
 	virtual int columnCount(const QModelIndex& parent=QModelIndex()) const;

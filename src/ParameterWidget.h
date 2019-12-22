@@ -35,7 +35,7 @@ class ParameterWidget : public QWidget {
 	Q_OBJECT
 public:
 	explicit ParameterWidget(QWidget* parent=nullptr);
-	virtual ~ParameterWidget();
+	virtual ~ParameterWidget() = default;
 
 	virtual QSize sizeHint() const;
 	void updateData(
