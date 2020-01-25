@@ -179,7 +179,7 @@ ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 		vocalTractModel_->execSynthesisStep();
 	}
 
-	const std::size_t n2 = VTM::Util::getSamples(vtmOutputBuffer, vtmBufferPos_, out + n,
+	[[maybe_unused]] const std::size_t n2 = VTM::Util::getSamples(vtmOutputBuffer, vtmBufferPos_, out + n,
 							nframes - n, gain_);
 	assert(n2 == nframes - n);
 
