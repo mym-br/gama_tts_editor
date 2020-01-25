@@ -81,7 +81,6 @@ MainWindow::MainWindow(QWidget* parent)
 	specialTransitionEditorWindow_->setSpecial();
 
 	connect(ui_->quitAction , &QAction::triggered, qApp, &QApplication::closeAllWindows);
-	connect(ui_->aboutAction, &QAction::triggered, this, &MainWindow::about);
 
 	connect(prototypeManagerWindow_.get(), &PrototypeManagerWindow::editTransitionButtonClicked,
 			transitionEditorWindow_.get(), &TransitionEditorWindow::handleEditTransitionButtonClicked);
@@ -457,9 +456,8 @@ MainWindow::destroyInteractiveVTMWindow()
 	interactiveVTMWindow_.reset();
 }
 
-// Slot.
 void
-MainWindow::about()
+MainWindow::on_aboutAction_triggered()
 {
 	QDialog aboutDialog(this);
 	QVBoxLayout* layout = new QVBoxLayout(&aboutDialog);

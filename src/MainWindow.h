@@ -60,6 +60,7 @@ private slots:
 	void on_saveAction_triggered();
 	void on_saveAsAction_triggered();
 	void on_reloadAction_triggered();
+	void on_aboutAction_triggered();
 
 	void on_dataEntryButton_clicked();
 	void on_ruleManagerButton_clicked();
@@ -72,7 +73,6 @@ private slots:
 	void on_interactiveVTMButton_clicked();
 	void on_parameterModificationButton_clicked();
 
-	void about();
 	void updateSynthesis();
 	void destroyInteractiveVTMWindow();
 private:
