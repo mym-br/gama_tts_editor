@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Intonation parameters</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="../resource/gama_tts_editor.qrc">
-    <normaloff>:/img/window_icon.png</normaloff>:/img/window_icon.png</iconset>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="1">
     <widget class="QGroupBox" name="groupBox_2">
@@ -242,8 +238,6 @@
   <tabstop>cutoffSpinBox</tabstop>
   <tabstop>updateButton</tabstop>
  </tabstops>
- <resources>
-  <include location="../resource/gama_tts_editor.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

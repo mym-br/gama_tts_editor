@@ -22,6 +22,7 @@
 #include <locale>
 
 #include <QApplication>
+#include <QIcon>
 #include <QLocale>
 
 #include "Log.h"
@@ -40,6 +41,7 @@ main(int argc, char* argv[])
 
 	try {
 		QApplication app(argc, argv);
+		app.setWindowIcon(QIcon{":/img/window_icon.png"});
 
 		QCoreApplication::setOrganizationName("GamaTTS");
 		QCoreApplication::setOrganizationDomain("gamatts.org");

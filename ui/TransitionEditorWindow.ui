@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Transition editor</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="../resource/gama_tts_editor.qrc">
-    <normaloff>:/img/window_icon.png</normaloff>:/img/window_icon.png</iconset>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="1" column="0" rowspan="2">
     <widget class="QWidget" name="widget" native="true">
@@ -273,8 +269,6 @@
   <tabstop>equationsTree</tabstop>
   <tabstop>formulaTextEdit</tabstop>
  </tabstops>
- <resources>
-  <include location="../resource/gama_tts_editor.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

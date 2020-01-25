@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Posture editor</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="../resource/gama_tts_editor.qrc">
-    <normaloff>:/img/window_icon.png</normaloff>:/img/window_icon.png</iconset>
-  </property>
   <layout class="QHBoxLayout" name="horizontalLayout">
    <property name="leftMargin">
     <number>0</number>
@@ -340,8 +336,6 @@
    </item>
   </layout>
  </widget>
- <resources>
-  <include location="../resource/gama_tts_editor.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

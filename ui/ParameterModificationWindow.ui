@@ -13,10 +13,6 @@
   <property name="windowTitle">
    <string>Parameter modification</string>
   </property>
-  <property name="windowIcon">
-   <iconset resource="../resource/gama_tts_editor.qrc">
-    <normaloff>:/img/window_icon.png</normaloff>:/img/window_icon.png</iconset>
-  </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="5" column="3">
     <widget class="QPushButton" name="synthesizeToFileButton">
@@ -209,8 +205,6 @@
   <tabstop>saveVTMParamCheckBox</tabstop>
   <tabstop>synthesizeToFileButton</tabstop>
  </tabstops>
- <resources>
-  <include location="../resource/gama_tts_editor.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
