@@ -1,4 +1,4 @@
 /tmp
 /Makefile
-*.pro.user*
+/CMakeLists.txt.user*
 *__NOP

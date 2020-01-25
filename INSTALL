@@ -1,6 +1,8 @@
 
 - Requirements:
 
+  - CMake (tested with version 3.13.4).
+
   - A C++ compiler with C++17 support.
     The following compiler has been tested:
     - GCC 8.3 (Linux+GNU x86_64).
@@ -17,7 +19,9 @@
 
 - Build (Linux+GNU):
 
-  qmake
+  mkdir ../gama_tts_editor-build
+  cd ../gama_tts_editor-build
+  cmake -D CMAKE_BUILD_TYPE=Release ../gama_tts_editor
   make
 
 - Test:
