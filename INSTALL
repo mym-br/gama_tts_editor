@@ -22,7 +22,7 @@
   mkdir ../gama_tts_editor-build
   cd ../gama_tts_editor-build
   cmake -D CMAKE_BUILD_TYPE=Release ../gama_tts_editor
-  make
+  cmake --build .
 
 - Test:
 
