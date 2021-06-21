@@ -138,7 +138,9 @@ SynthesisWindow::on_parseButton_clicked()
 	disableProcessingButtons();
 
 	try {
-		auto textParser = TextParser::TextParser::getInstance(synthesis_->appConfig.projectDir.toStdString());
+		auto textParser = TextParser::TextParser::getInstance(
+					synthesis_->appConfig.projectDir.toStdString(),
+					synthesis_->vtmController->vtmControlModelConfiguration().phoStrFormat);
 		std::string phoneticString = textParser->parse(text.toUtf8().constData());
 		ui_->phoneticStringTextEdit->setPlainText(phoneticString.c_str());
 	} catch (const Exception& exc) {
