@@ -19,6 +19,8 @@
     The source files must be in ../gama_tts and the build directory
     must be ../gama_tts-build.
 
+  - The current directory must be named "gama_tts_editor".
+
 - Build (Linux+GNU):
 
   mkdir ../gama_tts_editor-build
@@ -33,7 +35,7 @@
           "output_rate" in the file vtm.config located in ../gama_tts/data
           (default: 44100).
 
-  - Execute:
+  - Execute in the directory "gama_tts_editor-build":
 
     LD_LIBRARY_PATH=../gama_tts-build ./gama_tts_editor &
 
