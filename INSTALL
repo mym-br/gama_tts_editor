@@ -9,9 +9,11 @@
 
   - Qt 5 (tested with version 5.11).
 
-  - JACK Audio Connection Kit (tested with version 1.9.12).
+  - JACK Audio Connection Kit (tested with version 1.9.12) + QjackCtl.
 
   - FFTW - single precision (tested with version 3.3.8).
+
+  - POSIX.1-2001.
 
   - GamaTTS (use the latest version).
     The source files must be in ../gama_tts and the build directory
@@ -33,6 +35,6 @@
 
   - Execute:
 
-    ./gama_tts_editor &
+    LD_LIBRARY_PATH=../gama_tts-build ./gama_tts_editor &
 
   - Go to File/Open and select the file ../gama_tts/data/english/vtm5/artic.xml.

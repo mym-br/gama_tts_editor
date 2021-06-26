@@ -9,6 +9,17 @@ project.
 
 [Gnuspeech]: http://www.gnu.org/software/gnuspeech/
 
+Status
+------
+
+**pre-alpha**
+
+OS support
+----------
+
+Linux+GNU (the software may work on other OSes with POSIX and
+JACK Audio Connection Kit).
+
 External code
 -------------
 
@@ -20,11 +31,6 @@ This software includes code from [QCustomPlot][], provided by Emanuel
 Eichhammer. QCustomPlot is licensed under the GNU GPLv3 or later.
 
 [QCustomPlot]: http://www.qcustomplot.com/
-
-Status
-------
-
-**pre-alpha**
 
 License
 -------
