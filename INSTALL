@@ -28,7 +28,7 @@
   cmake -D CMAKE_BUILD_TYPE=Release ../gama_tts_editor
   cmake --build .
 
-- Test:
+- Test (Linux+GNU):
 
   - Start the JACK server using QjackCtl.
     Note: The sampling rate in JACK must be equal to the value of the parameter
@@ -37,6 +37,11 @@
 
   - Execute in the directory "gama_tts_editor-build":
 
-    LD_LIBRARY_PATH=../gama_tts-build ./gama_tts_editor &
+      LD_LIBRARY_PATH=../gama_tts-build ./gama_tts_editor &
+
+    or:
+
+      ln -s ../gama_tts-build/libvtm_gama_tts_*.so .
+      ./gama_tts_editor &
 
   - Go to File/Open and select the file ../gama_tts/data/english/vtm5/artic.xml.
