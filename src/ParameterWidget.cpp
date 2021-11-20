@@ -97,7 +97,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 			if (labelSize > maxLabelSize_) {
 				maxLabelSize_ = labelSize;
 			}
-			const int width = fm.width(model_->parameterList()[i].name().c_str());
+			const int width = fm.horizontalAdvance(model_->parameterList()[i].name().c_str());
 			if (width > maxWidth) {
 				maxWidth = width;
 			}
@@ -211,7 +211,7 @@ ParameterWidget::paintEvent(QPaintEvent* /*event*/)
 					), pal.window());
 
 		QString ruleLabel = tr("Rule");
-		painter.drawText(QPointF(MARGIN + (labelWidth_ - fm.width(ruleLabel)) + horizontalScrollbarValue_, yRuleText), ruleLabel);
+		painter.drawText(QPointF(MARGIN + (labelWidth_ - fm.horizontalAdvance(ruleLabel)) + horizontalScrollbarValue_, yRuleText), ruleLabel);
 	}
 
 	const QPen pen;

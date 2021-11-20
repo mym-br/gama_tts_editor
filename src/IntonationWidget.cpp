@@ -113,7 +113,7 @@ IntonationWidget::paintEvent(QPaintEvent*)
 	if (modelUpdated_) {
 		QFontMetrics fm = painter.fontMetrics();
 		textYOffset_ = 0.5 * fm.xHeight() + 1.0;
-		leftMargin_ = MARGIN + TEXT_MARGIN + fm.width(yLabels[0]);
+		leftMargin_ = MARGIN + TEXT_MARGIN + fm.horizontalAdvance(yLabels[0]);
 
 		modelUpdated_ = false;
 	}

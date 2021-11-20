@@ -47,7 +47,7 @@ ParameterLineEdit::ParameterLineEdit(int parameter, float minimumValue, float ma
 
 	setFont(QFont("monospace"));
 	QFontMetrics fm = fontMetrics();
-	setFixedWidth(fm.width(" -0.0000 "));
+	setFixedWidth(fm.horizontalAdvance(" -0.0000 "));
 
 	QDoubleValidator* v = new QDoubleValidator(this); // not using range, because it does not work well with single precision values
 	v->setNotation(QDoubleValidator::StandardNotation);

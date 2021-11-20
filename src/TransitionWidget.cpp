@@ -161,9 +161,9 @@ TransitionWidget::paintEvent(QPaintEvent*)
 		QFontMetrics fm = painter.fontMetrics();
 		textYOffset_ = 0.5 * fm.ascent();
 		if (special_) {
-			leftMargin_ = MARGIN + TEXT_MARGIN + fm.width(specialTransitionYLabels[0]);
+			leftMargin_ = MARGIN + TEXT_MARGIN + fm.horizontalAdvance(specialTransitionYLabels[0]);
 		} else {
-			leftMargin_ = MARGIN + TEXT_MARGIN + fm.width(transitionYLabels[0]);
+			leftMargin_ = MARGIN + TEXT_MARGIN + fm.horizontalAdvance(transitionYLabels[0]);
 		}
 
 		painter.setFont(slopeFont);
