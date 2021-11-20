@@ -26,6 +26,7 @@
 #include <iostream>
 
 #include "Exception.h"
+#include "JackConfig.h"
 #include "Log.h"
 #include "InteractiveVTMConfiguration.h"
 #include "VocalTractModelParameterValue.h"
@@ -39,8 +40,6 @@
 namespace {
 
 using namespace GS;
-
-const char* CLIENT_NAME = "gama_tts_interactive";
 
 extern "C" {
 
@@ -238,7 +237,7 @@ InteractiveAudio::start()
 		stop();
 	}
 
-	auto newJackClient = std::make_unique<JackClient>(CLIENT_NAME);
+	auto newJackClient = std::make_unique<JackClient>(JackConfig::clientNameInteractive().c_str());
 
 	newJackClient->setProcessCallback(interactive_jack_process_callback, &processor_);
 
@@ -265,9 +264,9 @@ InteractiveAudio::start()
 	// orientation of the driver backend ports: playback ports are
 	// "input" to the backend, and capture ports are "output" from it.
 	JackPorts ports;
-	newJackClient->getPorts(NULL, NULL, JackPortIsPhysical | JackPortIsInput, ports);
+	newJackClient->getPorts(JackConfig::destinationPortNameRegexp().c_str(), NULL, JackPortIsInput, ports);
 	if (ports.list == NULL) {
-		THROW_EXCEPTION(AudioException, "No physical playback ports.");
+		THROW_EXCEPTION(AudioException, "No playback ports.");
 	}
 	for (size_t i = 0; i < 2 && ports.list[i]; ++i) {
 		newJackClient->connect(JackClient::portName(outputPort), ports.list[i]);

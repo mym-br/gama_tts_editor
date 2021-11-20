@@ -24,6 +24,7 @@
 
 #include "Exception.h"
 #include "JackClient.h"
+#include "JackConfig.h"
 #include "Log.h"
 
 
@@ -31,10 +32,6 @@
 namespace {
 
 using namespace GS;
-
-const char* CLIENT_NAME = "gama_tts_editor";
-
-
 
 extern "C" {
 
@@ -81,7 +78,7 @@ AudioPlayer::play(double sampleRate)
 
 	bufferIndex_ = 0;
 
-	auto jackClient = std::make_unique<JackClient>(CLIENT_NAME);
+	auto jackClient = std::make_unique<JackClient>(JackConfig::clientNamePlayer().c_str());
 
 	jackClient->setProcessCallback(player_jack_process_callback, this);
 	jackClient->setShutdownCallback(player_jack_shutdown_callback, this);
@@ -102,9 +99,9 @@ AudioPlayer::play(double sampleRate)
 	// orientation of the driver backend ports: playback ports are
 	// "input" to the backend, and capture ports are "output" from it.
 	JackPorts ports;
-	jackClient->getPorts(NULL, NULL, JackPortIsPhysical | JackPortIsInput, ports);
+	jackClient->getPorts(JackConfig::destinationPortNameRegexp().c_str(), NULL, JackPortIsInput, ports);
 	if (ports.list == NULL) {
-		THROW_EXCEPTION(JackClientException, "No physical playback ports.");
+		THROW_EXCEPTION(JackClientException, "No playback ports.");
 	}
 	for (std::size_t i = 0; i < 2 && ports.list[i]; ++i) {
 		jackClient->connect(JackClient::portName(jackOutputPort_), ports.list[i]);

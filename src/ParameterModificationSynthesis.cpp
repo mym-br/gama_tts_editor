@@ -24,6 +24,7 @@
 
 #include "ConfigurationData.h"
 #include "Exception.h"
+#include "JackConfig.h"
 #include "Log.h"
 #include "VocalTractModel.h"
 #include "vtm_plugin.h"
@@ -36,8 +37,6 @@
 namespace {
 
 using namespace GS;
-
-const char* CLIENT_NAME = "gama_tts_ed_param_modif";
 
 extern "C" {
 
@@ -292,7 +291,7 @@ ParameterModificationSynthesis::startSynthesis(float gain)
 
 	if (jackClient_) return;
 
-	auto newJackClient = std::make_unique<JackClient>(CLIENT_NAME);
+	auto newJackClient = std::make_unique<JackClient>(JackConfig::clientNameParamModif().c_str());
 
 	jack_port_t* outputPort = newJackClient->registerPort("output", JACK_DEFAULT_AUDIO_TYPE, JackPortIsOutput, 0);
 
@@ -318,9 +317,9 @@ ParameterModificationSynthesis::startSynthesis(float gain)
 	// orientation of the driver backend ports: playback ports are
 	// "input" to the backend, and capture ports are "output" from it.
 	JackPorts ports;
-	newJackClient->getPorts(NULL, NULL, JackPortIsPhysical | JackPortIsInput, ports);
+	newJackClient->getPorts(JackConfig::destinationPortNameRegexp().c_str(), NULL, JackPortIsInput, ports);
 	if (ports.list == NULL) {
-		THROW_EXCEPTION(AudioException, "No physical playback ports.");
+		THROW_EXCEPTION(AudioException, "No playback ports.");
 	}
 	for (size_t i = 0; i < 2 && ports.list[i]; ++i) {
 		newJackClient->connect(JackClient::portName(outputPort), ports.list[i]);

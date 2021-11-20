@@ -57,6 +57,8 @@ set(gama_tts_editor_SRC
     src/IntonationWindow.h
     src/JackClient.cpp
     src/JackClient.h
+    src/JackConfig.cpp
+    src/JackConfig.h
     src/JackRingbuffer.cpp
     src/JackRingbuffer.h
     src/main.cpp
