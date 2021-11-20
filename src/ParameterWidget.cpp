@@ -440,12 +440,16 @@ void
 ParameterWidget::getVerticalScrollbarValue(int value)
 {
 	verticalScrollbarValue_ = value;
+
+	update();
 }
 
 void
 ParameterWidget::getHorizontalScrollbarValue(int value)
 {
 	horizontalScrollbarValue_ = value;
+
+	update();
 }
 
 void
