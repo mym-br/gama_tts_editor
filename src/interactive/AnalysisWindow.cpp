@@ -371,7 +371,7 @@ AnalysisWindow::plotCursor()
 
 	const bool spectrumView = (ui_->viewComboBox->currentIndex() == 0);
 	if (!spectrumView) {
-		ui_->spectrumPlot->graph(1)->clearData();
+		ui_->spectrumPlot->graph(1)->data()->clear();
 		ui_->spectrumPlot->replot();
 		return;
 	}

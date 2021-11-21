@@ -80,6 +80,7 @@ private:
 	void showModifiedParameterData();
 	void setInputEnabled(bool enabled);
 	double outputGain();
+	void clearParameterCurveWidget();
 
 	std::unique_ptr<Ui::ParameterModificationWindow> ui_;
 	VTMControlModel::Model* model_;

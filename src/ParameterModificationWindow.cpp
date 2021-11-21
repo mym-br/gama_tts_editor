@@ -99,6 +99,7 @@ ParameterModificationWindow::clear()
 void
 ParameterModificationWindow::setup(VTMControlModel::Model* model, Synthesis* synthesis)
 {
+	clearParameterCurveWidget();
 	disableWindow();
 
 	if (!model || !synthesis || !synthesis->vtmController) {
@@ -343,8 +344,7 @@ void
 ParameterModificationWindow::showModifiedParameterData()
 {
 	if (!model_ || modifParamX_.isEmpty()) {
-		ui_->parameterCurveWidget->graph(0)->clearData();
-		ui_->parameterCurveWidget->graph(1)->clearData();
+		clearParameterCurveWidget();
 		return;
 	}
 
@@ -353,8 +353,7 @@ ParameterModificationWindow::showModifiedParameterData()
 	synthesis_->paramModifSynth->processor().getModifiedParameter(parameter, modifParamY_);
 
 	if (paramY_.isEmpty() || modifParamY_.isEmpty()) {
-		ui_->parameterCurveWidget->graph(0)->clearData();
-		ui_->parameterCurveWidget->graph(1)->clearData();
+		clearParameterCurveWidget();
 		return;
 	}
 
@@ -388,6 +387,14 @@ double
 ParameterModificationWindow::outputGain()
 {
 	return std::pow(10.0, ui_->outputGainComboBox->currentData().toDouble() * 0.05);
+}
+
+void
+ParameterModificationWindow::clearParameterCurveWidget()
+{
+	ui_->parameterCurveWidget->graph(0)->data()->clear();
+	ui_->parameterCurveWidget->graph(1)->data()->clear();
+	ui_->parameterCurveWidget->replot();
 }
 
 } // namespace GS
