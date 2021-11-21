@@ -18,7 +18,7 @@
 #include "AnalysisWindow.h"
 
 #include <cassert>
-#include <cmath> /* abs, cos, log10 */
+#include <cmath> /* abs, cos, log10, sqrt */
 
 #include <QStringList>
 #include <QTimer>
@@ -268,11 +268,14 @@ AnalysisWindow::showData()
 		signalDFT_->execute(&signal_[0], plotY_.data());
 
 		const double freqCoef = static_cast<double>(sampleRate_) / signalDFT_->size();
-		const double dftCoef = 1.0 / signalDFT_->size();
+		const double dftCoef = std::sqrt(1.0 / signalDFT_->size());
 		if (logYAxis) {
 			for (unsigned int i = 0; i < spectrumSize; ++i) {
 				plotX_[i] = i * freqCoef;
 				plotY_[i] = 20.0 * std::log10(plotY_[i] * dftCoef);
+				if (plotY_[i] < minDecibelLevel) {
+					plotY_[i] = minDecibelLevel;
+				}
 			}
 		} else {
 			for (unsigned int i = 0; i < spectrumSize; ++i) {
@@ -295,9 +298,9 @@ AnalysisWindow::showData()
 	if (spectrumView) {
 		ui_->spectrumPlot->graph(0)->keyAxis()->setRange(0.0, maxFreq);
 	}
-	if (spectrumView && logYAxis) {
-		ui_->spectrumPlot->graph(0)->valueAxis()->setRange(minDecibelLevel, 0.0);
-	}
+	//if (spectrumView && logYAxis) {
+	//	ui_->spectrumPlot->graph(0)->valueAxis()->setRange(minDecibelLevel, 0.0);
+	//}
 	ui_->spectrumPlot->replot();
 
 	plotCursor();
