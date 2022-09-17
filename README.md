@@ -12,13 +12,13 @@ project.
 Status
 ------
 
-**pre-alpha**
+**alpha**
 
 OS support
 ----------
 
-Linux+GNU (the software may work on other OSes with POSIX and
-JACK Audio Connection Kit).
+Linux+GNU (the software may work on other operating systems with JACK Audio
+Connection Kit).
 
 External code
 -------------

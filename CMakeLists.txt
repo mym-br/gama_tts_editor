@@ -127,7 +127,6 @@ target_include_directories(gama_tts_editor PRIVATE
     ${JACK_INCLUDE_DIRS}
 
     ../gama_tts/src
-    ../gama_tts/src/plugin
     ../gama_tts/src/text_parser
     ../gama_tts/src/vtm
     ../gama_tts/src/vtm_control_model
@@ -142,10 +141,8 @@ target_link_libraries(gama_tts_editor
     PkgConfig::FFTW3F
     PkgConfig::JACK
 
-    debug     ${CMAKE_SOURCE_DIR}/../gama_tts-build-debug/libgamatts.so
-    optimized ${CMAKE_SOURCE_DIR}/../gama_tts-build/libgamatts.so
-
-    dl
+    debug     ${CMAKE_SOURCE_DIR}/../gama_tts-build-debug/libgamatts.a
+    optimized ${CMAKE_SOURCE_DIR}/../gama_tts-build/libgamatts.a
 )
 
 if(UNIX AND NOT APPLE)

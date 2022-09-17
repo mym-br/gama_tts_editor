@@ -27,7 +27,6 @@
 #include "JackConfig.h"
 #include "Log.h"
 #include "VocalTractModel.h"
-#include "vtm_plugin.h"
 #include "VTMUtil.h"
 
 #define PARAMETER_FILTER_PERIOD_SEC (20.0e-3)
@@ -83,13 +82,13 @@ namespace GS {
 ParameterModificationSynthesis::Processor::Processor(
 			unsigned int numberOfParameters,
 			JackRingbuffer* parameterRingbuffer,
-			ConfigurationData& vtmConfigData,
+			const ConfigurationData& vtmConfigData,
 			double controlRate)
 		: numParameters_(numberOfParameters)
 		, outputPort_()
 		, vtmBufferPos_()
 		, parameterRingbuffer_(parameterRingbuffer)
-		, vocalTractModel_(std::make_unique<VTM::VocalTractModelPlugin>(vtmConfigData, false))
+		, vocalTractModel_(VTM::VocalTractModel::getInstance(vtmConfigData, false))
 		, currentParam_(numParameters_)
 		, delta_(numParameters_)
 		, gain_()
@@ -270,7 +269,7 @@ ParameterModificationSynthesis::Processor::running() const
 ParameterModificationSynthesis::ParameterModificationSynthesis(
 			unsigned int numberOfParameters,
 			double controlRate,
-			ConfigurationData& vtmConfigData)
+			const ConfigurationData& vtmConfigData)
 		: parameterRingbuffer_(std::make_unique<JackRingbuffer>(PARAMETER_RINGBUFFER_SIZE * sizeof(Modification)))
 		, processor_(std::make_unique<Processor>(
 					numberOfParameters,

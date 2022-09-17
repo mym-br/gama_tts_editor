@@ -60,7 +60,7 @@ public:
 		Processor(
 			unsigned int numberOfParameters,
 			JackRingbuffer* parameterRingbuffer,
-			ConfigurationData& vtmConfigData,
+			const ConfigurationData& vtmConfigData,
 			double controlRate);
 		~Processor();
 
@@ -105,7 +105,7 @@ public:
 	ParameterModificationSynthesis(
 		unsigned int numberOfParameters,
 		double controlRate,
-		ConfigurationData& vtmConfigData);
+		const ConfigurationData& vtmConfigData);
 	~ParameterModificationSynthesis() = default;
 
 	void startSynthesis(float gain);

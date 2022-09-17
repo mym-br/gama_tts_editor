@@ -30,7 +30,6 @@
 #include "Log.h"
 #include "InteractiveVTMConfiguration.h"
 #include "VocalTractModelParameterValue.h"
-#include "vtm_plugin.h"
 #include "VTMUtil.h"
 
 #define PARAMETER_FILTER_PERIOD_SEC (50.0e-3)
@@ -101,7 +100,7 @@ InteractiveAudio::Processor::reset(jack_port_t* outputPort, InteractiveVTMConfig
 	outputPort_ = outputPort;
 	vtmBufferPos_ = 0;
 	maxAbsSampleValue_ = 0.0;
-	vocalTractModel_ = std::make_unique<VTM::VocalTractModelPlugin>(*configuration.vtmData, true);
+	vocalTractModel_ = VTM::VocalTractModel::getInstance(*configuration.vtmData, true);
 	parameterRingbuffer_ = &parameterRingbuffer;
 	analysisRingbuffer_ = &analysisRingbuffer;
 	for (auto& v : paramValues_) {
