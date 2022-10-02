@@ -22,7 +22,8 @@
 #include <string>
 #include <vector>
 
-#include <ConfigurationData.h>
+#include "ConfigurationData.h"
+#include "Index.h"
 
 
 
@@ -30,6 +31,7 @@ namespace GS {
 
 struct InteractiveVTMConfiguration {
 public:
+	Index index;
 	std::string configDirPath;
 	std::unique_ptr<ConfigurationData> data;
 	std::unique_ptr<ConfigurationData> vtmData;

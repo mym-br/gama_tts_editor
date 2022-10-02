@@ -36,6 +36,7 @@
 #include "editor_global.h"
 
 #include "DataEntryWindow.h"
+#include "Index.h"
 #include "InteractiveVTMWindow.h"
 #include "IntonationWindow.h"
 #include "IntonationParametersWindow.h"
@@ -53,7 +54,6 @@
 
 #define SETTINGS_KEY_DEFAULT_WORK_DIR "default/work_directory"
 #define STATUSBAR_TIMEOUT_MS (5000)
-#define JACK_CONFIG_FILE_NAME "jack.config"
 
 
 
@@ -374,7 +374,8 @@ MainWindow::openModel()
 		model_ = std::make_unique<VTMControlModel::Model>();
 		model_->load(config_.projectDir.toStdString().c_str(), config_.dataFileName.toStdString().c_str());
 
-		JackConfig::setupFromFile((config_.projectDir + JACK_CONFIG_FILE_NAME).toStdString().c_str());
+		Index index{config_.projectDir.toStdString()};
+		JackConfig::setupFromFile(index.entry("jack_file").c_str());
 
 		synthesis_->setup(model_.get());
 

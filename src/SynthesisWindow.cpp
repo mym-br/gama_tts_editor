@@ -30,6 +30,7 @@
 
 #include "AudioWorker.h"
 #include "Controller.h"
+#include "Index.h"
 #include "Model.h"
 #include "PhoneticStringParser.h"
 #include "Synthesis.h"
@@ -138,8 +139,9 @@ SynthesisWindow::on_parseButton_clicked()
 	disableProcessingButtons();
 
 	try {
+		Index index{synthesis_->appConfig.projectDir.toStdString()};
 		auto textParser = TextParser::TextParser::getInstance(
-					synthesis_->appConfig.projectDir.toStdString(),
+					index,
 					synthesis_->vtmController->vtmControlModelConfiguration().phoStrFormat);
 		std::string phoneticString = textParser->parse(text.toUtf8().constData());
 		ui_->phoneticStringTextEdit->setPlainText(phoneticString.c_str());
@@ -185,7 +187,7 @@ SynthesisWindow::on_referenceButton_clicked()
 		}
 
 		synthesis_->refVtmController = std::make_unique<VTMControlModel::Controller>(
-							synthesis_->appConfig.projectDir.toStdString().c_str(),
+							*synthesis_->index,
 							*synthesis_->refModel);
 		VTMControlModel::Configuration& config = synthesis_->refVtmController->vtmControlModelConfiguration();
 		config.tempo = ui_->tempoSpinBox->value();

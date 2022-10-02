@@ -17,14 +17,10 @@
 
 #include "InteractiveVTMConfiguration.h"
 
-#include <sstream>
-
 #include <QString>
 
 #include "Exception.h"
 #include "global.h"
-
-#define CONFIG_FILE "interactive.config"
 
 
 
@@ -34,8 +30,9 @@ namespace GS {
  * Constructor.
  */
 InteractiveVTMConfiguration::InteractiveVTMConfiguration(const char* configDirPath)
-		: configDirPath(configDirPath)
-		, data(std::make_unique<ConfigurationData>(this->configDirPath + ("/" CONFIG_FILE)))
+		: index(configDirPath)
+		, configDirPath(configDirPath)
+		, data(std::make_unique<ConfigurationData>(index.entry("interactive_file")))
 		, dynamicParamNameList(data->value<unsigned int>("num_dynamic_parameters"))
 		, dynamicParamLabelList(dynamicParamNameList.size())
 		, dynamicParamMinList(  dynamicParamNameList.size())
@@ -128,17 +125,13 @@ InteractiveVTMConfiguration::setOutputRate(float value)
 std::string
 InteractiveVTMConfiguration::vtmConfigFilePath() const
 {
-	std::ostringstream path;
-	path << configDirPath << '/' << data->value<std::string>("vtm_config_file");
-	return path.str();
+	return index.entry("vtm_file");
 }
 
 std::string
 InteractiveVTMConfiguration::voiceConfigFilePath() const
 {
-	std::ostringstream path;
-	path << configDirPath << '/' << data->value<std::string>("voice_config_file");
-	return path.str();
+	return index.entry("voice_dir") + data->value<std::string>("voice_name") + ".txt";
 }
 
 } /* namespace GS */

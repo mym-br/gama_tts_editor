@@ -27,6 +27,8 @@
 
 namespace GS {
 
+class Index;
+
 namespace VTMControlModel {
 class Controller;
 class Model;
@@ -35,6 +37,7 @@ class ParameterModificationSynthesis;
 
 struct Synthesis {
 	const AppConfig& appConfig;
+	std::unique_ptr<Index> index;
 	std::unique_ptr<VTMControlModel::Controller> vtmController;
 	std::unique_ptr<ParameterModificationSynthesis> paramModifSynth;
 	std::unique_ptr<VTMControlModel::Model> refModel;

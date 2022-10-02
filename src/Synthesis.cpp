@@ -17,6 +17,7 @@
 
 #include "Synthesis.h"
 
+#include "Index.h"
 #include "Controller.h"
 #include "ParameterModificationSynthesis.h"
 
@@ -44,6 +45,7 @@ Synthesis::clear()
 	refModel.reset();
 	paramModifSynth.reset();
 	vtmController.reset();
+	index.reset();
 }
 
 void
@@ -54,7 +56,8 @@ Synthesis::setup(VTMControlModel::Model* model)
 		return;
 	}
 	try {
-		vtmController = std::make_unique<VTMControlModel::Controller>(appConfig.projectDir.toStdString().c_str(), *model);
+		index = std::make_unique<Index>(appConfig.projectDir.toStdString());
+		vtmController = std::make_unique<VTMControlModel::Controller>(*index, *model);
 	} catch (...) {
 		clear();
 		throw;
