@@ -77,6 +77,7 @@ AudioPlayer::play(double sampleRate)
 	std::lock_guard<std::mutex> lock(bufferMutex_);
 
 	bufferIndex_ = 0;
+	playback_finished_ = false;
 
 	auto jackClient = std::make_unique<JackClient>(JackConfig::clientNamePlayer().c_str());
 
@@ -109,7 +110,8 @@ AudioPlayer::play(double sampleRate)
 
 	do {
 		std::this_thread::sleep_for(std::chrono::milliseconds(200));
-	} while (jackOutputPort_ && jack_port_connected(jackOutputPort_) > 0);
+	} while (jackOutputPort_ && jack_port_connected(jackOutputPort_) > 0
+			&& !playback_finished_.load(std::memory_order_acquire));
 }
 
 void
@@ -139,7 +141,10 @@ AudioPlayer::callback(jack_nframes_t nframes)
 		++outIndex;
 	}
 	if (bufferIndex_ == bufferSize) {
-		return 1; // end: the port will be disconnected
+		// Using this flag because with Pipewire 0.3.65 the "return 1" does not deactivate the client.
+		playback_finished_.store(true, std::memory_order_release);
+
+		return 1; // the port may be disconnected
 	}
 
 	return 0;

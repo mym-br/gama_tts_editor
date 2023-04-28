@@ -117,7 +117,12 @@ ParameterModificationSynthesis::Processor::~Processor()
 int
 ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 {
-	if (!outputPort_) return 1; // end
+	if (!outputPort_) {
+		// Using this flag because with Pipewire 0.3.65 the "return 1" does not deactivate the client.
+		playback_finished_.store(true, std::memory_order_release);
+
+		return 1;
+	}
 	jack_default_audio_sample_t* out = static_cast<jack_default_audio_sample_t*>(jack_port_get_buffer(outputPort_, nframes));
 	std::vector<float>& vtmOutputBuffer = vocalTractModel_->outputBuffer();
 
@@ -131,7 +136,10 @@ ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 	const std::size_t targetBufferSize = nframes - n;
 	while (vtmOutputBuffer.size() < targetBufferSize) { // while there is not enough data available
 		if (paramSetIndex_ >= modifiedParamList_.size()) {
-			return 1; // end
+			// Using this flag because with Pipewire 0.3.65 the "return 1" does not deactivate the client.
+			playback_finished_.store(true, std::memory_order_release);
+
+			return 1; // the port may be disconnected
 		}
 
 		// Get modification data.
@@ -179,7 +187,7 @@ ParameterModificationSynthesis::Processor::process(jack_nframes_t nframes)
 	}
 
 	[[maybe_unused]] const std::size_t n2 = VTM::Util::getSamples(vtmOutputBuffer, vtmBufferPos_, out + n,
-							nframes - n, gain_);
+									nframes - n, gain_);
 	assert(n2 == nframes - n);
 
 	return 0;
@@ -228,6 +236,7 @@ ParameterModificationSynthesis::Processor::prepareSynthesis(jack_port_t* jackOut
 	paramSetIndex_ = 1;
 	modif_.clear();
 	modifFilter_.reset();
+	playback_finished_ = false;
 }
 
 /*******************************************************************************
@@ -260,7 +269,8 @@ ParameterModificationSynthesis::Processor::resetParameter(unsigned int parameter
 bool
 ParameterModificationSynthesis::Processor::running() const
 {
-	return outputPort_ && jack_port_connected(outputPort_) > 0;
+	return outputPort_ && jack_port_connected(outputPort_) > 0
+			&& !playback_finished_.load(std::memory_order_acquire);
 }
 
 /*******************************************************************************

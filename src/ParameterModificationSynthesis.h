@@ -100,6 +100,7 @@ public:
 		unsigned int controlSteps_;
 		Modification modif_;
 		VTM::MovingAverageFilter<float> modifFilter_;
+		std::atomic_bool playback_finished_;
 	};
 
 	ParameterModificationSynthesis(

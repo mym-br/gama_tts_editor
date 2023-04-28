@@ -52,6 +52,7 @@ private:
 	std::size_t bufferIndex_;
 	std::mutex bufferMutex_;
 	std::atomic<jack_port_t*> jackOutputPort_;
+	std::atomic_bool playback_finished_;
 };
 
 template<typename T>
