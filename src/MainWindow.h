@@ -58,7 +58,7 @@ protected:
 private slots:
 	void on_openAction_triggered();
 	void on_saveAction_triggered();
-	void on_saveAsAction_triggered();
+	//void on_saveAsAction_triggered();
 	void on_reloadAction_triggered();
 	void on_aboutAction_triggered();
 

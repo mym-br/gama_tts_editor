@@ -84,7 +84,7 @@ InteractiveVTMConfiguration::InteractiveVTMConfiguration(const char* configDirPa
 	}
 
 	vtmData = std::make_unique<ConfigurationData>(vtmConfigFilePath());
-	vtmData->insert(ConfigurationData(voiceConfigFilePath()));
+	vtmData->insert(ConfigurationData(variantConfigFilePath()));
 }
 
 
@@ -129,9 +129,9 @@ InteractiveVTMConfiguration::vtmConfigFilePath() const
 }
 
 std::string
-InteractiveVTMConfiguration::voiceConfigFilePath() const
+InteractiveVTMConfiguration::variantConfigFilePath() const
 {
-	return index.entry("voice_dir") + data->value<std::string>("voice_name") + ".txt";
+	return index.entry("variant_dir") + data->value<std::string>("variant_name") + ".txt";
 }
 
 } /* namespace GS */

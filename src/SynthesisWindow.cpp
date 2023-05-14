@@ -176,9 +176,7 @@ SynthesisWindow::on_referenceButton_clicked()
 		}
 
 		synthesis_->refModel = std::make_unique<VTMControlModel::Model>();
-		synthesis_->refModel->load(
-					synthesis_->appConfig.projectDir.toStdString().c_str(),
-					synthesis_->appConfig.dataFileName.toStdString().c_str());
+		synthesis_->refModel->load(synthesis_->appConfig.dataFilePath.toStdString());
 		if (synthesis_->refModel->parameterList().size() != model_->parameterList().size()) {
 			QMessageBox::critical(this, tr("Error"), "The reference model has not the same number of parameters as the current model.");
 			enableProcessingButtons();

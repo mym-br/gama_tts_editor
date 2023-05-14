@@ -24,7 +24,7 @@ namespace GS {
 
 struct AppConfig {
 	QString projectDir;
-	QString dataFileName;
+	QString dataFilePath;
 };
 
 } //namespace GS

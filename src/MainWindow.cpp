@@ -223,18 +223,24 @@ MainWindow::on_openAction_triggered()
 		QSettings settings;
 		dir = settings.value(SETTINGS_KEY_DEFAULT_WORK_DIR, QDir::currentPath()).toString();
 	}
-	QString filePath = QFileDialog::getOpenFileName(this, tr("Open file"), dir, tr("XML files (*.xml)"));
-	if (filePath.isEmpty()) {
+	QString dirPath = QFileDialog::getExistingDirectory(this, tr("Open directory"), dir,
+								 QFileDialog::ShowDirsOnly | QFileDialog::DontResolveSymlinks);
+	if (dirPath.isEmpty()) {
 		return;
 	}
 
-	QFileInfo fileInfo(filePath);
-	config_.projectDir = fileInfo.absolutePath() + '/';
-	config_.dataFileName = fileInfo.fileName();
+	QFile indexFile{dirPath + '/' + VOICE_INDEX_FILE_NAME};
+	if (!indexFile.exists()) {
+		QMessageBox::critical(this, tr("Error"), tr("Invalid directory (missing index file)."));
+		return;
+	}
+
+	QDir dirInfo(dirPath);
+	config_.projectDir = dirInfo.absolutePath() + '/';
 
 	if (!openModel()) return;
 
-	ui_->fileNameLabel->setText(fileInfo.fileName());
+	ui_->dirNameLabel->setText(dirInfo.dirName());
 	ui_->statusBar->showMessage(tr("Model opened."), STATUSBAR_TIMEOUT_MS);
 }
 
@@ -248,6 +254,7 @@ MainWindow::on_saveAction_triggered()
 	ui_->statusBar->showMessage(tr("Model saved."), STATUSBAR_TIMEOUT_MS);
 }
 
+#if 0
 void
 MainWindow::on_saveAsAction_triggered()
 {
@@ -275,6 +282,7 @@ MainWindow::on_saveAsAction_triggered()
 
 	ui_->statusBar->showMessage(tr("Model saved."), STATUSBAR_TIMEOUT_MS);
 }
+#endif
 
 void
 MainWindow::on_reloadAction_triggered()
@@ -371,11 +379,12 @@ bool
 MainWindow::openModel()
 {
 	try {
-		model_ = std::make_unique<VTMControlModel::Model>();
-		model_->load(config_.projectDir.toStdString().c_str(), config_.dataFileName.toStdString().c_str());
-
 		Index index{config_.projectDir.toStdString()};
 		JackConfig::setupFromFile(index.entry("jack_file").c_str());
+
+		config_.dataFilePath = QString::fromStdString(index.entry("artic_file"));
+		model_ = std::make_unique<VTMControlModel::Model>();
+		model_->load(config_.dataFilePath.toStdString());
 
 		synthesis_->setup(model_.get());
 
@@ -391,7 +400,7 @@ MainWindow::openModel()
 		intonationWindow_->setup(synthesis_.get());
 		parameterModificationWindow_->setup(model_.get(), synthesis_.get());
 
-		qDebug() << "### Model opened from" << config_.projectDir.toStdString().c_str() << config_.dataFileName.toStdString().c_str();
+		qDebug() << "### Model opened from" << config_.dataFilePath;
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 
@@ -422,9 +431,9 @@ MainWindow::saveModel()
 	try {
 		model_->validate();
 
-		model_->save(config_.projectDir.toStdString().c_str(), config_.dataFileName.toStdString().c_str());
+		model_->save(config_.dataFilePath.toStdString());
 
-		qDebug() << "### Model saved to" << config_.projectDir.toStdString().c_str() << config_.dataFileName.toStdString().c_str();
+		qDebug() << "### Model saved to" << config_.dataFilePath;
 	} catch (const std::exception& exc) {
 		QMessageBox::critical(this, tr("Error"), exc.what());
 		return false;

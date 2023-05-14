@@ -58,7 +58,7 @@ public:
 	void setOutputRate(float value);
 private:
 	std::string vtmConfigFilePath() const;
-	std::string voiceConfigFilePath() const;
+	std::string variantConfigFilePath() const;
 };
 
 } /* namespace GS */
