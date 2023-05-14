@@ -17,20 +17,8 @@ Status
 OS support
 ----------
 
-Linux+GNU (the software may work on other operating systems with JACK Audio
-Connection Kit).
-
-External code
--------------
-
-Some parts of the code are based on Monet, provided by David R. Hill,
-Leonard Manzara, Craig Schock and contributors. Gnuspeech is licensed under
-the GNU GPLv3 or later.
-
-This software includes code from [QCustomPlot][], provided by Emanuel
-Eichhammer. QCustomPlot is licensed under the GNU GPLv3 or later.
-
-[QCustomPlot]: http://www.qcustomplot.com/
+Linux+GNU (the software may work on other operating systems with support for
+JACK Audio Connection Kit).
 
 License
 -------
@@ -44,3 +32,15 @@ This program is distributed in the hope that it will be useful,
 but WITHOUT ANY WARRANTY; without even the implied warranty of
 MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
 COPYING file for more details.
+
+External code
+-------------
+
+Some parts of the code are based on Monet, provided by David R. Hill,
+Leonard Manzara, Craig Schock and contributors. Gnuspeech is licensed under
+the GNU GPLv3 or later.
+
+This software includes code from [QCustomPlot][], provided by Emanuel
+Eichhammer. QCustomPlot is licensed under the GNU GPLv3 or later.
+
+[QCustomPlot]: http://www.qcustomplot.com/
