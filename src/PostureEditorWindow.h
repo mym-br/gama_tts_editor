@@ -20,7 +20,7 @@
 
 #include <memory>
 
-#include <QRegExp>
+#include <QRegularExpression>
 #include <QWidget>
 
 
@@ -81,7 +81,7 @@ private:
 
 	std::unique_ptr<Ui::PostureEditorWindow> ui_;
 	VTMControlModel::Model* model_;
-	QRegExp postureNameRegExp_;
+	QRegularExpression postureNameRegExp_;
 };
 
 } // namespace GS

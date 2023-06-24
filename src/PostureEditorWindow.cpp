@@ -43,7 +43,7 @@ PostureEditorWindow::PostureEditorWindow(QWidget* parent)
 		: QWidget(parent)
 		, ui_(std::make_unique<Ui::PostureEditorWindow>())
 		, model_()
-		, postureNameRegExp_("[^\\x0000-\\x0020\\x007f'_*./0-9]+")
+		, postureNameRegExp_(QRegularExpression::anchoredPattern("[^\\x{0000}-\\x{0020}\\x{007f}'_*./0-9]+"))
 {
 	ui_->setupUi(this);
 
@@ -205,7 +205,7 @@ PostureEditorWindow::on_posturesTable_itemChanged(QTableWidgetItem* item)
 	};
 
 	const std::string newName = item->text().toStdString();
-	if (!postureNameRegExp_.exactMatch(newName.c_str())) {
+	if (!postureNameRegExp_.match(item->text()).hasMatch()) {
 		QMessageBox::critical(this, tr("Error"), tr("Invalid posture name."));
 		restoreName();
 	} else if (model_->postureList().find(newName)) {
