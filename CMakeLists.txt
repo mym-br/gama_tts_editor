@@ -14,6 +14,7 @@ set(GAMATTS_QT_VERSION "5" CACHE STRING "Qt version used in the build.")
 
 if(GAMATTS_QT_VERSION STREQUAL "6")
     find_package(Qt6 COMPONENTS Core Gui Widgets PrintSupport)
+    add_compile_definitions(USING_QT6=1)
 else()
     find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui Widgets PrintSupport)
 endif()

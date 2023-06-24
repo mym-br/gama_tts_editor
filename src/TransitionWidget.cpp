@@ -344,7 +344,11 @@ TransitionWidget::mouseDoubleClickEvent(QMouseEvent* event)
 		return;
 	}
 
+#ifdef USING_QT6
+	QPointF pos = event->position();
+#else
 	QPointF pos = event->localPos();
+#endif
 	double time = xToTime(pos.x());
 	double value = yToValue(pos.y());
 	const double minValue = special_ ? -140.0 : -20.0;
@@ -395,8 +399,13 @@ TransitionWidget::mousePressEvent(QMouseEvent* event)
 
 		const double x = timeToX(point.time);
 		const double y = valueToY(point.value);
+#ifdef USING_QT6
+		const double absDx = std::fabs(x - event->position().x());
+		const double absDy = std::fabs(y - event->position().y());
+#else
 		const double absDx = std::fabs(x - event->x());
 		const double absDy = std::fabs(y - event->y());
+#endif
 		if (absDx <= POINT_SELECTION_MAX_DISTANCE && absDy <= POINT_SELECTION_MAX_DISTANCE) {
 			emit pointSelected(i);
 			break;

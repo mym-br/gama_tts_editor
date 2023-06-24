@@ -317,8 +317,13 @@ ParameterWidget::mouseMoveEvent(QMouseEvent* event)
 		return;
 	}
 
+#ifdef USING_QT6
+	const double x = event->position().x();
+	const double y = event->position().y();
+#else
 	const double x = event->x();
 	const double y = event->y();
+#endif
 	const double xBase = 3.0 * MARGIN + labelWidth_;
 
 	double xEnd = xBase + eventList_->list().back()->time * timeScale_;

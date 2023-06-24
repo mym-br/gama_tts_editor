@@ -66,7 +66,11 @@ void
 ParameterModificationWidget::mouseMoveEvent(QMouseEvent* event)
 {
 	if (state_ == State::running) {
+#ifdef USING_QT6
+		mouseX_ = event->position().x(); // truncate
+#else
 		mouseX_ = event->x();
+#endif
 		emit offsetChanged(offset(mouseX_));
 		update();
 	}
@@ -76,7 +80,11 @@ void
 ParameterModificationWidget::mousePressEvent(QMouseEvent* event)
 {
 	emit modificationStarted();
+#ifdef USING_QT6
+	mouseX_ = event->position().x(); // truncate
+#else
 	mouseX_ = event->x();
+#endif
 	emit offsetChanged(offset(mouseX_));
 	state_ = State::running;
 	update();

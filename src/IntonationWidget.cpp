@@ -283,7 +283,11 @@ IntonationWidget::mouseDoubleClickEvent(QMouseEvent* event)
 	}
 	if (event->button() != Qt::LeftButton) return;
 
+#ifdef USING_QT6
+	QPointF clickPoint = event->position();
+#else
 	QPointF clickPoint = event->localPos();
+#endif
 	double clickTime = xToTime(clickPoint.x());
 	unsigned int ruleIndex = 0;
 	double minDist = 1.0e10;
@@ -320,7 +324,11 @@ IntonationWidget::mousePressEvent(QMouseEvent* event)
 	}
 	if (event->button() != Qt::LeftButton) return;
 
+#ifdef USING_QT6
+	QPointF clickPoint = event->position();
+#else
 	QPointF clickPoint = event->localPos();
+#endif
 	double minDist = 1.0e10;
 	for (unsigned int i = 0, size = intonationPointList_.size(); i < size; ++i) {
 		QPointF point(
