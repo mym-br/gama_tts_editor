@@ -10,7 +10,13 @@ set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOUIC_SEARCH_PATHS ui ui/interactive)
 set(CMAKE_AUTORCC ON)
 
-find_package(Qt5 COMPONENTS Core Gui Widgets PrintSupport REQUIRED)
+set(GAMATTS_QT_VERSION "5" CACHE STRING "Qt version used in the build.")
+
+if(GAMATTS_QT_VERSION STREQUAL "6")
+    find_package(Qt6 COMPONENTS Core Gui Widgets PrintSupport)
+else()
+    find_package(Qt5 5.15 REQUIRED COMPONENTS Core Gui Widgets PrintSupport)
+endif()
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW3F REQUIRED IMPORTED_TARGET fftw3f)
@@ -133,10 +139,10 @@ target_include_directories(gama_tts_editor PRIVATE
 )
 
 target_link_libraries(gama_tts_editor
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
-    Qt5::PrintSupport
+    Qt::Core
+    Qt::Gui
+    Qt::Widgets
+    Qt::PrintSupport
 
     PkgConfig::FFTW3F
     PkgConfig::JACK
