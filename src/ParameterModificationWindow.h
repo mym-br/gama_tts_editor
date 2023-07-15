@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2017 Marcelo Y. Matuda                                       *
+ *  Copyright 2017, 2023 Marcelo Y. Matuda                                 *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -19,6 +19,7 @@
 #define PARAMETER_MODIFICATION_WINDOW_H
 
 #include <memory>
+#include <vector>
 
 #include <QTimer>
 #include <QVector>
@@ -90,9 +91,9 @@ private:
 	double modificationValue_;
 	QTimer modificationTimer_;
 	QTimer synthesisTimer_;
-	QVector<double> paramY_;
-	QVector<double> modifParamX_;
-	QVector<double> modifParamY_;
+	std::vector<double> paramY_;
+	std::vector<double> modifParamX_;
+	std::vector<double> modifParamY_;
 };
 
 } // namespace GS

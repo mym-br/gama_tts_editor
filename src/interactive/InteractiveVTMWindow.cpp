@@ -496,12 +496,6 @@ InteractiveVTMWindow::about()
 		"  Qt Free Edition is distributed under the terms of the GNU LGPLv2.1 or LGPLv3,\n"
 		"  depending on the library (see http://www.qt.io/faq/).\n\n"
 
-		"- QCustomPlot (http://www.qcustomplot.com/).\n\n"
-		"  Provided by Emanuel Eichhammer.\n\n"
-		"  QCustomPlot is distributed under the terms of the GNU General Public License\n"
-		"  as published by the Free Software Foundation, either version 3 of the\n"
-		"  License, or (at your option) any later version.\n\n"
-
 		"- FFTW (http://www.fftw.org/).\n\n"
 		"  Provided by Matteo Frigo and Massachusetts Institute of Technology.\n\n"
 		"  FFTW is free software; you can redistribute it and/or modify it under the\n"

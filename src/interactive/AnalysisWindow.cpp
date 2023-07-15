@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2017 Marcelo Y. Matuda                                       *
+ *  Copyright 2017, 2023 Marcelo Y. Matuda                                 *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -19,6 +19,7 @@
 
 #include <cassert>
 #include <cmath> /* abs, cos, log10, sqrt */
+#include <cstddef> /* std::size_t */
 
 #include <QStringList>
 #include <QTimer>
@@ -41,7 +42,6 @@ enum WindowType {
 	WINDOW_BLACKMAN
 };
 
-constexpr int CURSOR_FREQ_STEP = 1;
 constexpr unsigned int FREQ_1 = 100;
 constexpr unsigned int FREQ_STEP_1 = 100;
 constexpr unsigned int FREQ_2 = 1000;
@@ -71,14 +71,6 @@ AnalysisWindow::AnalysisWindow(QWidget *parent)
 	connect(timer_, &QTimer::timeout, this, &AnalysisWindow::showData);
 	timer_->setInterval(TIMER_INTERVAL_MS);
 
-	ui_->spectrumPlot->addGraph();
-	ui_->spectrumPlot->graph(0)->setPen(QPen(Qt::black));
-	ui_->spectrumPlot->graph(0)->setAntialiased(false);
-
-	ui_->spectrumPlot->addGraph();
-	ui_->spectrumPlot->graph(1)->setPen(QPen(Qt::blue));
-	ui_->spectrumPlot->graph(1)->setAntialiased(false);
-
 	QStringList viewComboItems;
 	viewComboItems << tr("Spectrum") << tr("Signal");
 	ui_->viewComboBox->addItems(viewComboItems);
@@ -99,7 +91,28 @@ AnalysisWindow::AnalysisWindow(QWidget *parent)
 	ui_->windowTypeComboBox->addItem(tr("Blackman")   , WINDOW_BLACKMAN);
 	ui_->windowTypeComboBox->setCurrentIndex(ui_->windowTypeComboBox->count() - 1);
 
-	ui_->cursorFreqSpinBox->setSingleStep(CURSOR_FREQ_STEP);
+	ui_->spectrumPlot->setReduceYRange(true);
+
+	connect(ui_->viewComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+		ui_->spectrumPlot->setReduceYRange(true);
+	});
+	connect(ui_->windowSizeComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+		setupWindow();
+		ui_->spectrumPlot->setReduceYRange(true);
+	});
+	connect(ui_->windowTypeComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+		setupWindow();
+		ui_->spectrumPlot->setReduceYRange(true);
+	});
+	connect(ui_->maxFreqComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+		ui_->spectrumPlot->setReduceYRange(true);
+	});
+	connect(ui_->yAxisComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+		ui_->spectrumPlot->setReduceYRange(true);
+	});
+	connect(ui_->minDecibelLevelComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+		ui_->spectrumPlot->setReduceYRange(true);
+	});
 }
 
 AnalysisWindow::~AnalysisWindow()
@@ -148,11 +161,7 @@ AnalysisWindow::setData(unsigned int sampleRate, JackRingbuffer* analysisRingbuf
 			ui_->maxFreqComboBox->addItem(QString::number(maxFreq), maxFreq);
 		}
 		ui_->maxFreqComboBox->setCurrentIndex(ui_->maxFreqComboBox->count() - 1);
-
-		ui_->cursorFreqSpinBox->setMaximum(maxFreq);
 	}
-
-	ui_->valueAtCursorLabel->clear();
 }
 
 void
@@ -173,28 +182,6 @@ AnalysisWindow::on_startStopButton_clicked()
 	} else {
 		stop();
 	}
-}
-
-void
-AnalysisWindow::on_windowTypeComboBox_currentIndexChanged(int /*index*/)
-{
-	setupWindow();
-}
-
-void
-AnalysisWindow::on_windowSizeComboBox_currentIndexChanged(int /*index*/)
-{
-	setupWindow();
-}
-
-void
-AnalysisWindow::on_cursorFreqSpinBox_valueChanged(double /*d*/)
-{
-	if (sampleRate_ == 0 || !analysisRingbuffer_) {
-		return;
-	}
-
-	plotCursor();
 }
 
 // Slot.
@@ -293,17 +280,23 @@ AnalysisWindow::showData()
 		}
 	}
 
-	ui_->spectrumPlot->graph(0)->setData(plotX_, plotY_);
-	ui_->spectrumPlot->graph(0)->rescaleAxes();
 	if (spectrumView) {
-		ui_->spectrumPlot->graph(0)->keyAxis()->setRange(0.0, maxFreq);
+		std::size_t maxSize = plotX_.size();
+		for (std::size_t i = 0; i < plotX_.size(); ++i) {
+			if (plotX_[i] > maxFreq) {
+				maxSize = i;
+				break;
+			}
+		}
+		ui_->spectrumPlot->updateData(plotX_, plotY_, maxSize);
+	} else {
+		ui_->spectrumPlot->updateData(plotX_, plotY_);
 	}
 	//if (spectrumView && logYAxis) {
 	//	ui_->spectrumPlot->graph(0)->valueAxis()->setRange(minDecibelLevel, 0.0);
 	//}
-	ui_->spectrumPlot->replot();
-
-	plotCursor();
+	ui_->spectrumPlot->update();
+	ui_->spectrumPlot->setReduceYRange(false);
 }
 
 void
@@ -365,41 +358,6 @@ AnalysisWindow::setupWindow()
 	default:
 		qDebug("[AnalysisWindow::setupWindow] Invalid window type: %d", windowType);
 	}
-}
-
-void
-AnalysisWindow::plotCursor()
-{
-	const double cursorFreq = ui_->cursorFreqSpinBox->value();
-
-	const bool spectrumView = (ui_->viewComboBox->currentIndex() == 0);
-	if (!spectrumView) {
-		ui_->spectrumPlot->graph(1)->data()->clear();
-		ui_->spectrumPlot->replot();
-		return;
-	}
-
-	QVector<double> cursorX = {cursorFreq, cursorFreq};
-	QCPRange yRange = ui_->spectrumPlot->graph(1)->valueAxis()->range();
-	QVector<double> cursorY = {yRange.lower, yRange.upper};
-
-	ui_->spectrumPlot->graph(1)->setData(cursorX, cursorY);
-	ui_->spectrumPlot->replot();
-
-	// Show value at cursor.
-	assert(signalDFT_);
-	const double freqCoef = static_cast<double>(sampleRate_) / signalDFT_->size();
-	const double cursorFreqPos = cursorFreq / freqCoef;
-	const unsigned int cursorFreqBaseIndex = static_cast<unsigned int>(cursorFreqPos);
-	const double k = cursorFreqPos - cursorFreqBaseIndex;
-	double cursorValue = 0.0;
-	const unsigned int spectrumSize = plotY_.size();
-	if (cursorFreqBaseIndex < spectrumSize - 1) {
-		cursorValue = plotY_[cursorFreqBaseIndex] * (1.0 - k) + plotY_[cursorFreqBaseIndex + 1] * k;
-	} else if (cursorFreqBaseIndex == spectrumSize - 1) {
-		cursorValue = plotY_[cursorFreqBaseIndex];
-	}
-	ui_->valueAtCursorLabel->setText(QString::number(cursorValue, 'f', 3));
 }
 
 } /* namespace GS */

@@ -40,6 +40,8 @@ set(gama_tts_editor_SRC
     src/DataEntryWindow.cpp
     src/DataEntryWindow.h
     src/editor_global.h
+    src/Figure2DWidget.cpp
+    src/Figure2DWidget.h
     src/interactive/AnalysisWindow.cpp
     src/interactive/AnalysisWindow.h
     src/interactive/FFTW.cpp
@@ -83,8 +85,6 @@ set(gama_tts_editor_SRC
     src/PostureEditorWindow.h
     src/PrototypeManagerWindow.cpp
     src/PrototypeManagerWindow.h
-    src/qcustomplot/qcustomplot.cpp
-    src/qcustomplot/qcustomplot.h
     src/qt_model/CategoryModel.cpp
     src/qt_model/CategoryModel.h
     src/qt_model/ParameterModel.cpp
@@ -127,7 +127,6 @@ add_executable(gama_tts_editor ${gama_tts_editor_SRC})
 target_include_directories(gama_tts_editor PRIVATE
     src
     src/interactive
-    src/qcustomplot
     src/qt_model
 
     ${FFTW3F_INCLUDE_DIRS}

@@ -144,7 +144,7 @@
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <item>
-       <widget class="QCustomPlot" name="parameterCurveWidget" native="true">
+       <widget class="Lab::Figure2DWidget" name="parameterCurveWidget" native="true">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -182,9 +182,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QCustomPlot</class>
+   <class>Lab::Figure2DWidget</class>
    <extends>QWidget</extends>
-   <header>qcustomplot.h</header>
+   <header>Figure2DWidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

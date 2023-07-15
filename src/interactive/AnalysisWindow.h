@@ -49,9 +49,6 @@ public:
 	void stop();
 private slots:
 	void on_startStopButton_clicked();
-	void on_windowTypeComboBox_currentIndexChanged(int index);
-	void on_windowSizeComboBox_currentIndexChanged(int index);
-	void on_cursorFreqSpinBox_valueChanged(double d);
 	void showData();
 private:
 	enum class State {
@@ -65,7 +62,6 @@ private:
 	AnalysisWindow& operator=(AnalysisWindow&&) = delete;
 
 	void setupWindow();
-	void plotCursor();
 
 	std::unique_ptr<Ui::AnalysisWindow> ui_;
 	unsigned int sampleRate_;
@@ -74,8 +70,8 @@ private:
 	QTimer* timer_;
 	State state_;
 	std::vector<jack_default_audio_sample_t> signal_;
-	QVector<double> plotX_;
-	QVector<double> plotY_;
+	std::vector<double> plotX_;
+	std::vector<double> plotY_;
 	std::unique_ptr<SignalDFT> signalDFT_;
 	std::vector<double> window_;
 };

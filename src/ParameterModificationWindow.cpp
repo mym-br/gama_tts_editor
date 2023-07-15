@@ -1,5 +1,5 @@
 /***************************************************************************
- *  Copyright 2017 Marcelo Y. Matuda                                       *
+ *  Copyright 2017, 2023 Marcelo Y. Matuda                                 *
  *                                                                         *
  *  This program is free software: you can redistribute it and/or modify   *
  *  it under the terms of the GNU General Public License as published by   *
@@ -20,6 +20,7 @@
 #include <cmath> /* pow */
 #include <exception>
 
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QSignalBlocker>
 
@@ -61,14 +62,6 @@ ParameterModificationWindow::ParameterModificationWindow(QWidget* parent)
 	for (int i = -5; i >= -40; i -= 5) {
 		ui_->outputGainComboBox->addItem(QString::number(i), static_cast<double>(i));
 	}
-
-	ui_->parameterCurveWidget->addGraph(); // original parameters
-	ui_->parameterCurveWidget->graph(0)->setPen(QPen(QBrush(Qt::black), 2.0));
-	ui_->parameterCurveWidget->graph(0)->setAntialiased(true);
-
-	ui_->parameterCurveWidget->addGraph(); // modified parameters
-	ui_->parameterCurveWidget->graph(1)->setPen(QPen(QBrush(Qt::blue), 2.0));
-	ui_->parameterCurveWidget->graph(1)->setAntialiased(true);
 
 	connect(ui_->parameterModificationWidget, &ParameterModificationWidget::modificationStarted,
 			this, &ParameterModificationWindow::handleModificationStarted);
@@ -343,7 +336,7 @@ ParameterModificationWindow::checkSynthesis()
 void
 ParameterModificationWindow::showModifiedParameterData()
 {
-	if (!model_ || modifParamX_.isEmpty()) {
+	if (!model_ || modifParamX_.empty()) {
 		clearParameterCurveWidget();
 		return;
 	}
@@ -352,20 +345,14 @@ ParameterModificationWindow::showModifiedParameterData()
 	synthesis_->paramModifSynth->processor().getParameter(parameter, paramY_);
 	synthesis_->paramModifSynth->processor().getModifiedParameter(parameter, modifParamY_);
 
-	if (paramY_.isEmpty() || modifParamY_.isEmpty()) {
+	if (paramY_.empty() || modifParamY_.empty()) {
 		clearParameterCurveWidget();
 		return;
 	}
 
-	ui_->parameterCurveWidget->graph(0)->setData(modifParamX_, paramY_);
-	ui_->parameterCurveWidget->graph(0)->keyAxis()->setRange(modifParamX_.first(), modifParamX_.last());
-	ui_->parameterCurveWidget->graph(0)->valueAxis()->setRange(
-				model_->parameterList()[parameter].minimum(),
-				model_->parameterList()[parameter].maximum());
-	ui_->parameterCurveWidget->graph(0)->rescaleAxes(true);
-	ui_->parameterCurveWidget->graph(1)->setData(modifParamX_, modifParamY_);
-	ui_->parameterCurveWidget->graph(1)->rescaleAxes(true);
-	ui_->parameterCurveWidget->replot();
+	ui_->parameterCurveWidget->updateData(modifParamX_, paramY_);
+	ui_->parameterCurveWidget->updateData2(modifParamX_, modifParamY_);
+	ui_->parameterCurveWidget->update();
 }
 
 void
@@ -392,9 +379,7 @@ ParameterModificationWindow::outputGain()
 void
 ParameterModificationWindow::clearParameterCurveWidget()
 {
-	ui_->parameterCurveWidget->graph(0)->data()->clear();
-	ui_->parameterCurveWidget->graph(1)->data()->clear();
-	ui_->parameterCurveWidget->replot();
+	ui_->parameterCurveWidget->clear();
 }
 
 } // namespace GS

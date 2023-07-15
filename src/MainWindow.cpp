@@ -516,11 +516,6 @@ MainWindow::on_aboutAction_triggered()
 		"  JACK is distributed under the terms of the GNU LGPL 2.1\n"
 		"  or later version.\n\n"
 
-		"- QCustomPlot (http://www.qcustomplot.com/).\n"
-		"  Provided by Emanuel Eichhammer.\n"
-		"  QCustomPlot is distributed under the terms of the GNU GPL 3\n"
-		"  or later version.\n\n"
-
 		"- FFTW (http://fftw.org/).\n"
 		"  Provided by Matteo Frigo, Steven G. Johnson and contributors.\n"
 		"  FFTW is distributed under the terms of the GNU GPL 2\n"

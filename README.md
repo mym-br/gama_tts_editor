@@ -39,8 +39,3 @@ External code
 Some parts of the code are based on Monet, provided by David R. Hill,
 Leonard Manzara, Craig Schock and contributors. Gnuspeech is licensed under
 the GNU GPLv3 or later.
-
-This software includes code from [QCustomPlot][], provided by Emanuel
-Eichhammer. QCustomPlot is licensed under the GNU GPLv3 or later.
-
-[QCustomPlot]: http://www.qcustomplot.com/
