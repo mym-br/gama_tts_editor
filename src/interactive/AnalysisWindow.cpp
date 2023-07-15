@@ -93,24 +93,24 @@ AnalysisWindow::AnalysisWindow(QWidget *parent)
 
 	ui_->spectrumPlot->setReduceYRange(true);
 
-	connect(ui_->viewComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+	connect(ui_->viewComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&](int /*index*/) {
 		ui_->spectrumPlot->setReduceYRange(true);
 	});
-	connect(ui_->windowSizeComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+	connect(ui_->windowSizeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&](int /*index*/) {
 		setupWindow();
 		ui_->spectrumPlot->setReduceYRange(true);
 	});
-	connect(ui_->windowTypeComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+	connect(ui_->windowTypeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&](int /*index*/) {
 		setupWindow();
 		ui_->spectrumPlot->setReduceYRange(true);
 	});
-	connect(ui_->maxFreqComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+	connect(ui_->maxFreqComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&](int /*index*/) {
 		ui_->spectrumPlot->setReduceYRange(true);
 	});
-	connect(ui_->yAxisComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+	connect(ui_->yAxisComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&](int /*index*/) {
 		ui_->spectrumPlot->setReduceYRange(true);
 	});
-	connect(ui_->minDecibelLevelComboBox, &QComboBox::currentIndexChanged, this, [&](int /*index*/) {
+	connect(ui_->minDecibelLevelComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, [&](int /*index*/) {
 		ui_->spectrumPlot->setReduceYRange(true);
 	});
 }
